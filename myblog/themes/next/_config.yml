@@ -97,9 +97,9 @@ menu:
   tags: /tags|| tags
   categories: /categories|| th
   archives: /archives|| archive
-  schedule: /schedule|| calendar
-  sitemap: /sitemap.xml|| sitemap
-  commonweal: /404|| heartbeat
+  #schedule: /schedule|| calendar
+  #sitemap: /sitemap.xml|| sitemap
+  #commonweal: /404|| heartbeat
 
 # Enable/Disable menu icons.
 menu_icons:
@@ -109,8 +109,8 @@ menu_icons:
 # ---------------------------------------------------------------
 
 # Schemes
-scheme: Muse
-#scheme: Mist
+#scheme: Muse
+scheme: Mist
 #scheme: Pisces
 #scheme: Gemini
 
@@ -214,7 +214,7 @@ excerpt_description: true
 # Automatically Excerpt. Not recommend.
 # Please use <!-- more --> in the post to control excerpt accurately.
 auto_excerpt:
-  enable: false
+  enable: true
   length: 150
 
 # Post meta display settings
