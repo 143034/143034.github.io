@@ -5,7 +5,7 @@ tags:
 - mysql
 ---
 
-#一、连接数据库
+# 一、连接数据库 #
 
         格式：mysql -u 用户名 -p
 
@@ -13,7 +13,7 @@ tags:
 
         输入密码(安装时设置的)
 
-#二、数据库操作 
+# 二、数据库操作 #
 ##     1、创建数据库 
 
              格式：create database 数据库名 charset=utf8; 
@@ -36,7 +36,7 @@ tags:
 
              select database();
 
-#三、表操作
+# 三、表操作 #
 ##    1、查看当前数据库中所有表
 
             show tables;
@@ -85,8 +85,8 @@ tags:
 
             示例：alter table newcar add isDelete bit default 0
 
-#四、数据操作
-##1、增
+# 四、数据操作 #
+## 1、增 ##
 
         a、全列插入
 
@@ -108,7 +108,7 @@ tags:
 
             示例：insert into student values(0,"hanmeimei",18,0,"北京",0),(0,"poi",22,1,"海南",0),(0,"wenli",20,0,"石家庄",0);
 
-##2、删
+## 2、删 ##
 
         格式：delete from 表名 where 条件; 
 
@@ -116,7 +116,7 @@ tags:
 
         注意：没有条件是全部删除，慎用
 
-##3、改
+## 3、改 ##
 
         格式：update 表名 set 列1=值1,列2=值2,…… where 条件;
 
@@ -124,7 +124,7 @@ tags:
 
         注意：没有条件是全部列都修改，慎用
 
-##4、查
+## 4、查 ##
 
         说明：查询表中的全部数据
 
@@ -132,7 +132,7 @@ tags:
 
         示例：select * from student;
 
-#五、查
+## 五、查 ##
 ##   1、基本语法
 
             格式：select * from 表名;
@@ -357,8 +357,8 @@ tags:
 
                   select * from student where gender=1 limit 0,3;
 
-#六、关联
-##   建表语句：
+# 六、关联 #
+##    建表语句：
 
         1、create table class(id int auto_increment primary key, name varchar(20) not null, stuNum int not null);
 
