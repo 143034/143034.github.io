@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Nginx," />
+  <meta name="keywords" content="MangoDb," />
 
 
 
@@ -79,16 +79,16 @@
 
 
 
-<meta name="description" content="基本操作一、负载均衡 随着业务访问量变大，一台服务器不够使用，此时会把多个机器组成一个集群对外提供服务。通常是指将请“均匀”分摊到急群众多个服务器节点上执行。  1.1、Nginx实现#在nginx.conf配置   upstream first.myweb.com {        #ip_hash        #least_conn;        server 192.168.0.100:">
+<meta name="description" content="一、操作mongodb数据库1、创建数据库     语法：use 数据库名     注意：如果数据库不存在则创建数据库，否则切换到指定的数据库     注意：如果刚刚创建的数据库不在列表内，如果要显示它，我们需要向刚刚创建的数据库中插入一些数据     (   db.student.insert({name:&quot;tom&quot;, age:18, gender:1,address:&amp;qu">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Nginx">
-<meta property="og:url" content="http://yoursite.com/2020/04/21/Nginx/index.html">
+<meta property="og:title" content="MangoDb">
+<meta property="og:url" content="http://yoursite.com/2020/04/25/MangoDb/index.html">
 <meta property="og:site_name" content="Blog">
-<meta property="og:description" content="基本操作一、负载均衡 随着业务访问量变大，一台服务器不够使用，此时会把多个机器组成一个集群对外提供服务。通常是指将请“均匀”分摊到急群众多个服务器节点上执行。  1.1、Nginx实现#在nginx.conf配置   upstream first.myweb.com {        #ip_hash        #least_conn;        server 192.168.0.100:">
-<meta property="article:published_time" content="2020-04-21T01:43:23.000Z">
-<meta property="article:modified_time" content="2020-04-24T16:54:05.975Z">
+<meta property="og:description" content="一、操作mongodb数据库1、创建数据库     语法：use 数据库名     注意：如果数据库不存在则创建数据库，否则切换到指定的数据库     注意：如果刚刚创建的数据库不在列表内，如果要显示它，我们需要向刚刚创建的数据库中插入一些数据     (   db.student.insert({name:&quot;tom&quot;, age:18, gender:1,address:&amp;qu">
+<meta property="article:published_time" content="2020-04-24T16:50:25.000Z">
+<meta property="article:modified_time" content="2020-04-25T04:31:39.177Z">
 <meta property="article:author" content="Arsenic">
-<meta property="article:tag" content="Nginx">
+<meta property="article:tag" content="MangoDb">
 <meta name="twitter:card" content="summary">
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/04/21/Nginx/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/04/25/MangoDb/"/>
 
 
 
 
 
-  <title>Nginx | Blog</title>
+  <title>MangoDb | Blog</title>
   
 
 
@@ -262,7 +262,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/21/Nginx/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/25/MangoDb/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Arsenic">
@@ -279,7 +279,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Nginx</h1>
+          <h1 class="post-title" itemprop="name headline">MangoDb</h1>
         
 
         <div class="post-meta">
@@ -291,8 +291,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-21T09:43:23+08:00">
-                2020-04-21
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-25T00:50:25+08:00">
+                2020-04-25
               </time>
             
 
@@ -314,8 +314,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/" itemprop="url" rel="index">
-                    <span itemprop="name">服务器</span>
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
                   </a>
                 </span>
 
@@ -351,88 +351,189 @@
       
 
       
-        <h1 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h1><h2 id="一、负载均衡"><a href="#一、负载均衡" class="headerlink" title="一、负载均衡"></a>一、负载均衡</h2><blockquote>
-<p>随着业务访问量变大，一台服务器不够使用，此时会把多个机器组成一个集群对外提供服务。通常是指将请“均匀”分摊到急群众多个服务器节点上执行。</p>
-</blockquote>
-<h3 id="1-1、Nginx实现"><a href="#1-1、Nginx实现" class="headerlink" title="1.1、Nginx实现"></a>1.1、Nginx实现</h3><pre><code>#在nginx.conf配置
+        <h1 id="一、操作mongodb数据库"><a href="#一、操作mongodb数据库" class="headerlink" title="一、操作mongodb数据库"></a>一、操作mongodb数据库</h1><pre><code>1、创建数据库
+    语法：use 数据库名
+    注意：如果数据库不存在则创建数据库，否则切换到指定的数据库
+    注意：如果刚刚创建的数据库不在列表内，如果要显示它，我们需要向刚刚创建的数据库中插入一些数据
+    (   db.student.insert({name:&quot;tom&quot;, age:18, gender:1,address:&quot;北京&quot;, isDelete:0})   )
+2、删除数据库
+    前提：使用当前数据库(use 数据库名)
+    db.dropDatabase()
+3、查看所有数据
+    show dbs
+4、查看当前正在使用的数据库
+    a、db
+    b、db.getName()
+5、断开连接
+    exit
+6、查看命令api
+    help</code></pre><h1 id="二、集合操作"><a href="#二、集合操作" class="headerlink" title="二、集合操作"></a>二、集合操作</h1><pre><code>1、查看当前数据库下有哪些集合
+    show collections
+2、创建集合
+    a、
+        语法：db.createCollection(&quot;集合名&quot;)
+        示例：db.createCollection(&quot;class&quot;)
+    b、
+        语法：db.集合名.insert(文档)
+        示例：db.student.insert({name:&quot;tom&quot;, age:18, gender:1,address:&quot;北京&quot;, isDelete:0})
 
+    区别：两者的区别在于前者创建的是一个空的集合，后者创建一个空的集合并添加一个文档
 
-upstream first.myweb.com {
-       #ip_hash
-       #least_conn;
-       server 192.168.0.100:8000 weight=3;
-       server 192.168.0.100:8001 weight=1;
-   }
+3、删除当前数据库中的集合
+    语法：db.集合名.drop()
+    示例：db.class.drop()</code></pre><h1 id="三、文档操作"><a href="#三、文档操作" class="headerlink" title="三、文档操作"></a>三、文档操作</h1><pre><code>1、插入文档
+    a、使用insert()方法插入文档
+        语法：db.集合名.insert(文档)
+        插入一个：db.student.insert({name:&quot;lilei&quot;, age:19, gender:1,address:&quot;北京&quot;, isDelete:0})
+        语法：db.集合名.insert([文档1, 文档2, ……, 文档n])
+        插入多个：db.student.insert([{name:&quot;海妹妹&quot;, age:17, gender:0,address:&quot;北京&quot;, isDelete:0},{name:&quot;韩梅梅&quot;, age:20, gender:0,address:&quot;上海&quot;, isDelete:0}])
 
-
-server {
-       listen       80;
-       server_name  first.myweb.com;
-
-       location / {
-           proxy_pass http://first.myweb.com;
-       }
-   }</code></pre><p>`</p>
-<blockquote>
-<p>upstream是配置nginx后端服务器负载均衡的模块，能对后端的服务器的健康状态检查若后端服务器中一台机器故障，则前端请求不会转发到该故障的机器。</p>
-</blockquote>
-<h3 id="1-2、负载均衡策略"><a href="#1-2、负载均衡策略" class="headerlink" title="1.2、负载均衡策略"></a>1.2、负载均衡策略</h3><pre><code>1、轮寻（默认）
-
-2、权重
-weight;
-
-3、ip_hash
-ip_hash;
-也叫ip绑定，每个请求按访问ip的hash值分配，这样每个访问客户端会固定访问一个后端服务器，可以解决会话session丢失的问题。
-
-4、最少连接
-least_conn;</code></pre><h2 id="二、虚拟主机"><a href="#二、虚拟主机" class="headerlink" title="二、虚拟主机"></a>二、虚拟主机</h2><blockquote>
-<p>定义：一台服务器当多台服务器使用，从而可以配置多个网站</p>
-</blockquote>
-<blockquote>
-<p>一个server标签就是一个虚拟主机</p>
-</blockquote>
-<p>配置虚拟主机的两种方式：</p>
-<h3 id="2-1、基于端口"><a href="#2-1、基于端口" class="headerlink" title="2.1、基于端口"></a>2.1、基于端口</h3><h3 id="2-2、基于域名"><a href="#2-2、基于域名" class="headerlink" title="2.2、基于域名"></a>2.2、基于域名</h3><pre><code>1、在nginx.conf下配置
-
-upstream first.myweb.com {
-    server 192.168.0.100:8000;
-}
- upstream second.myweb.com {
-
-    server 192.168.0.100:8001;
-}
-server {
-    listen       80;
-    server_name  first.myweb.com;
-    location / {
-       proxy_pass http://first.myweb.com;
-    }
-}
-server {
-    listen       80;
-    server_name  second.myweb.com;
-
-    location / {
-        proxy_pass http://second.myweb.com;
-    }
-}
-#配置两个基于域名的虚拟主机，分别转发至两个服务器：192.169.0.100:8000||8001
+    b、使用save()方法插入文档
+        语法：db.集合名.save(文档)
+        说明：如果不指定_id字段，save()方法类似于insert()方法。如果指定_id字段，则会更新_id字段的数据
+        示例1：db.student.save({name:&quot;poi&quot;, age:22, gender:1,address:&quot;石家庄&quot;, isDelete:0})
+        示例2：db.student.save({_id:ObjectId(&quot;59950962019723fe2a0d8d17&quot;),name:&quot;poi&quot;, age:23, gender:1,address:&quot;石家庄&quot;, isDelete:0})
 
 
 
-2、获取nginx的ip地址
-ifconfig
+2、文档更新
+    a、update()方法用于更新已存在的文档
+    语法：
+        db.集合名.update(
+            query,
+            update,
+            {
+                upset:&lt;boolean&gt;,
+                multi:&lt;boolean&gt;,
+                writeConcern:&lt;document&gt;
+            }
+        )
+    参数说明：
+        query：update的查询条件，类似于sql里update语句内where后面的内容
+        update：update的对象和一些更新的操作符($set,$inc)等，$set直接更新，$inc在原有的基础上累加后更新
+        upset：可选，如果不存在update的记录，是否当新数据插入，true为插入，False为不插入，默认为false
+        multi：可选，mongodb默认是false，只更新找到的第一条记录，如果这个参数为true,就按照条件查找出来的数据全部更新
+        writeConcern：可选，抛出异常的级别
 
+    需求：将lilei的年龄更新为25
+    示例：
+          db.student.update({name:&quot;lilei&quot;},{$set:{age:25}})
+          累加：db.student.update({name:&quot;lilei&quot;},{$inc:{age:25}})  
+          全改：db.student.update({name:&quot;poi&quot;},{$set:{age:42}},{multi:true})  
 
-3、将nginx的ip地址解析到本地计算机中
+    b、save()方法通过传入的文档替换已有文档
+        语法：
+            db.集合名.save(
+                document,
+                {
+                    writeConcern:&lt;document&gt;
+                }
+            )
+        参数说明：
+            document：文档数据
+            writeConcern：可选，抛出异常的级别
 
-打开C:\Windows\System32\drivers\etc\hosts文件写入：
+3、文档删除
+    说明：在执行remove()函数前，先执行find()命令来判断执行的条件是否存在是一个良好习惯
 
-nginx ip    first.myweb.com    second.myweb.com
+    语法：
+        db.集合名.remove(
+            query,
+            {
+                justOne:&lt;boolean&gt;,
+                writeConcern:&lt;document&gt;
+            }
+        )
+    参数说明：
+        query：可选，删除的文档的条件
+        justOne：可选，如果为true或1，则只删除一个文档
+        writeConcern：可选，抛出异常的级别
 
+    示例：db.student.remove({name:&quot;poi&quot;})
 
-4、使用浏览器进行访问域名就能打开对应的网站服务器</code></pre>
+4、文档查询
+    a、find()方法
+        语法：db.集合名.find()
+        查询集合下所有的文档(数据)：db.student.find()
+    b、find()方法查询指定列
+        语法：db.集合名.find(
+            query,
+            {
+                &lt;key&gt;:1,
+                &lt;key&gt;:1
+            }
+        )
+        参数说明：
+            query：查询条件
+            key：要显示的字段，1表示显示
+
+    示例：
+          db.student.find({gender:0},{name:1,age:1})
+          db.student.find({},{name:1,age:1})
+
+    c、pretty()方法以格式化的方式来显示文档
+        示例：db.student.find().pretty()
+
+    d、findOne()方法查询匹配结果的第一条数据
+        示例：db.student.findOne({gender:0})
+5、查询条件操作符
+    作用：条件操作符用于比较两个表达式并从Mongodb集合中获取数据
+    a、大于 - $gt
+        语法：db.集合名.find({&lt;key&gt;:{$gt:&lt;value&gt;}})
+        示例：db.student.find({age:{$gt:20}})
+    b、大于等于 - $gte
+        语法：db.集合名.find({&lt;key&gt;:{$gte:&lt;value&gt;}})
+    c、小于 - $lt
+        语法：db.集合名.find({&lt;key&gt;:{$lt:&lt;value&gt;}})
+    d、小于等于 - $lte
+        语法：db.集合名.find({&lt;key&gt;:{$lte:&lt;value&gt;}})
+    e、大于等于 和 小于等于 - $gte 和 $lte
+        语法：db.集合名.find({&lt;key&gt;:{$gte:&lt;value&gt;,$lte:&lt;value&gt;}})
+    f、等于 - :
+        语法：db.集合名.find({&lt;key&gt;:&lt;value&gt;})
+    g、使用_id进行查询
+        语法：db.student.find({&quot;_id&quot;:ObjectId(&quot;id值&quot;)})
+        示例：db.student.find({&quot;_id&quot;:ObjectId(&quot;5995084b019723fe2a0d8d14&quot;)})
+    h、查询某个结果集的数据条数
+        db.student.find().count()
+    i、查询某个字段的值当中是否包含另一个值
+        语法：
+        示例：db.student.find({name:/ile/})
+    j、查询某个字段的值是否以另一个值开头
+        示例：db.student.find({name:/^li/})
+6、条件查询and 和 or
+    a、AND条件
+        语法：db.集合名.find({条件1,条件2,……,条件n})
+        示例：db.student.find({gender:0,age:{$gt:16}})
+    b、OR条件
+        语法：
+            db.集合名.find(
+                {
+                    $or:[{条件1},{条件2},……,{条件n}]
+                }
+            )
+        示例：db.student.find({$or:[{age:17},{age:{$gte:20}}]})
+    c、AND和OR联合使用
+        语法：
+            db.集合名.find(
+                {
+                    条件1,
+                    条件2,
+                    $or:[{条件3},{条件4}]
+                }
+            )
+7、limit、skip
+    a、limit()：读取指定数量的数据记录
+        db.student.find().limit(3)
+    b、skip()：跳过指定数量的数据
+        db.student.find().skip(3)
+    c、skip与limit联合使用
+        通常用这种方式来实现分页功能
+        示例：db.student.find().skip(3).limit(3)
+8、排序
+    语法：db.集合名.find().sort({&lt;key&gt;:1|-1})
+    示例：db.student.find().sort({age:1})
+    注意：1表示升序，-1表示降序</code></pre>
       
     </div>
     
@@ -449,7 +550,7 @@ nginx ip    first.myweb.com    second.myweb.com
       
         <div class="post-tags">
           
-            <a href="/tags/Nginx/" rel="tag"># Nginx</a>
+            <a href="/tags/MangoDb/" rel="tag"># MangoDb</a>
           
         </div>
       
@@ -462,8 +563,8 @@ nginx ip    first.myweb.com    second.myweb.com
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/04/14/mysql%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="next" title="mysql">
-                <i class="fa fa-chevron-left"></i> mysql
+              <a href="/2020/04/25/Pipeline/" rel="next" title="Pipeline">
+                <i class="fa fa-chevron-left"></i> Pipeline
               </a>
             
           </div>
@@ -472,8 +573,8 @@ nginx ip    first.myweb.com    second.myweb.com
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/04/22/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="prev" title="正则表达式">
-                正则表达式 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/04/25/git/" rel="prev" title="git">
+                git <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -615,7 +716,7 @@ nginx ip    first.myweb.com    second.myweb.com
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本操作"><span class="nav-number">1.</span> <span class="nav-text">基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、负载均衡"><span class="nav-number">1.1.</span> <span class="nav-text">一、负载均衡</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1、Nginx实现"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1、Nginx实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2、负载均衡策略"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2、负载均衡策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、虚拟主机"><span class="nav-number">1.2.</span> <span class="nav-text">二、虚拟主机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1、基于端口"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1、基于端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2、基于域名"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2、基于域名</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、操作mongodb数据库"><span class="nav-number">1.</span> <span class="nav-text">一、操作mongodb数据库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、集合操作"><span class="nav-number">2.</span> <span class="nav-text">二、集合操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、文档操作"><span class="nav-number">3.</span> <span class="nav-text">三、文档操作</span></a></li></ol></div>
             
 
           </div>

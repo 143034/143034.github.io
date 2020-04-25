@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Nginx," />
+  <meta name="keywords" content="redis," />
 
 
 
@@ -79,16 +79,16 @@
 
 
 
-<meta name="description" content="基本操作一、负载均衡 随着业务访问量变大，一台服务器不够使用，此时会把多个机器组成一个集群对外提供服务。通常是指将请“均匀”分摊到急群众多个服务器节点上执行。  1.1、Nginx实现#在nginx.conf配置   upstream first.myweb.com {        #ip_hash        #least_conn;        server 192.168.0.100:">
+<meta name="description" content="一、String概述：String是redis最基本的类型，最大能存储512MB的数据，String类型是二进制安全的，即可以存储任何数据、比如数字、图片、序列化对象等 1、设置     a、设置键值         set key value     b、设置键值及过期时间，以秒为单位         setex key seconds value     c、设置多个键值         ms">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Nginx">
-<meta property="og:url" content="http://yoursite.com/2020/04/21/Nginx/index.html">
+<meta property="og:title" content="redis">
+<meta property="og:url" content="http://yoursite.com/2020/04/25/redis/index.html">
 <meta property="og:site_name" content="Blog">
-<meta property="og:description" content="基本操作一、负载均衡 随着业务访问量变大，一台服务器不够使用，此时会把多个机器组成一个集群对外提供服务。通常是指将请“均匀”分摊到急群众多个服务器节点上执行。  1.1、Nginx实现#在nginx.conf配置   upstream first.myweb.com {        #ip_hash        #least_conn;        server 192.168.0.100:">
-<meta property="article:published_time" content="2020-04-21T01:43:23.000Z">
-<meta property="article:modified_time" content="2020-04-24T16:54:05.975Z">
+<meta property="og:description" content="一、String概述：String是redis最基本的类型，最大能存储512MB的数据，String类型是二进制安全的，即可以存储任何数据、比如数字、图片、序列化对象等 1、设置     a、设置键值         set key value     b、设置键值及过期时间，以秒为单位         setex key seconds value     c、设置多个键值         ms">
+<meta property="article:published_time" content="2020-04-25T04:34:03.000Z">
+<meta property="article:modified_time" content="2020-04-25T04:37:50.068Z">
 <meta property="article:author" content="Arsenic">
-<meta property="article:tag" content="Nginx">
+<meta property="article:tag" content="redis">
 <meta name="twitter:card" content="summary">
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/04/21/Nginx/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/04/25/redis/"/>
 
 
 
 
 
-  <title>Nginx | Blog</title>
+  <title>redis | Blog</title>
   
 
 
@@ -262,7 +262,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/21/Nginx/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/25/redis/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Arsenic">
@@ -279,7 +279,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Nginx</h1>
+          <h1 class="post-title" itemprop="name headline">redis</h1>
         
 
         <div class="post-meta">
@@ -291,8 +291,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-21T09:43:23+08:00">
-                2020-04-21
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-25T12:34:03+08:00">
+                2020-04-25
               </time>
             
 
@@ -314,8 +314,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/" itemprop="url" rel="index">
-                    <span itemprop="name">服务器</span>
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库</span>
                   </a>
                 </span>
 
@@ -351,88 +351,138 @@
       
 
       
-        <h1 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h1><h2 id="一、负载均衡"><a href="#一、负载均衡" class="headerlink" title="一、负载均衡"></a>一、负载均衡</h2><blockquote>
-<p>随着业务访问量变大，一台服务器不够使用，此时会把多个机器组成一个集群对外提供服务。通常是指将请“均匀”分摊到急群众多个服务器节点上执行。</p>
-</blockquote>
-<h3 id="1-1、Nginx实现"><a href="#1-1、Nginx实现" class="headerlink" title="1.1、Nginx实现"></a>1.1、Nginx实现</h3><pre><code>#在nginx.conf配置
-
-
-upstream first.myweb.com {
-       #ip_hash
-       #least_conn;
-       server 192.168.0.100:8000 weight=3;
-       server 192.168.0.100:8001 weight=1;
-   }
-
-
-server {
-       listen       80;
-       server_name  first.myweb.com;
-
-       location / {
-           proxy_pass http://first.myweb.com;
-       }
-   }</code></pre><p>`</p>
-<blockquote>
-<p>upstream是配置nginx后端服务器负载均衡的模块，能对后端的服务器的健康状态检查若后端服务器中一台机器故障，则前端请求不会转发到该故障的机器。</p>
-</blockquote>
-<h3 id="1-2、负载均衡策略"><a href="#1-2、负载均衡策略" class="headerlink" title="1.2、负载均衡策略"></a>1.2、负载均衡策略</h3><pre><code>1、轮寻（默认）
-
-2、权重
-weight;
-
-3、ip_hash
-ip_hash;
-也叫ip绑定，每个请求按访问ip的hash值分配，这样每个访问客户端会固定访问一个后端服务器，可以解决会话session丢失的问题。
-
-4、最少连接
-least_conn;</code></pre><h2 id="二、虚拟主机"><a href="#二、虚拟主机" class="headerlink" title="二、虚拟主机"></a>二、虚拟主机</h2><blockquote>
-<p>定义：一台服务器当多台服务器使用，从而可以配置多个网站</p>
-</blockquote>
-<blockquote>
-<p>一个server标签就是一个虚拟主机</p>
-</blockquote>
-<p>配置虚拟主机的两种方式：</p>
-<h3 id="2-1、基于端口"><a href="#2-1、基于端口" class="headerlink" title="2.1、基于端口"></a>2.1、基于端口</h3><h3 id="2-2、基于域名"><a href="#2-2、基于域名" class="headerlink" title="2.2、基于域名"></a>2.2、基于域名</h3><pre><code>1、在nginx.conf下配置
-
-upstream first.myweb.com {
-    server 192.168.0.100:8000;
+        <h1 id="一、String"><a href="#一、String" class="headerlink" title="一、String"></a>一、String</h1><pre><code>概述：String是redis最基本的类型，最大能存储512MB的数据，String类型是二进制安全的，即可以存储任何数据、比如数字、图片、序列化对象等
+1、设置
+    a、设置键值
+        set key value
+    b、设置键值及过期时间，以秒为单位
+        setex key seconds value
+    c、设置多个键值
+        mset key value [key value ……]
+2、获取
+    a、根据键获取值，如果键不存在则返回None(null 0 nil)
+        get key
+    b、根据多个键获取多个值
+        mget key [key ……]
+3、运算
+    要求：值是字符串类型的数字
+    a、将key对应的值加1
+        incr key
+    b、将key对应的值减1
+        decr key
+    c、将key对应的值加整数
+        incrby key intnum
+    d、将key对应的值加整数
+        decrby key intnum
+4、其它
+    a、追加值
+        append key value
+    b、获取值长度
+        strlen key</code></pre><h1 id="二、key"><a href="#二、key" class="headerlink" title="二、key"></a>二、key</h1><pre><code>1、查找键，参数支持正则
+    keys pattern
+2、判断键是否存在，如果存在返回1，不存在返回0
+    exists key
+3、查看键对应的value类型
+    type key
+4、删除键及对应的值
+    del key [key ……]
+5、设置过期时间，以秒为单位
+    expire key seconds
+6、查看有效时间，以秒为单位
+    ttl key</code></pre><h1 id="三、hash"><a href="#三、hash" class="headerlink" title="三、hash"></a>三、hash</h1><pre><code>概述：hash用于存储对象
+{
+    naem:&quot;tom&quot;,
+    age:18
 }
- upstream second.myweb.com {
 
-    server 192.168.0.100:8001;
-}
-server {
-    listen       80;
-    server_name  first.myweb.com;
-    location / {
-       proxy_pass http://first.myweb.com;
-    }
-}
-server {
-    listen       80;
-    server_name  second.myweb.com;
+1、设置
+    a、设置单个值
+        hset key field value
+    b、设置多个值
+        hmset key field value [field value ……]
+2、获取
+    a、获取一个属性的值
+        hget key field
+    b、获取多个属性的值
+        hmget key filed [filed ……]
+    c、获取所有属性和值
+        hgetall key
+    d、获取所有属性
+        hkeys key
+    e、获取所有值
+        hvals key
+    f、返回包含数据的个数
+        hlen key
+3、其它
+    a、判断属性是否存在，存在返回1，不存在返回0
+        hexists key field
+    b、删除属性及值
+        hdel key field [field ……]
+    c、返回值的字符串长度
+        hstrlen key field</code></pre><h1 id="四、list"><a href="#四、list" class="headerlink" title="四、list"></a>四、list</h1><pre><code>概述：列表的元素类型为string，按照插入顺序排序，在列表的头部或尾部添加元素
 
-    location / {
-        proxy_pass http://second.myweb.com;
-    }
-}
-#配置两个基于域名的虚拟主机，分别转发至两个服务器：192.169.0.100:8000||8001
+1、设置
+    a、在头部插入
+        lpush key value [vlaue ……]
+    b、在尾部插入
+        rpush key value [vlaue ……]
+    c、在一个元素的前|后插入新元素
+        linsert key before|after pivot value
+    d、设置指定索引的元素值
+        lset key index value
+        注意：index从0开始
+        注意：索引值可以是负数，表示偏移量是从list的尾部开始，如-1表示最后一个元素
+2、获取
+    a、移除并返回key对应的list的第一个元素
+        lpop key
+    b、移除并返回key对应的list的最后一个元素
+        rpop key
+    c、返回存储在key的列表中的指定范围的元素
+        lrange key start end
+        注意：start end都是从0开始
+        注意：偏移量可以是负数
+3、其它
+    a、裁剪列表，改为原集合的一个子集
+        ltrim key start end
+        注意：start end都是从0开始
+        注意：偏移量可以是负数
+    b、返回存储在key里的list的长度
+        llen key
+    c、返回列表中索引对应的值
+        lindex key index</code></pre><h1 id="五、set"><a href="#五、set" class="headerlink" title="五、set"></a>五、set</h1><pre><code>概述：无序集合，元素类型为String类型，元素具有唯一性，不重复
 
+1、设置
+    a、添加元素
+        sadd key member [member ……]
+2、获取
+    a、返回key集合中所有元素
+        smembers key
+    b、返回集合元素个数
+        scard key
+3、
+    a、求多个集合的交集
+        sinter key [key ……]
+    b、求多个集合的差集
+        sdiff key [key ……]
+    c、求多个集合的合集
+        sunion key [key ……]
+    d、判断元素是否在集合中，存在返回1，不存在返回0
+        sismember key member</code></pre><h1 id="六、zset"><a href="#六、zset" class="headerlink" title="六、zset"></a>六、zset</h1><pre><code>概述：a、有序集合，元素类型为Sting，元素具有唯一性，不能重复
+b、每个元素都会关联一个double类型的score(表示权重),通过权重的大小排序，元素的score可以相同
 
-
-2、获取nginx的ip地址
-ifconfig
-
-
-3、将nginx的ip地址解析到本地计算机中
-
-打开C:\Windows\System32\drivers\etc\hosts文件写入：
-
-nginx ip    first.myweb.com    second.myweb.com
-
-
-4、使用浏览器进行访问域名就能打开对应的网站服务器</code></pre>
+1、设置
+    a、添加
+        zadd key score member [score member ……]
+        zadd z1 1 a 5 b 3 c 2 d 4 e
+2、获取
+    a、返回指定范围的元素
+        zrange key start end
+    b、返回元素个数
+        zcard key
+    c、返回有序集合key中，score在min和max之间的元素的个数
+        zcount key min max
+    d、返回有序集合key中，成员member的score值
+        zscore key member</code></pre>
       
     </div>
     
@@ -449,7 +499,7 @@ nginx ip    first.myweb.com    second.myweb.com
       
         <div class="post-tags">
           
-            <a href="/tags/Nginx/" rel="tag"># Nginx</a>
+            <a href="/tags/redis/" rel="tag"># redis</a>
           
         </div>
       
@@ -462,8 +512,8 @@ nginx ip    first.myweb.com    second.myweb.com
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/04/14/mysql%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="next" title="mysql">
-                <i class="fa fa-chevron-left"></i> mysql
+              <a href="/2020/04/25/git/" rel="next" title="git">
+                <i class="fa fa-chevron-left"></i> git
               </a>
             
           </div>
@@ -472,8 +522,8 @@ nginx ip    first.myweb.com    second.myweb.com
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/04/22/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="prev" title="正则表达式">
-                正则表达式 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/04/25/sqlite3/" rel="prev" title="sqlite3">
+                sqlite3 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -615,7 +665,7 @@ nginx ip    first.myweb.com    second.myweb.com
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本操作"><span class="nav-number">1.</span> <span class="nav-text">基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、负载均衡"><span class="nav-number">1.1.</span> <span class="nav-text">一、负载均衡</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1、Nginx实现"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1、Nginx实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2、负载均衡策略"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2、负载均衡策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、虚拟主机"><span class="nav-number">1.2.</span> <span class="nav-text">二、虚拟主机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1、基于端口"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1、基于端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2、基于域名"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2、基于域名</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、String"><span class="nav-number">1.</span> <span class="nav-text">一、String</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、key"><span class="nav-number">2.</span> <span class="nav-text">二、key</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、hash"><span class="nav-number">3.</span> <span class="nav-text">三、hash</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、list"><span class="nav-number">4.</span> <span class="nav-text">四、list</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、set"><span class="nav-number">5.</span> <span class="nav-text">五、set</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、zset"><span class="nav-number">6.</span> <span class="nav-text">六、zset</span></a></li></ol></div>
             
 
           </div>
