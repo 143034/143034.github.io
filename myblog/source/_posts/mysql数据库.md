@@ -1,8 +1,10 @@
 ---
-title: mysql数据库
+title: mysql
 date: 2020-04-14 15:53:12
 tags: 
 - mysql
+categories:
+- 数据库
 ---
 
 # 一、连接数据库 #

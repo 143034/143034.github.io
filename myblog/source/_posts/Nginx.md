@@ -2,6 +2,8 @@
 title: Nginx
 date: 2020-04-21 09:43:23
 tags: Nginx
+categories:
+- 服务器
 ---
 
 
