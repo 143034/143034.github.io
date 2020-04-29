@@ -3,7 +3,7 @@ title: Pipeline
 tags: 
 - Pipeline
 categories:
-- Scrapy
+- scrapy
 date: 2020-04-25 00:43:31
 ---
 
