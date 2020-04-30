@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="git," />
+  <meta name="keywords" content="scrapy,选择器," />
 
 
 
@@ -79,19 +79,20 @@
 
 
 
+<meta name="description" content="一、概念 XPath即XML路径语言（XML Path Language），它是一种用来确定xml文档中某部分位置的语言。  二、基本语法 &#x2F;描述一个从根开始的绝对路径。E1&#x2F;E2选中E1子节点中的所有E2。&#x2F;&#x2F;E选中文档中的所有E，无论在什么位置。E1&#x2F;&#x2F;E2选中E1后代节点中的所有E2，无论在后代中的什么位置。E&#x2F;text()选中E的文本子节点。E&#x2F;*选中E的所有元素子节点。*&#x2F;E选中孙节点中">
 <meta property="og:type" content="article">
-<meta property="og:title" content="git">
-<meta property="og:url" content="http://yoursite.com/2020/04/25/git/index.html">
+<meta property="og:title" content="xpath">
+<meta property="og:url" content="http://yoursite.com/2020/04/30/xpath/index.html">
 <meta property="og:site_name" content="Blog">
-<meta property="og:image" content="http://yoursite.com/images/git/git%E5%B8%B8%E7%94%A8%E5%91%BD%E5%90%8D.png">
-<meta property="og:image" content="http://yoursite.com/images/git/Git%E5%9B%BE%E8%B0%B1.png">
-<meta property="og:image" content="http://yoursite.com/images/git/Git%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE.jpg">
-<meta property="article:published_time" content="2020-04-25T03:48:20.000Z">
-<meta property="article:modified_time" content="2020-04-25T04:09:28.215Z">
+<meta property="og:description" content="一、概念 XPath即XML路径语言（XML Path Language），它是一种用来确定xml文档中某部分位置的语言。  二、基本语法 &#x2F;描述一个从根开始的绝对路径。E1&#x2F;E2选中E1子节点中的所有E2。&#x2F;&#x2F;E选中文档中的所有E，无论在什么位置。E1&#x2F;&#x2F;E2选中E1后代节点中的所有E2，无论在后代中的什么位置。E&#x2F;text()选中E的文本子节点。E&#x2F;*选中E的所有元素子节点。*&#x2F;E选中孙节点中">
+<meta property="og:image" content="http://yoursite.com/images/xpath/xpath.png">
+<meta property="article:published_time" content="2020-04-30T15:43:18.000Z">
+<meta property="article:modified_time" content="2020-04-30T16:12:35.298Z">
 <meta property="article:author" content="Arsenic">
-<meta property="article:tag" content="git">
+<meta property="article:tag" content="scrapy">
+<meta property="article:tag" content="选择器">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/images/git/git%E5%B8%B8%E7%94%A8%E5%91%BD%E5%90%8D.png">
+<meta name="twitter:image" content="http://yoursite.com/images/xpath/xpath.png">
 
 
 
@@ -121,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/04/25/git/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/04/30/xpath/"/>
 
 
 
 
 
-  <title>git | Blog</title>
+  <title>xpath | Blog</title>
   
 
 
@@ -264,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/25/git/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/30/xpath/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Arsenic">
@@ -281,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">git</h1>
+          <h1 class="post-title" itemprop="name headline">xpath</h1>
         
 
         <div class="post-meta">
@@ -293,8 +294,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-25T11:48:20+08:00">
-                2020-04-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-30T23:43:18+08:00">
+                2020-04-30
               </time>
             
 
@@ -316,8 +317,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/" itemprop="url" rel="index">
-                    <span itemprop="name">版本控制</span>
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
                   </a>
                 </span>
 
@@ -353,8 +365,19 @@
       
 
       
-        <p><img src="/images/git/git%E5%B8%B8%E7%94%A8%E5%91%BD%E5%90%8D.png" alt="git常规命令"><br><img src="/images/git/Git%E5%9B%BE%E8%B0%B1.png" alt="git图谱"><br><img src="/images/git/Git%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE.jpg" alt="git思维导图"></p>
+        <h1 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h1><blockquote>
+<p>XPath即XML路径语言（XML Path Language），它是一种用来确定xml文档中某部分位置的语言。</p>
+</blockquote>
+<h1 id="二、基本语法"><a href="#二、基本语法" class="headerlink" title="二、基本语法"></a>二、基本语法</h1><p><img src="/images/xpath/xpath.png" alt="xpath"></p>
+<h2 id=""><a href="#" class="headerlink" title="/"></a>/</h2><pre><code>描述一个从根开始的绝对路径。</code></pre><h2 id="E1-E2"><a href="#E1-E2" class="headerlink" title="E1/E2"></a>E1/E2</h2><pre><code>选中E1子节点中的所有E2。</code></pre><h2 id="E"><a href="#E" class="headerlink" title="//E"></a>//E</h2><pre><code>选中文档中的所有E，无论在什么位置。</code></pre><h2 id="E1-E2-1"><a href="#E1-E2-1" class="headerlink" title="E1//E2"></a>E1//E2</h2><pre><code>选中E1后代节点中的所有E2，无论在后代中的什么位置。</code></pre><h2 id="E-text"><a href="#E-text" class="headerlink" title="E/text()"></a>E/text()</h2><pre><code>选中E的文本子节点。</code></pre><h2 id="E-1"><a href="#E-1" class="headerlink" title="E/*"></a>E/*</h2><pre><code>选中E的所有元素子节点。</code></pre><h2 id="E-2"><a href="#E-2" class="headerlink" title="*/E"></a>*/E</h2><pre><code>选中孙节点中的所有E。</code></pre><h2 id="E-ATTR"><a href="#E-ATTR" class="headerlink" title="E/@ATTR"></a>E/@ATTR</h2><pre><code>选中E的ATTR属性。
+response.xpath(&apos;//img/@src&apos;)</code></pre><h2 id="ATTR"><a href="#ATTR" class="headerlink" title="//@ATTR"></a>//@ATTR</h2><pre><code>选中文档中所有ATTR属性。
+response.xpath(&apos;//@href&apos;)</code></pre><h2 id="E-3"><a href="#E-3" class="headerlink" title="E/@*"></a>E/@*</h2><pre><code>选中E的所有属性。
+response.xpath(&apos;//a[1]/img/@*&apos;)</code></pre><h2 id="-1"><a href="#-1" class="headerlink" title="."></a>.</h2><pre><code>选中当前节点，用来描述相对路径。</code></pre><h2 id="-2"><a href="#-2" class="headerlink" title=".."></a>..</h2><pre><code>选中当前节点的父节点，用来描述相对路径。</code></pre><h2 id="last函数"><a href="#last函数" class="headerlink" title="last函数"></a>last函数</h2><pre><code>选中最后1个
+response.xpath(&apos;//a[last()]&apos;)</code></pre><h2 id="position函数"><a href="#position函数" class="headerlink" title="position函数"></a>position函数</h2><pre><code>选中前3个
+response.xpath(&apos;//a[position()&lt;=3]&apos;)</code></pre><h2 id="选中所有含有id属性的div"><a href="#选中所有含有id属性的div" class="headerlink" title="选中所有含有id属性的div"></a>选中所有含有id属性的div</h2><pre><code>response.xpath(&apos;//div[@id]&apos;)</code></pre><h2 id="选中所有含有id属性且值为”images”的div"><a href="#选中所有含有id属性且值为”images”的div" class="headerlink" title="选中所有含有id属性且值为”images”的div"></a>选中所有含有id属性且值为”images”的div</h2><pre><code>response.xpath(&apos;//div[@id=&quot;images&quot;]&apos;)</code></pre><h1 id="三、常用函数"><a href="#三、常用函数" class="headerlink" title="三、常用函数"></a>三、常用函数</h1><h2 id="string-arg"><a href="#string-arg" class="headerlink" title="string(arg)"></a>string(arg)</h2><pre><code>返回参数的字符串值。（将列表字符串自动合并）
 
+sel.xpath(&apos;string(/html/body/a/strong)&apos;).extract()</code></pre><h2 id="contains-str1-str2"><a href="#contains-str1-str2" class="headerlink" title="contains(str1, str2)"></a>contains(str1, str2)</h2><pre><code>判断str1中是否包含str2，返回布尔值。
+sel.xpath(&apos;//p[contains(@class, &quot;small&quot;)]&apos;)</code></pre>
       
     </div>
     
@@ -371,7 +394,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/git/" rel="tag"># git</a>
+            <a href="/tags/scrapy/" rel="tag"># scrapy</a>
+          
+            <a href="/tags/%E9%80%89%E6%8B%A9%E5%99%A8/" rel="tag"># 选择器</a>
           
         </div>
       
@@ -384,8 +409,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/04/25/MangoDb/" rel="next" title="MangoDb">
-                <i class="fa fa-chevron-left"></i> MangoDb
+              <a href="/2020/04/29/%E4%BD%BF%E7%94%A8LinkExtractor%E6%8F%90%E5%8F%96%E9%93%BE%E6%8E%A5/" rel="next" title="使用LinkExtractor提取链接">
+                <i class="fa fa-chevron-left"></i> 使用LinkExtractor提取链接
               </a>
             
           </div>
@@ -393,10 +418,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/04/25/redis/" rel="prev" title="redis">
-                redis <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -448,8 +469,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -518,6 +548,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、概念"><span class="nav-number">1.</span> <span class="nav-text">一、概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、基本语法"><span class="nav-number">2.</span> <span class="nav-text">二、基本语法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">2.1.</span> <span class="nav-text">&#x2F;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E1-E2"><span class="nav-number">2.2.</span> <span class="nav-text">E1&#x2F;E2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E"><span class="nav-number">2.3.</span> <span class="nav-text">&#x2F;&#x2F;E</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E1-E2-1"><span class="nav-number">2.4.</span> <span class="nav-text">E1&#x2F;&#x2F;E2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-text"><span class="nav-number">2.5.</span> <span class="nav-text">E&#x2F;text()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-1"><span class="nav-number">2.6.</span> <span class="nav-text">E&#x2F;*</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-2"><span class="nav-number">2.7.</span> <span class="nav-text">*&#x2F;E</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-ATTR"><span class="nav-number">2.8.</span> <span class="nav-text">E&#x2F;@ATTR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ATTR"><span class="nav-number">2.9.</span> <span class="nav-text">&#x2F;&#x2F;@ATTR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-3"><span class="nav-number">2.10.</span> <span class="nav-text">E&#x2F;@*</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-1"><span class="nav-number">2.11.</span> <span class="nav-text">.</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-2"><span class="nav-number">2.12.</span> <span class="nav-text">..</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#last函数"><span class="nav-number">2.13.</span> <span class="nav-text">last函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#position函数"><span class="nav-number">2.14.</span> <span class="nav-text">position函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选中所有含有id属性的div"><span class="nav-number">2.15.</span> <span class="nav-text">选中所有含有id属性的div</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选中所有含有id属性且值为”images”的div"><span class="nav-number">2.16.</span> <span class="nav-text">选中所有含有id属性且值为”images”的div</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、常用函数"><span class="nav-number">3.</span> <span class="nav-text">三、常用函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#string-arg"><span class="nav-number">3.1.</span> <span class="nav-text">string(arg)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#contains-str1-str2"><span class="nav-number">3.2.</span> <span class="nav-text">contains(str1, str2)</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
