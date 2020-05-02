@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Nginx," />
+  <meta name="keywords" content="scrapy,管道," />
 
 
 
@@ -79,17 +79,20 @@
 
 
 
-<meta name="description" content="基本操作一、负载均衡 随着业务访问量变大，一台服务器不够使用，此时会把多个机器组成一个集群对外提供服务。通常是指将请“均匀”分摊到急群众多个服务器节点上执行。  1.1、Nginx实现#在nginx.conf配置   upstream first.myweb.com {        #ip_hash        #least_conn;        server 192.168.0.100:">
+<meta name="description" content="一、概念 我们可以将这两个Item Pipeline看作特殊的下载器，用户使用时只需要通过item的一个特殊字段将要下载文件或图片的url传递给它们，它们会自动将文件或图片下载到本地，并将下载结果信息存入item的另一个特殊字段，以便用户在导出文件中查阅。   二、FilesPipeline使用方法1、在配置文件settings.py中启用FilesPipeline，通常将其置于其他Item Pi">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Nginx">
-<meta property="og:url" content="http://yoursite.com/2020/04/21/Nginx/index.html">
+<meta property="og:title" content="下载管道">
+<meta property="og:url" content="http://yoursite.com/2020/05/02/%E4%B8%8B%E8%BD%BD%E7%AE%A1%E9%81%93/index.html">
 <meta property="og:site_name" content="Blog">
-<meta property="og:description" content="基本操作一、负载均衡 随着业务访问量变大，一台服务器不够使用，此时会把多个机器组成一个集群对外提供服务。通常是指将请“均匀”分摊到急群众多个服务器节点上执行。  1.1、Nginx实现#在nginx.conf配置   upstream first.myweb.com {        #ip_hash        #least_conn;        server 192.168.0.100:">
-<meta property="article:published_time" content="2020-04-21T01:43:23.000Z">
-<meta property="article:modified_time" content="2020-04-24T16:54:05.975Z">
+<meta property="og:description" content="一、概念 我们可以将这两个Item Pipeline看作特殊的下载器，用户使用时只需要通过item的一个特殊字段将要下载文件或图片的url传递给它们，它们会自动将文件或图片下载到本地，并将下载结果信息存入item的另一个特殊字段，以便用户在导出文件中查阅。   二、FilesPipeline使用方法1、在配置文件settings.py中启用FilesPipeline，通常将其置于其他Item Pi">
+<meta property="og:image" content="http://yoursite.com/images/pipeline/pipeline.png">
+<meta property="article:published_time" content="2020-05-02T08:31:30.000Z">
+<meta property="article:modified_time" content="2020-05-02T09:00:31.426Z">
 <meta property="article:author" content="Arsenic">
-<meta property="article:tag" content="Nginx">
+<meta property="article:tag" content="scrapy">
+<meta property="article:tag" content="管道">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/pipeline/pipeline.png">
 
 
 
@@ -119,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/04/21/Nginx/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/05/02/下载管道/"/>
 
 
 
 
 
-  <title>Nginx | Blog</title>
+  <title>下载管道 | Blog</title>
   
 
 
@@ -262,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/21/Nginx/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/02/%E4%B8%8B%E8%BD%BD%E7%AE%A1%E9%81%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Arsenic">
@@ -279,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Nginx</h1>
+          <h1 class="post-title" itemprop="name headline">下载管道</h1>
         
 
         <div class="post-meta">
@@ -291,8 +294,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-21T09:43:23+08:00">
-                2020-04-21
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-02T16:31:30+08:00">
+                2020-05-02
               </time>
             
 
@@ -314,8 +317,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/" itemprop="url" rel="index">
-                    <span itemprop="name">服务器</span>
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
                   </a>
                 </span>
 
@@ -351,88 +354,25 @@
       
 
       
-        <h1 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h1><h2 id="一、负载均衡"><a href="#一、负载均衡" class="headerlink" title="一、负载均衡"></a>一、负载均衡</h2><blockquote>
-<p>随着业务访问量变大，一台服务器不够使用，此时会把多个机器组成一个集群对外提供服务。通常是指将请“均匀”分摊到急群众多个服务器节点上执行。</p>
+        <h1 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h1><blockquote>
+<p>我们可以将这两个Item Pipeline看作特殊的下载器，用户使用时只需要通过item的一个特殊字段将要下载文件或图片的url传递给它们，它们会自动将文件或图片下载到本地，并将下载结果信息存入item的另一个特殊字段，以便用户在导出文件中查阅。</p>
 </blockquote>
-<h3 id="1-1、Nginx实现"><a href="#1-1、Nginx实现" class="headerlink" title="1.1、Nginx实现"></a>1.1、Nginx实现</h3><pre><code>#在nginx.conf配置
+<p><img src="/images/pipeline/pipeline.png" alt="下载管道"></p>
+<h1 id="二、FilesPipeline使用方法"><a href="#二、FilesPipeline使用方法" class="headerlink" title="二、FilesPipeline使用方法"></a>二、FilesPipeline使用方法</h1><h2 id="1、在配置文件settings-py中启用FilesPipeline，通常将其置于其他Item-Pipeline之前。"><a href="#1、在配置文件settings-py中启用FilesPipeline，通常将其置于其他Item-Pipeline之前。" class="headerlink" title="1、在配置文件settings.py中启用FilesPipeline，通常将其置于其他Item Pipeline之前。"></a>1、在配置文件settings.py中启用FilesPipeline，通常将其置于其他Item Pipeline之前。</h2><pre><code>ITEM_PIPELINES = {&apos;scrapy.pipelines.files.FilesPipeline&apos;: 1}</code></pre><h2 id="2、在配置文件settings-py中，使用FILES-STORE指定文件下载目录。"><a href="#2、在配置文件settings-py中，使用FILES-STORE指定文件下载目录。" class="headerlink" title="2、在配置文件settings.py中，使用FILES_STORE指定文件下载目录。"></a>2、在配置文件settings.py中，使用FILES_STORE指定文件下载目录。</h2><pre><code>FILES_STORE = &apos;/home/liushuo/Download/scrapy&apos;</code></pre><h2 id="3、将所有需要下载文件的url地址收集到一个列表，赋给item的file-urls字段（item-‘file-urls’-）。FilesPipeline在处理每一项item时，会读取item-‘file-urls’-，对其中每一个url进行下载"><a href="#3、将所有需要下载文件的url地址收集到一个列表，赋给item的file-urls字段（item-‘file-urls’-）。FilesPipeline在处理每一项item时，会读取item-‘file-urls’-，对其中每一个url进行下载" class="headerlink" title="3、将所有需要下载文件的url地址收集到一个列表，赋给item的file_urls字段（item[‘file_urls’]）。FilesPipeline在处理每一项item时，会读取item[‘file_urls’]，对其中每一个url进行下载"></a>3、将所有需要下载文件的url地址收集到一个列表，赋给item的file_urls字段（item[‘file_urls’]）。FilesPipeline在处理每一项item时，会读取item[‘file_urls’]，对其中每一个url进行下载</h2><pre><code>item[&apos;file_urls&apos;] = [url]
 
+当FilesPipeline下载完item[&apos;file_urls&apos;]中的所有文件后，会将各文件的下载结果信息收集到另一个列表，赋给item的files字段（item[&apos;files&apos;]）,下载结果信息包括以下内容：
+1、Path文件下载到本地的路径（相对于FILES_STORE的相对路径）。
+2、Checksum文件的校验和。
+3、url文件的url地址。</code></pre><h1 id="三、ImagesPipeline使用方法"><a href="#三、ImagesPipeline使用方法" class="headerlink" title="三、ImagesPipeline使用方法"></a>三、ImagesPipeline使用方法</h1><h2 id="1、在配置文件settings-py中启用ImagesPipeline，通常将其置于其他Item-Pipeline之前。"><a href="#1、在配置文件settings-py中启用ImagesPipeline，通常将其置于其他Item-Pipeline之前。" class="headerlink" title="1、在配置文件settings.py中启用ImagesPipeline，通常将其置于其他Item Pipeline之前。"></a>1、在配置文件settings.py中启用ImagesPipeline，通常将其置于其他Item Pipeline之前。</h2><pre><code>ITEM_PIPELINES = {&apos;scrapy.pipelines.images.ImagesPipeline&apos;: 1,}</code></pre><h2 id="2、在配置文件settings-py中，使用IMAGES-STORE指定文件下载目录。"><a href="#2、在配置文件settings-py中，使用IMAGES-STORE指定文件下载目录。" class="headerlink" title="2、在配置文件settings.py中，使用IMAGES_STORE指定文件下载目录。"></a>2、在配置文件settings.py中，使用IMAGES_STORE指定文件下载目录。</h2><pre><code>IMAGES_STORE = &apos;download_images&apos;</code></pre><h2 id="3、将所有需要下载文件的url地址收集到一个列表，赋给item的image-urls字段（item-‘image-urls’-）。ImagesPipeline在处理每一项item时，会读取item-‘image-urls’-，对其中每一个url进行下载"><a href="#3、将所有需要下载文件的url地址收集到一个列表，赋给item的image-urls字段（item-‘image-urls’-）。ImagesPipeline在处理每一项item时，会读取item-‘image-urls’-，对其中每一个url进行下载" class="headerlink" title="3、将所有需要下载文件的url地址收集到一个列表，赋给item的image_urls字段（item[‘image_urls’]）。ImagesPipeline在处理每一项item时，会读取item[‘image_urls’]，对其中每一个url进行下载"></a>3、将所有需要下载文件的url地址收集到一个列表，赋给item的image_urls字段（item[‘image_urls’]）。ImagesPipeline在处理每一项item时，会读取item[‘image_urls’]，对其中每一个url进行下载</h2><pre><code>item[&apos;image_urls&apos;] = [url]</code></pre><h2 id="为图片生成缩略图"><a href="#为图片生成缩略图" class="headerlink" title="为图片生成缩略图"></a>为图片生成缩略图</h2><pre><code>下载一张图片时，本地会出现3张图片（1张原图片，2张缩略图）
 
-upstream first.myweb.com {
-       #ip_hash
-       #least_conn;
-       server 192.168.0.100:8000 weight=3;
-       server 192.168.0.100:8001 weight=1;
-   }
+在配置文件settings.py中设置IMAGES_THUMBS：
+    IMAGES_THUMBS = {
+    &apos;small&apos;: (50, 50),
+    &apos;big&apos;: (270, 270),
+    }</code></pre><h2 id="过滤掉尺寸过小的图片"><a href="#过滤掉尺寸过小的图片" class="headerlink" title="过滤掉尺寸过小的图片"></a>过滤掉尺寸过小的图片</h2><pre><code>在配置文件settings.py中设置IMAGES_MIN_WIDTH和IMAGES_MIN_HEIGHT，它们分别指定图片最小的宽和高
 
-
-server {
-       listen       80;
-       server_name  first.myweb.com;
-
-       location / {
-           proxy_pass http://first.myweb.com;
-       }
-   }</code></pre><p>`</p>
-<blockquote>
-<p>upstream是配置nginx后端服务器负载均衡的模块，能对后端的服务器的健康状态检查若后端服务器中一台机器故障，则前端请求不会转发到该故障的机器。</p>
-</blockquote>
-<h3 id="1-2、负载均衡策略"><a href="#1-2、负载均衡策略" class="headerlink" title="1.2、负载均衡策略"></a>1.2、负载均衡策略</h3><pre><code>1、轮寻（默认）
-
-2、权重
-weight;
-
-3、ip_hash
-ip_hash;
-也叫ip绑定，每个请求按访问ip的hash值分配，这样每个访问客户端会固定访问一个后端服务器，可以解决会话session丢失的问题。
-
-4、最少连接
-least_conn;</code></pre><h2 id="二、虚拟主机"><a href="#二、虚拟主机" class="headerlink" title="二、虚拟主机"></a>二、虚拟主机</h2><blockquote>
-<p>定义：一台服务器当多台服务器使用，从而可以配置多个网站</p>
-</blockquote>
-<blockquote>
-<p>一个server标签就是一个虚拟主机</p>
-</blockquote>
-<p>配置虚拟主机的两种方式：</p>
-<h3 id="2-1、基于端口"><a href="#2-1、基于端口" class="headerlink" title="2.1、基于端口"></a>2.1、基于端口</h3><h3 id="2-2、基于域名"><a href="#2-2、基于域名" class="headerlink" title="2.2、基于域名"></a>2.2、基于域名</h3><pre><code>1、在nginx.conf下配置
-
-upstream first.myweb.com {
-    server 192.168.0.100:8000;
-}
- upstream second.myweb.com {
-
-    server 192.168.0.100:8001;
-}
-server {
-    listen       80;
-    server_name  first.myweb.com;
-    location / {
-       proxy_pass http://first.myweb.com;
-    }
-}
-server {
-    listen       80;
-    server_name  second.myweb.com;
-
-    location / {
-        proxy_pass http://second.myweb.com;
-    }
-}
-#配置两个基于域名的虚拟主机，分别转发至两个服务器：192.169.0.100:8000||8001
-
-
-
-2、获取nginx的ip地址
-ifconfig
-
-
-3、将nginx的ip地址解析到本地计算机中
-
-打开C:\Windows\System32\drivers\etc\hosts文件写入：
-
-nginx ip    first.myweb.com    second.myweb.com
-
-
-4、使用浏览器进行访问域名就能打开对应的网站服务器</code></pre>
+IMAGES_MIN_WIDTH = 110
+IMAGES_MIN_HEIGHT = 110</code></pre>
       
     </div>
     
@@ -449,7 +389,9 @@ nginx ip    first.myweb.com    second.myweb.com
       
         <div class="post-tags">
           
-            <a href="/tags/Nginx/" rel="tag"># Nginx</a>
+            <a href="/tags/scrapy/" rel="tag"># scrapy</a>
+          
+            <a href="/tags/%E7%AE%A1%E9%81%93/" rel="tag"># 管道</a>
           
         </div>
       
@@ -462,8 +404,8 @@ nginx ip    first.myweb.com    second.myweb.com
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/04/14/mysql%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="next" title="mysql">
-                <i class="fa fa-chevron-left"></i> mysql
+              <a href="/2020/05/01/css/" rel="next" title="css">
+                <i class="fa fa-chevron-left"></i> css
               </a>
             
           </div>
@@ -471,10 +413,6 @@ nginx ip    first.myweb.com    second.myweb.com
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/04/22/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="prev" title="正则表达式">
-                正则表达式 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -615,7 +553,7 @@ nginx ip    first.myweb.com    second.myweb.com
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本操作"><span class="nav-number">1.</span> <span class="nav-text">基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、负载均衡"><span class="nav-number">1.1.</span> <span class="nav-text">一、负载均衡</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1、Nginx实现"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1、Nginx实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2、负载均衡策略"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2、负载均衡策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、虚拟主机"><span class="nav-number">1.2.</span> <span class="nav-text">二、虚拟主机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1、基于端口"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1、基于端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2、基于域名"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2、基于域名</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、概念"><span class="nav-number">1.</span> <span class="nav-text">一、概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、FilesPipeline使用方法"><span class="nav-number">2.</span> <span class="nav-text">二、FilesPipeline使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、在配置文件settings-py中启用FilesPipeline，通常将其置于其他Item-Pipeline之前。"><span class="nav-number">2.1.</span> <span class="nav-text">1、在配置文件settings.py中启用FilesPipeline，通常将其置于其他Item Pipeline之前。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、在配置文件settings-py中，使用FILES-STORE指定文件下载目录。"><span class="nav-number">2.2.</span> <span class="nav-text">2、在配置文件settings.py中，使用FILES_STORE指定文件下载目录。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、将所有需要下载文件的url地址收集到一个列表，赋给item的file-urls字段（item-‘file-urls’-）。FilesPipeline在处理每一项item时，会读取item-‘file-urls’-，对其中每一个url进行下载"><span class="nav-number">2.3.</span> <span class="nav-text">3、将所有需要下载文件的url地址收集到一个列表，赋给item的file_urls字段（item[‘file_urls’]）。FilesPipeline在处理每一项item时，会读取item[‘file_urls’]，对其中每一个url进行下载</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、ImagesPipeline使用方法"><span class="nav-number">3.</span> <span class="nav-text">三、ImagesPipeline使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、在配置文件settings-py中启用ImagesPipeline，通常将其置于其他Item-Pipeline之前。"><span class="nav-number">3.1.</span> <span class="nav-text">1、在配置文件settings.py中启用ImagesPipeline，通常将其置于其他Item Pipeline之前。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、在配置文件settings-py中，使用IMAGES-STORE指定文件下载目录。"><span class="nav-number">3.2.</span> <span class="nav-text">2、在配置文件settings.py中，使用IMAGES_STORE指定文件下载目录。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、将所有需要下载文件的url地址收集到一个列表，赋给item的image-urls字段（item-‘image-urls’-）。ImagesPipeline在处理每一项item时，会读取item-‘image-urls’-，对其中每一个url进行下载"><span class="nav-number">3.3.</span> <span class="nav-text">3、将所有需要下载文件的url地址收集到一个列表，赋给item的image_urls字段（item[‘image_urls’]）。ImagesPipeline在处理每一项item时，会读取item[‘image_urls’]，对其中每一个url进行下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为图片生成缩略图"><span class="nav-number">3.4.</span> <span class="nav-text">为图片生成缩略图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过滤掉尺寸过小的图片"><span class="nav-number">3.5.</span> <span class="nav-text">过滤掉尺寸过小的图片</span></a></li></ol></li></ol></div>
             
 
           </div>

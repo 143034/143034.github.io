@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Nginx," />
+  <meta name="keywords" content="选择器,scrapy,css," />
 
 
 
@@ -79,17 +79,21 @@
 
 
 
-<meta name="description" content="基本操作一、负载均衡 随着业务访问量变大，一台服务器不够使用，此时会把多个机器组成一个集群对外提供服务。通常是指将请“均匀”分摊到急群众多个服务器节点上执行。  1.1、Nginx实现#在nginx.conf配置   upstream first.myweb.com {        #ip_hash        #least_conn;        server 192.168.0.100:">
+<meta name="description" content="一、概念 CSS即层叠样式表，其选择器是一种用来确定HTML文档中某部 分位置的语言。  二、基本语法 E选中E元素。 response.css(&amp;apos;img&amp;apos;)E1,E2选中E1和E2元素。 response.css(&amp;apos;base,title&amp;apos;)E1 E2选中E1后代元素中的E2元素。 response.css(&amp;apos;div img&amp;apos;)E1&amp;gt">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Nginx">
-<meta property="og:url" content="http://yoursite.com/2020/04/21/Nginx/index.html">
+<meta property="og:title" content="css">
+<meta property="og:url" content="http://yoursite.com/2020/05/01/css/index.html">
 <meta property="og:site_name" content="Blog">
-<meta property="og:description" content="基本操作一、负载均衡 随着业务访问量变大，一台服务器不够使用，此时会把多个机器组成一个集群对外提供服务。通常是指将请“均匀”分摊到急群众多个服务器节点上执行。  1.1、Nginx实现#在nginx.conf配置   upstream first.myweb.com {        #ip_hash        #least_conn;        server 192.168.0.100:">
-<meta property="article:published_time" content="2020-04-21T01:43:23.000Z">
-<meta property="article:modified_time" content="2020-04-24T16:54:05.975Z">
+<meta property="og:description" content="一、概念 CSS即层叠样式表，其选择器是一种用来确定HTML文档中某部 分位置的语言。  二、基本语法 E选中E元素。 response.css(&amp;apos;img&amp;apos;)E1,E2选中E1和E2元素。 response.css(&amp;apos;base,title&amp;apos;)E1 E2选中E1后代元素中的E2元素。 response.css(&amp;apos;div img&amp;apos;)E1&amp;gt">
+<meta property="og:image" content="http://yoursite.com/images/css/css.png">
+<meta property="article:published_time" content="2020-05-01T07:44:12.000Z">
+<meta property="article:modified_time" content="2020-05-01T08:02:59.103Z">
 <meta property="article:author" content="Arsenic">
-<meta property="article:tag" content="Nginx">
+<meta property="article:tag" content="选择器">
+<meta property="article:tag" content="scrapy">
+<meta property="article:tag" content="css">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/css/css.png">
 
 
 
@@ -119,13 +123,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/04/21/Nginx/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/05/01/css/"/>
 
 
 
 
 
-  <title>Nginx | Blog</title>
+  <title>css | Blog</title>
   
 
 
@@ -262,7 +266,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/21/Nginx/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/01/css/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Arsenic">
@@ -279,7 +283,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Nginx</h1>
+          <h1 class="post-title" itemprop="name headline">css</h1>
         
 
         <div class="post-meta">
@@ -291,8 +295,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-21T09:43:23+08:00">
-                2020-04-21
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-01T15:44:12+08:00">
+                2020-05-01
               </time>
             
 
@@ -314,8 +318,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/" itemprop="url" rel="index">
-                    <span itemprop="name">服务器</span>
+                  <a href="/categories/scrapy/" itemprop="url" rel="index">
+                    <span itemprop="name">scrapy</span>
                   </a>
                 </span>
 
@@ -351,88 +355,24 @@
       
 
       
-        <h1 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h1><h2 id="一、负载均衡"><a href="#一、负载均衡" class="headerlink" title="一、负载均衡"></a>一、负载均衡</h2><blockquote>
-<p>随着业务访问量变大，一台服务器不够使用，此时会把多个机器组成一个集群对外提供服务。通常是指将请“均匀”分摊到急群众多个服务器节点上执行。</p>
+        <h1 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h1><blockquote>
+<p>CSS即层叠样式表，其选择器是一种用来确定HTML文档中某部 分位置的语言。</p>
 </blockquote>
-<h3 id="1-1、Nginx实现"><a href="#1-1、Nginx实现" class="headerlink" title="1.1、Nginx实现"></a>1.1、Nginx实现</h3><pre><code>#在nginx.conf配置
-
-
-upstream first.myweb.com {
-       #ip_hash
-       #least_conn;
-       server 192.168.0.100:8000 weight=3;
-       server 192.168.0.100:8001 weight=1;
-   }
-
-
-server {
-       listen       80;
-       server_name  first.myweb.com;
-
-       location / {
-           proxy_pass http://first.myweb.com;
-       }
-   }</code></pre><p>`</p>
-<blockquote>
-<p>upstream是配置nginx后端服务器负载均衡的模块，能对后端的服务器的健康状态检查若后端服务器中一台机器故障，则前端请求不会转发到该故障的机器。</p>
-</blockquote>
-<h3 id="1-2、负载均衡策略"><a href="#1-2、负载均衡策略" class="headerlink" title="1.2、负载均衡策略"></a>1.2、负载均衡策略</h3><pre><code>1、轮寻（默认）
-
-2、权重
-weight;
-
-3、ip_hash
-ip_hash;
-也叫ip绑定，每个请求按访问ip的hash值分配，这样每个访问客户端会固定访问一个后端服务器，可以解决会话session丢失的问题。
-
-4、最少连接
-least_conn;</code></pre><h2 id="二、虚拟主机"><a href="#二、虚拟主机" class="headerlink" title="二、虚拟主机"></a>二、虚拟主机</h2><blockquote>
-<p>定义：一台服务器当多台服务器使用，从而可以配置多个网站</p>
-</blockquote>
-<blockquote>
-<p>一个server标签就是一个虚拟主机</p>
-</blockquote>
-<p>配置虚拟主机的两种方式：</p>
-<h3 id="2-1、基于端口"><a href="#2-1、基于端口" class="headerlink" title="2.1、基于端口"></a>2.1、基于端口</h3><h3 id="2-2、基于域名"><a href="#2-2、基于域名" class="headerlink" title="2.2、基于域名"></a>2.2、基于域名</h3><pre><code>1、在nginx.conf下配置
-
-upstream first.myweb.com {
-    server 192.168.0.100:8000;
-}
- upstream second.myweb.com {
-
-    server 192.168.0.100:8001;
-}
-server {
-    listen       80;
-    server_name  first.myweb.com;
-    location / {
-       proxy_pass http://first.myweb.com;
-    }
-}
-server {
-    listen       80;
-    server_name  second.myweb.com;
-
-    location / {
-        proxy_pass http://second.myweb.com;
-    }
-}
-#配置两个基于域名的虚拟主机，分别转发至两个服务器：192.169.0.100:8000||8001
-
-
-
-2、获取nginx的ip地址
-ifconfig
-
-
-3、将nginx的ip地址解析到本地计算机中
-
-打开C:\Windows\System32\drivers\etc\hosts文件写入：
-
-nginx ip    first.myweb.com    second.myweb.com
-
-
-4、使用浏览器进行访问域名就能打开对应的网站服务器</code></pre>
+<h1 id="二、基本语法"><a href="#二、基本语法" class="headerlink" title="二、基本语法"></a>二、基本语法</h1><p><img src="/images/css/css.png" alt="css"></p>
+<h2 id="E"><a href="#E" class="headerlink" title="E"></a>E</h2><pre><code>选中E元素。
+response.css(&apos;img&apos;)</code></pre><h2 id="E1-E2"><a href="#E1-E2" class="headerlink" title="E1,E2"></a>E1,E2</h2><pre><code>选中E1和E2元素。
+response.css(&apos;base,title&apos;)</code></pre><h2 id="E1-E2-1"><a href="#E1-E2-1" class="headerlink" title="E1 E2"></a>E1 E2</h2><pre><code>选中E1后代元素中的E2元素。
+response.css(&apos;div img&apos;)</code></pre><h2 id="E1-gt-E2"><a href="#E1-gt-E2" class="headerlink" title="E1&gt;E2"></a>E1&gt;E2</h2><pre><code>选中E1子元素中的E2元素。
+response.css(&apos;body&gt;div&apos;)</code></pre><h2 id="ATTR"><a href="#ATTR" class="headerlink" title="[ATTR]"></a>[ATTR]</h2><pre><code>选中包含ATTR属性的元素。
+response.css(&apos;[style]&apos;)</code></pre><h2 id="ATTR-VALUE"><a href="#ATTR-VALUE" class="headerlink" title="[ATTR=VALUE]"></a>[ATTR=VALUE]</h2><pre><code>选中包含ATTR属性且值为VALUE的元素。
+response.css(&apos;[id=images-1]&apos;)</code></pre><h2 id="E-nth-child-n"><a href="#E-nth-child-n" class="headerlink" title="E:nth-child(n)"></a>E:nth-child(n)</h2><pre><code>选中E元素，且该元素必须是其父元素的 第n个子元素。
+选中每个div的第一个a
+response.css(&apos;div&gt;a:nth-child(1)&apos;)
+选中第二个div的第一个a
+response.css(&apos;div:nth-child(2)&gt;a:nth-child(1)&apos;)</code></pre><h2 id="E-first-child"><a href="#E-first-child" class="headerlink" title="E:first-child"></a>E:first-child</h2><pre><code>选中E元素，该元素必须是其父元素的第一 个子元素。</code></pre><h2 id="E-last-child"><a href="#E-last-child" class="headerlink" title="E:last-child"></a>E:last-child</h2><pre><code>选中E元素，该元素必须是其父元素的倒数第一个子元素。
+选中第一个div的最后一个a
+response.css(&apos;div:first-child&gt;a:last-child&apos;)</code></pre><h2 id="E-text"><a href="#E-text" class="headerlink" title="E::text"></a>E::text</h2><pre><code>选中E元素的文本节点。
+response.css(&apos;a::text&apos;)</code></pre>
       
     </div>
     
@@ -449,7 +389,11 @@ nginx ip    first.myweb.com    second.myweb.com
       
         <div class="post-tags">
           
-            <a href="/tags/Nginx/" rel="tag"># Nginx</a>
+            <a href="/tags/%E9%80%89%E6%8B%A9%E5%99%A8/" rel="tag"># 选择器</a>
+          
+            <a href="/tags/scrapy/" rel="tag"># scrapy</a>
+          
+            <a href="/tags/css/" rel="tag"># css</a>
           
         </div>
       
@@ -462,8 +406,8 @@ nginx ip    first.myweb.com    second.myweb.com
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/04/14/mysql%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="next" title="mysql">
-                <i class="fa fa-chevron-left"></i> mysql
+              <a href="/2020/04/30/xpath/" rel="next" title="xpath">
+                <i class="fa fa-chevron-left"></i> xpath
               </a>
             
           </div>
@@ -472,8 +416,8 @@ nginx ip    first.myweb.com    second.myweb.com
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/04/22/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="prev" title="正则表达式">
-                正则表达式 <i class="fa fa-chevron-right"></i>
+              <a href="/2020/05/02/%E4%B8%8B%E8%BD%BD%E7%AE%A1%E9%81%93/" rel="prev" title="下载管道">
+                下载管道 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -615,7 +559,7 @@ nginx ip    first.myweb.com    second.myweb.com
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基本操作"><span class="nav-number">1.</span> <span class="nav-text">基本操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、负载均衡"><span class="nav-number">1.1.</span> <span class="nav-text">一、负载均衡</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1、Nginx实现"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1、Nginx实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2、负载均衡策略"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2、负载均衡策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、虚拟主机"><span class="nav-number">1.2.</span> <span class="nav-text">二、虚拟主机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1、基于端口"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1、基于端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2、基于域名"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2、基于域名</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、概念"><span class="nav-number">1.</span> <span class="nav-text">一、概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、基本语法"><span class="nav-number">2.</span> <span class="nav-text">二、基本语法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#E"><span class="nav-number">2.1.</span> <span class="nav-text">E</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E1-E2"><span class="nav-number">2.2.</span> <span class="nav-text">E1,E2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E1-E2-1"><span class="nav-number">2.3.</span> <span class="nav-text">E1 E2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E1-gt-E2"><span class="nav-number">2.4.</span> <span class="nav-text">E1&gt;E2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ATTR"><span class="nav-number">2.5.</span> <span class="nav-text">[ATTR]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ATTR-VALUE"><span class="nav-number">2.6.</span> <span class="nav-text">[ATTR&#x3D;VALUE]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-nth-child-n"><span class="nav-number">2.7.</span> <span class="nav-text">E:nth-child(n)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-first-child"><span class="nav-number">2.8.</span> <span class="nav-text">E:first-child</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-last-child"><span class="nav-number">2.9.</span> <span class="nav-text">E:last-child</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-text"><span class="nav-number">2.10.</span> <span class="nav-text">E::text</span></a></li></ol></li></ol></div>
             
 
           </div>
