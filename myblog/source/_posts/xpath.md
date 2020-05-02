@@ -5,8 +5,8 @@ tags:
 - 选择器
 - scrapy
 categories:
-- python
 - scrapy
+
 ---
 
 
