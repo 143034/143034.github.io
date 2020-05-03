@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="scrapy,管道," />
+  <meta name="keywords" content="scrapy," />
 
 
 
@@ -79,20 +79,17 @@
 
 
 
-<meta name="description" content="一、概念 我们可以将这两个Item Pipeline看作特殊的下载器，用户使用时只需要通过item的一个特殊字段将要下载文件或图片的url传递给它们，它们会自动将文件或图片下载到本地，并将下载结果信息存入item的另一个特殊字段，以便用户在导出文件中查阅。   二、FilesPipeline使用方法1、在配置文件settings.py中启用FilesPipeline，通常将其置于其他Item Pi">
+<meta name="description" content="一、概念大部分网站都具有用户登录功能，其中某些网站只有在用户登录后才能获得有价值的信息，在爬取这类网站时，Scrapy爬虫程序需要先模拟用户登录，再爬取内容。 二、使用使用FormRequest fd&#x3D;{&amp;apos;_formkey&amp;apos;: &amp;apos;432dcb0c-0d85-443f-bb50-9644cfeb2f2b&amp;apos;, &amp;apos;_formname&amp;apos;: &amp;ap">
 <meta property="og:type" content="article">
-<meta property="og:title" content="下载管道">
-<meta property="og:url" content="http://yoursite.com/2020/05/02/%E4%B8%8B%E8%BD%BD%E7%AE%A1%E9%81%93/index.html">
+<meta property="og:title" content="模拟登陆">
+<meta property="og:url" content="http://yoursite.com/2020/05/03/%E6%A8%A1%E6%8B%9F%E7%99%BB%E9%99%86/index.html">
 <meta property="og:site_name" content="Blog">
-<meta property="og:description" content="一、概念 我们可以将这两个Item Pipeline看作特殊的下载器，用户使用时只需要通过item的一个特殊字段将要下载文件或图片的url传递给它们，它们会自动将文件或图片下载到本地，并将下载结果信息存入item的另一个特殊字段，以便用户在导出文件中查阅。   二、FilesPipeline使用方法1、在配置文件settings.py中启用FilesPipeline，通常将其置于其他Item Pi">
-<meta property="og:image" content="http://yoursite.com/images/pipeline/pipeline.png">
-<meta property="article:published_time" content="2020-05-02T08:31:30.000Z">
-<meta property="article:modified_time" content="2020-05-02T09:00:31.426Z">
+<meta property="og:description" content="一、概念大部分网站都具有用户登录功能，其中某些网站只有在用户登录后才能获得有价值的信息，在爬取这类网站时，Scrapy爬虫程序需要先模拟用户登录，再爬取内容。 二、使用使用FormRequest fd&#x3D;{&amp;apos;_formkey&amp;apos;: &amp;apos;432dcb0c-0d85-443f-bb50-9644cfeb2f2b&amp;apos;, &amp;apos;_formname&amp;apos;: &amp;ap">
+<meta property="article:published_time" content="2020-05-03T06:04:40.000Z">
+<meta property="article:modified_time" content="2020-05-03T07:29:59.882Z">
 <meta property="article:author" content="Arsenic">
 <meta property="article:tag" content="scrapy">
-<meta property="article:tag" content="管道">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/images/pipeline/pipeline.png">
 
 
 
@@ -122,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/05/02/下载管道/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/05/03/模拟登陆/"/>
 
 
 
 
 
-  <title>下载管道 | Blog</title>
+  <title>模拟登陆 | Blog</title>
   
 
 
@@ -265,7 +262,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/02/%E4%B8%8B%E8%BD%BD%E7%AE%A1%E9%81%93/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/03/%E6%A8%A1%E6%8B%9F%E7%99%BB%E9%99%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Arsenic">
@@ -282,7 +279,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">下载管道</h1>
+          <h1 class="post-title" itemprop="name headline">模拟登陆</h1>
         
 
         <div class="post-meta">
@@ -294,8 +291,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-02T16:31:30+08:00">
-                2020-05-02
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-03T14:04:40+08:00">
+                2020-05-03
               </time>
             
 
@@ -354,25 +351,15 @@
       
 
       
-        <h1 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h1><blockquote>
-<p>我们可以将这两个Item Pipeline看作特殊的下载器，用户使用时只需要通过item的一个特殊字段将要下载文件或图片的url传递给它们，它们会自动将文件或图片下载到本地，并将下载结果信息存入item的另一个特殊字段，以便用户在导出文件中查阅。</p>
-</blockquote>
-<p><img src="/images/pipeline/pipeline.png" alt="下载管道"></p>
-<h1 id="二、FilesPipeline使用方法"><a href="#二、FilesPipeline使用方法" class="headerlink" title="二、FilesPipeline使用方法"></a>二、FilesPipeline使用方法</h1><h2 id="1、在配置文件settings-py中启用FilesPipeline，通常将其置于其他Item-Pipeline之前。"><a href="#1、在配置文件settings-py中启用FilesPipeline，通常将其置于其他Item-Pipeline之前。" class="headerlink" title="1、在配置文件settings.py中启用FilesPipeline，通常将其置于其他Item Pipeline之前。"></a>1、在配置文件settings.py中启用FilesPipeline，通常将其置于其他Item Pipeline之前。</h2><pre><code>ITEM_PIPELINES = {&apos;scrapy.pipelines.files.FilesPipeline&apos;: 1}</code></pre><h2 id="2、在配置文件settings-py中，使用FILES-STORE指定文件下载目录。"><a href="#2、在配置文件settings-py中，使用FILES-STORE指定文件下载目录。" class="headerlink" title="2、在配置文件settings.py中，使用FILES_STORE指定文件下载目录。"></a>2、在配置文件settings.py中，使用FILES_STORE指定文件下载目录。</h2><pre><code>FILES_STORE = &apos;/home/liushuo/Download/scrapy&apos;</code></pre><h2 id="3、将所有需要下载文件的url地址收集到一个列表，赋给item的file-urls字段（item-‘file-urls’-）。FilesPipeline在处理每一项item时，会读取item-‘file-urls’-，对其中每一个url进行下载"><a href="#3、将所有需要下载文件的url地址收集到一个列表，赋给item的file-urls字段（item-‘file-urls’-）。FilesPipeline在处理每一项item时，会读取item-‘file-urls’-，对其中每一个url进行下载" class="headerlink" title="3、将所有需要下载文件的url地址收集到一个列表，赋给item的file_urls字段（item[‘file_urls’]）。FilesPipeline在处理每一项item时，会读取item[‘file_urls’]，对其中每一个url进行下载"></a>3、将所有需要下载文件的url地址收集到一个列表，赋给item的file_urls字段（item[‘file_urls’]）。FilesPipeline在处理每一项item时，会读取item[‘file_urls’]，对其中每一个url进行下载</h2><pre><code>item[&apos;file_urls&apos;] = [url]
+        <h1 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h1><p>大部分网站都具有用户登录功能，其中某些网站只有在用户登录后才能获得有价值的信息，在爬取这类网站时，Scrapy爬虫程序需要先模拟用户登录，再爬取内容。</p>
+<h1 id="二、使用"><a href="#二、使用" class="headerlink" title="二、使用"></a>二、使用</h1><h2 id="使用FormRequest"><a href="#使用FormRequest" class="headerlink" title="使用FormRequest"></a>使用FormRequest</h2><pre><code> fd={&apos;_formkey&apos;: &apos;432dcb0c-0d85-443f-bb50-9644cfeb2f2b&apos;,
+&apos;_formname&apos;: &apos;login&apos;,
+&apos;_next&apos;: &apos;/&apos;,
+&apos;email&apos;: &apos;liushuo@webscraping.com&apos;,
+&apos;password&apos;: &apos;12345678&apos;}
+from scrapy.http import FormRequest
+request = FormRequest(&apos;http://example.webscraping.com/user/login&apos;, formdata=fd)</code></pre><h2 id="调用FormRequest的from-response方法"><a href="#调用FormRequest的from-response方法" class="headerlink" title="调用FormRequest的from_response方法"></a>调用FormRequest的from_response方法</h2><p>调用时需传入一个Response对象作为第一个参数，该方法会解析Response对象所包含页面中的form元素，帮助用户创建FormRequest对象并将隐藏input中的信息自动填入表单数据。<br>    from scrapy.http import FormRequest<br>    fd = {‘email’: ‘liushuo@webscraping.com’, ‘password’: ‘12345678’}<br>    request = FormRequest.from_response(response, formdata=fd)</p>
 
-当FilesPipeline下载完item[&apos;file_urls&apos;]中的所有文件后，会将各文件的下载结果信息收集到另一个列表，赋给item的files字段（item[&apos;files&apos;]）,下载结果信息包括以下内容：
-1、Path文件下载到本地的路径（相对于FILES_STORE的相对路径）。
-2、Checksum文件的校验和。
-3、url文件的url地址。</code></pre><h1 id="三、ImagesPipeline使用方法"><a href="#三、ImagesPipeline使用方法" class="headerlink" title="三、ImagesPipeline使用方法"></a>三、ImagesPipeline使用方法</h1><h2 id="1、在配置文件settings-py中启用ImagesPipeline，通常将其置于其他Item-Pipeline之前。"><a href="#1、在配置文件settings-py中启用ImagesPipeline，通常将其置于其他Item-Pipeline之前。" class="headerlink" title="1、在配置文件settings.py中启用ImagesPipeline，通常将其置于其他Item Pipeline之前。"></a>1、在配置文件settings.py中启用ImagesPipeline，通常将其置于其他Item Pipeline之前。</h2><pre><code>ITEM_PIPELINES = {&apos;scrapy.pipelines.images.ImagesPipeline&apos;: 1,}</code></pre><h2 id="2、在配置文件settings-py中，使用IMAGES-STORE指定文件下载目录。"><a href="#2、在配置文件settings-py中，使用IMAGES-STORE指定文件下载目录。" class="headerlink" title="2、在配置文件settings.py中，使用IMAGES_STORE指定文件下载目录。"></a>2、在配置文件settings.py中，使用IMAGES_STORE指定文件下载目录。</h2><pre><code>IMAGES_STORE = &apos;download_images&apos;</code></pre><h2 id="3、将所有需要下载文件的url地址收集到一个列表，赋给item的image-urls字段（item-‘image-urls’-）。ImagesPipeline在处理每一项item时，会读取item-‘image-urls’-，对其中每一个url进行下载"><a href="#3、将所有需要下载文件的url地址收集到一个列表，赋给item的image-urls字段（item-‘image-urls’-）。ImagesPipeline在处理每一项item时，会读取item-‘image-urls’-，对其中每一个url进行下载" class="headerlink" title="3、将所有需要下载文件的url地址收集到一个列表，赋给item的image_urls字段（item[‘image_urls’]）。ImagesPipeline在处理每一项item时，会读取item[‘image_urls’]，对其中每一个url进行下载"></a>3、将所有需要下载文件的url地址收集到一个列表，赋给item的image_urls字段（item[‘image_urls’]）。ImagesPipeline在处理每一项item时，会读取item[‘image_urls’]，对其中每一个url进行下载</h2><pre><code>item[&apos;image_urls&apos;] = [url]</code></pre><h2 id="为图片生成缩略图"><a href="#为图片生成缩略图" class="headerlink" title="为图片生成缩略图"></a>为图片生成缩略图</h2><pre><code>下载一张图片时，本地会出现3张图片（1张原图片，2张缩略图）
-
-在配置文件settings.py中设置IMAGES_THUMBS：
-    IMAGES_THUMBS = {
-    &apos;small&apos;: (50, 50),
-    &apos;big&apos;: (270, 270),
-    }</code></pre><h2 id="过滤掉尺寸过小的图片"><a href="#过滤掉尺寸过小的图片" class="headerlink" title="过滤掉尺寸过小的图片"></a>过滤掉尺寸过小的图片</h2><pre><code>在配置文件settings.py中设置IMAGES_MIN_WIDTH和IMAGES_MIN_HEIGHT，它们分别指定图片最小的宽和高
-
-IMAGES_MIN_WIDTH = 110
-IMAGES_MIN_HEIGHT = 110</code></pre>
       
     </div>
     
@@ -391,8 +378,6 @@ IMAGES_MIN_HEIGHT = 110</code></pre>
           
             <a href="/tags/scrapy/" rel="tag"># scrapy</a>
           
-            <a href="/tags/%E7%AE%A1%E9%81%93/" rel="tag"># 管道</a>
-          
         </div>
       
 
@@ -404,8 +389,8 @@ IMAGES_MIN_HEIGHT = 110</code></pre>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/05/01/css/" rel="next" title="css">
-                <i class="fa fa-chevron-left"></i> css
+              <a href="/2020/05/02/scrapy%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%87%BA/" rel="next" title="scrapy数据导出">
+                <i class="fa fa-chevron-left"></i> scrapy数据导出
               </a>
             
           </div>
@@ -413,10 +398,6 @@ IMAGES_MIN_HEIGHT = 110</code></pre>
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/05/02/scrapy%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%87%BA/" rel="prev" title="scrapy数据导出">
-                scrapy数据导出 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -557,7 +538,7 @@ IMAGES_MIN_HEIGHT = 110</code></pre>
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、概念"><span class="nav-number">1.</span> <span class="nav-text">一、概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、FilesPipeline使用方法"><span class="nav-number">2.</span> <span class="nav-text">二、FilesPipeline使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、在配置文件settings-py中启用FilesPipeline，通常将其置于其他Item-Pipeline之前。"><span class="nav-number">2.1.</span> <span class="nav-text">1、在配置文件settings.py中启用FilesPipeline，通常将其置于其他Item Pipeline之前。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、在配置文件settings-py中，使用FILES-STORE指定文件下载目录。"><span class="nav-number">2.2.</span> <span class="nav-text">2、在配置文件settings.py中，使用FILES_STORE指定文件下载目录。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、将所有需要下载文件的url地址收集到一个列表，赋给item的file-urls字段（item-‘file-urls’-）。FilesPipeline在处理每一项item时，会读取item-‘file-urls’-，对其中每一个url进行下载"><span class="nav-number">2.3.</span> <span class="nav-text">3、将所有需要下载文件的url地址收集到一个列表，赋给item的file_urls字段（item[‘file_urls’]）。FilesPipeline在处理每一项item时，会读取item[‘file_urls’]，对其中每一个url进行下载</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、ImagesPipeline使用方法"><span class="nav-number">3.</span> <span class="nav-text">三、ImagesPipeline使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、在配置文件settings-py中启用ImagesPipeline，通常将其置于其他Item-Pipeline之前。"><span class="nav-number">3.1.</span> <span class="nav-text">1、在配置文件settings.py中启用ImagesPipeline，通常将其置于其他Item Pipeline之前。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、在配置文件settings-py中，使用IMAGES-STORE指定文件下载目录。"><span class="nav-number">3.2.</span> <span class="nav-text">2、在配置文件settings.py中，使用IMAGES_STORE指定文件下载目录。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、将所有需要下载文件的url地址收集到一个列表，赋给item的image-urls字段（item-‘image-urls’-）。ImagesPipeline在处理每一项item时，会读取item-‘image-urls’-，对其中每一个url进行下载"><span class="nav-number">3.3.</span> <span class="nav-text">3、将所有需要下载文件的url地址收集到一个列表，赋给item的image_urls字段（item[‘image_urls’]）。ImagesPipeline在处理每一项item时，会读取item[‘image_urls’]，对其中每一个url进行下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为图片生成缩略图"><span class="nav-number">3.4.</span> <span class="nav-text">为图片生成缩略图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#过滤掉尺寸过小的图片"><span class="nav-number">3.5.</span> <span class="nav-text">过滤掉尺寸过小的图片</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、概念"><span class="nav-number">1.</span> <span class="nav-text">一、概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、使用"><span class="nav-number">2.</span> <span class="nav-text">二、使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用FormRequest"><span class="nav-number">2.1.</span> <span class="nav-text">使用FormRequest</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调用FormRequest的from-response方法"><span class="nav-number">2.2.</span> <span class="nav-text">调用FormRequest的from_response方法</span></a></li></ol></li></ol></div>
             
 
           </div>
