@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="MangoDb," />
+  <meta name="keywords" content="stm32," />
 
 
 
@@ -79,16 +79,16 @@
 
 
 
-<meta name="description" content="一、操作mongodb数据库1、创建数据库     语法：use 数据库名     注意：如果数据库不存在则创建数据库，否则切换到指定的数据库     注意：如果刚刚创建的数据库不在列表内，如果要显示它，我们需要向刚刚创建的数据库中插入一些数据     (   db.student.insert({name:&quot;tom&quot;, age:18, gender:1,address:&amp;qu">
+<meta name="description" content="头文件和源文件头文件：stm32f10x_gpio.h  源文件：stm32f10x_gpio.c函数介绍初始化函数： void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct);  作用：初始化一个或者多个IO口（同一组）的工作方式和速度。  该函数主要是操作GPIO_CRL(CRH)寄存器，在上拉或者下拉的时候有">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MangoDb">
-<meta property="og:url" content="http://yoursite.com/2020/04/25/MangoDb/index.html">
+<meta property="og:title" content="GPIO配置代码">
+<meta property="og:url" content="http://yoursite.com/2020/07/20/GPIO%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%A0%81/index.html">
 <meta property="og:site_name" content="Blog">
-<meta property="og:description" content="一、操作mongodb数据库1、创建数据库     语法：use 数据库名     注意：如果数据库不存在则创建数据库，否则切换到指定的数据库     注意：如果刚刚创建的数据库不在列表内，如果要显示它，我们需要向刚刚创建的数据库中插入一些数据     (   db.student.insert({name:&quot;tom&quot;, age:18, gender:1,address:&amp;qu">
-<meta property="article:published_time" content="2020-04-24T16:50:25.000Z">
-<meta property="article:modified_time" content="2020-04-25T04:31:39.177Z">
+<meta property="og:description" content="头文件和源文件头文件：stm32f10x_gpio.h  源文件：stm32f10x_gpio.c函数介绍初始化函数： void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct);  作用：初始化一个或者多个IO口（同一组）的工作方式和速度。  该函数主要是操作GPIO_CRL(CRH)寄存器，在上拉或者下拉的时候有">
+<meta property="article:published_time" content="2020-07-20T06:19:02.000Z">
+<meta property="article:modified_time" content="2020-07-20T07:00:57.377Z">
 <meta property="article:author" content="Arsenic">
-<meta property="article:tag" content="MangoDb">
+<meta property="article:tag" content="stm32">
 <meta name="twitter:card" content="summary">
 
 
@@ -119,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/04/25/MangoDb/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/07/20/GPIO配置代码/"/>
 
 
 
 
 
-  <title>MangoDb | Blog</title>
+  <title>GPIO配置代码 | Blog</title>
   
 
 
@@ -262,7 +262,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/25/MangoDb/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/20/GPIO%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%A0%81/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Arsenic">
@@ -279,7 +279,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">MangoDb</h1>
+          <h1 class="post-title" itemprop="name headline">GPIO配置代码</h1>
         
 
         <div class="post-meta">
@@ -291,8 +291,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-25T00:50:25+08:00">
-                2020-04-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-20T14:19:02+08:00">
+                2020-07-20
               </time>
             
 
@@ -314,8 +314,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index">
-                    <span itemprop="name">数据库</span>
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/" itemprop="url" rel="index">
+                    <span itemprop="name">单片机</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/" itemprop="url" rel="index">
+                    <span itemprop="name">stm32</span>
                   </a>
                 </span>
 
@@ -351,189 +362,98 @@
       
 
       
-        <h1 id="一、操作mongodb数据库"><a href="#一、操作mongodb数据库" class="headerlink" title="一、操作mongodb数据库"></a>一、操作mongodb数据库</h1><pre><code>1、创建数据库
-    语法：use 数据库名
-    注意：如果数据库不存在则创建数据库，否则切换到指定的数据库
-    注意：如果刚刚创建的数据库不在列表内，如果要显示它，我们需要向刚刚创建的数据库中插入一些数据
-    (   db.student.insert({name:&quot;tom&quot;, age:18, gender:1,address:&quot;北京&quot;, isDelete:0})   )
-2、删除数据库
-    前提：使用当前数据库(use 数据库名)
-    db.dropDatabase()
-3、查看所有数据
-    show dbs
-4、查看当前正在使用的数据库
-    a、db
-    b、db.getName()
-5、断开连接
-    exit
-6、查看命令api
-    help</code></pre><h1 id="二、集合操作"><a href="#二、集合操作" class="headerlink" title="二、集合操作"></a>二、集合操作</h1><pre><code>1、查看当前数据库下有哪些集合
-    show collections
-2、创建集合
-    a、
-        语法：db.createCollection(&quot;集合名&quot;)
-        示例：db.createCollection(&quot;class&quot;)
-    b、
-        语法：db.集合名.insert(文档)
-        示例：db.student.insert({name:&quot;tom&quot;, age:18, gender:1,address:&quot;北京&quot;, isDelete:0})
+        <h1 id="头文件和源文件"><a href="#头文件和源文件" class="headerlink" title="头文件和源文件"></a>头文件和源文件</h1><pre><code>头文件：stm32f10x_gpio.h
 
-    区别：两者的区别在于前者创建的是一个空的集合，后者创建一个空的集合并添加一个文档
+源文件：stm32f10x_gpio.c</code></pre><h1 id="函数介绍"><a href="#函数介绍" class="headerlink" title="函数介绍"></a>函数介绍</h1><h2 id="初始化函数："><a href="#初始化函数：" class="headerlink" title="初始化函数："></a>初始化函数：</h2><blockquote>
+<p>void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct);</p>
+</blockquote>
+<pre><code>作用：初始化一个或者多个IO口（同一组）的工作方式和速度。
 
-3、删除当前数据库中的集合
-    语法：db.集合名.drop()
-    示例：db.class.drop()</code></pre><h1 id="三、文档操作"><a href="#三、文档操作" class="headerlink" title="三、文档操作"></a>三、文档操作</h1><pre><code>1、插入文档
-    a、使用insert()方法插入文档
-        语法：db.集合名.insert(文档)
-        插入一个：db.student.insert({name:&quot;lilei&quot;, age:19, gender:1,address:&quot;北京&quot;, isDelete:0})
-        语法：db.集合名.insert([文档1, 文档2, ……, 文档n])
-        插入多个：db.student.insert([{name:&quot;海妹妹&quot;, age:17, gender:0,address:&quot;北京&quot;, isDelete:0},{name:&quot;韩梅梅&quot;, age:20, gender:0,address:&quot;上海&quot;, isDelete:0}])
+该函数主要是操作GPIO_CRL(CRH)寄存器，在上拉或者下拉的时候有设置BSRR或者BRR寄存器 
+GPIOx: GPIOA~GPIOG
 
-    b、使用save()方法插入文档
-        语法：db.集合名.save(文档)
-        说明：如果不指定_id字段，save()方法类似于insert()方法。如果指定_id字段，则会更新_id字段的数据
-        示例1：db.student.save({name:&quot;poi&quot;, age:22, gender:1,address:&quot;石家庄&quot;, isDelete:0})
-        示例2：db.student.save({_id:ObjectId(&quot;59950962019723fe2a0d8d17&quot;),name:&quot;poi&quot;, age:23, gender:1,address:&quot;石家庄&quot;, isDelete:0})
+typedef struct
+   {
+     uint16_t GPIO_Pin;             //指定要初始化的IO口         
+     GPIOSpeed_TypeDef GPIO_Speed; //设置IO口输出速度
+     GPIOMode_TypeDef GPIO_Mode;    //设置工作模式：8种中的一个
+   }GPIO_InitTypeDef;
 
 
+GPIO_InitTypeDef  GPIO_InitStructure;
+GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5; //LED0--&gt;PB.5 端口配置
+GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;  //推挽输出
+GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; //IO口速度为50MHz
+GPIO_Init(GPIOB, &amp;GPIO_InitStructure);     //根据设定参数初始化GPIOB.5</code></pre><h2 id="读取输入电平函数："><a href="#读取输入电平函数：" class="headerlink" title="读取输入电平函数："></a>读取输入电平函数：</h2><blockquote>
+<p>uint8_t GPIO_ReadInputDataBit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);</p>
+</blockquote>
+<pre><code>作用：读取某个GPIO的输入电平。实际操作的是GPIOx_IDR寄存器。
+GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_5);//读取GPIOA.5的输入电平</code></pre><blockquote>
+<p>uint16_t GPIO_ReadInputData(GPIO_TypeDef* GPIOx);</p>
+</blockquote>
+<pre><code>作用：读取某组GPIO的输入电平。实际操作的是GPIOx_IDR寄存器。
+GPIO_ReadInputData(GPIOA);//读取GPIOA组中所有io口输入电平</code></pre><h2 id="读取输出电平函数："><a href="#读取输出电平函数：" class="headerlink" title="读取输出电平函数："></a>读取输出电平函数：</h2><blockquote>
+<p>uint8_t GPIO_ReadOutputDataBit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);</p>
+</blockquote>
+<pre><code>作用：读取某个GPIO的输出电平。实际操作的是GPIO_ODR寄存器。
+GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_5);//读取GPIOA.5的输出电平</code></pre><blockquote>
+<p>uint16_t GPIO_ReadOutputData(GPIO_TypeDef* GPIOx);<br>    作用：读取某组GPIO的输出电平。实际操作的是GPIO_ODR寄存器。</p>
+</blockquote>
+<pre><code>GPIO_ReadOutputData(GPIOA);//读取GPIOA组中所有io口输出电平</code></pre><h2 id="设置输出电平函数："><a href="#设置输出电平函数：" class="headerlink" title="设置输出电平函数："></a>设置输出电平函数：</h2><blockquote>
+<p>void GPIO_SetBits(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);</p>
+</blockquote>
+<pre><code>作用：设置某个IO口输出为高电平（1）。实际操作BSRR寄存器</code></pre><blockquote>
+<p>void GPIO_ResetBits(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);<br>    作用：设置某个IO口输出为低电平（0）。实际操作的BRR寄存器。</p>
+</blockquote>
+<h2 id="这两个函数不常用，也是用来设置IO口输出电平。"><a href="#这两个函数不常用，也是用来设置IO口输出电平。" class="headerlink" title="这两个函数不常用，也是用来设置IO口输出电平。"></a>这两个函数不常用，也是用来设置IO口输出电平。</h2><pre><code>void GPIO_WriteBit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, BitAction BitVal);
+void GPIO_Write(GPIO_TypeDef* GPIOx, uint16_t PortVal);</code></pre><h2 id="跑马灯配置"><a href="#跑马灯配置" class="headerlink" title="跑马灯配置:"></a>跑马灯配置:</h2><h3 id="配置步骤："><a href="#配置步骤：" class="headerlink" title="配置步骤："></a>配置步骤：</h3><pre><code>1、使能IO口时钟。调用函数RCC_APB2PeriphColckCmd();不同的IO组，调用的时钟使能函数不一样。
+2、初始化IO口模式。调用函数GPIO_Init();
+3、操作IO口，输出高低电平。
+    GPIO_SetBits();
+    GPIO_ResetBits();</code></pre><h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><pre><code>led.c
+void LED_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
 
-2、文档更新
-    a、update()方法用于更新已存在的文档
-    语法：
-        db.集合名.update(
-            query,
-            update,
-            {
-                upset:&lt;boolean&gt;,
-                multi:&lt;boolean&gt;,
-                writeConcern:&lt;document&gt;
-            }
-        )
-    参数说明：
-        query：update的查询条件，类似于sql里update语句内where后面的内容
-        update：update的对象和一些更新的操作符($set,$inc)等，$set直接更新，$inc在原有的基础上累加后更新
-        upset：可选，如果不存在update的记录，是否当新数据插入，true为插入，False为不插入，默认为false
-        multi：可选，mongodb默认是false，只更新找到的第一条记录，如果这个参数为true,就按照条件查找出来的数据全部更新
-        writeConcern：可选，抛出异常的级别
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD,ENABLE);//GPIOD
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);//GPIOA
 
-    需求：将lilei的年龄更新为25
-    示例：
-          db.student.update({name:&quot;lilei&quot;},{$set:{age:25}})
-          累加：db.student.update({name:&quot;lilei&quot;},{$inc:{age:25}})  
-          全改：db.student.update({name:&quot;poi&quot;},{$set:{age:42}},{multi:true})  
+    GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Pin=GPIO_Pin_2;
+    GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
+    GPIO_Init(GPIOD,&amp;GPIO_InitStructure);
+    GPIO_SetBits(GPIOD,GPIO_Pin_2);
 
-    b、save()方法通过传入的文档替换已有文档
-        语法：
-            db.集合名.save(
-                document,
-                {
-                    writeConcern:&lt;document&gt;
-                }
-            )
-        参数说明：
-            document：文档数据
-            writeConcern：可选，抛出异常的级别
 
-3、文档删除
-    说明：在执行remove()函数前，先执行find()命令来判断执行的条件是否存在是一个良好习惯
+    GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Pin=GPIO_Pin_8;
+    GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
+    GPIO_Init(GPIOA,&amp;GPIO_InitStructure);
+    GPIO_SetBits(GPIOA,GPIO_Pin_8);
+}
 
-    语法：
-        db.集合名.remove(
-            query,
-            {
-                justOne:&lt;boolean&gt;,
-                writeConcern:&lt;document&gt;
-            }
-        )
-    参数说明：
-        query：可选，删除的文档的条件
-        justOne：可选，如果为true或1，则只删除一个文档
-        writeConcern：可选，抛出异常的级别
+main.c
+int main(void)
+{
 
-    示例：db.student.remove({name:&quot;poi&quot;})
+delay_init();
+LED_Init();
 
-4、文档查询
-    a、find()方法
-        语法：db.集合名.find()
-        查询集合下所有的文档(数据)：db.student.find()
-    b、find()方法查询指定列
-        语法：db.集合名.find(
-            query,
-            {
-                &lt;key&gt;:1,
-                &lt;key&gt;:1
-            }
-        )
-        参数说明：
-            query：查询条件
-            key：要显示的字段，1表示显示
+while(1){
 
-    示例：
-          db.student.find({gender:0},{name:1,age:1})
-          db.student.find({},{name:1,age:1})
+    GPIO_SetBits(GPIOD,GPIO_Pin_2);
+    GPIO_SetBits(GPIOA,GPIO_Pin_8);
 
-    c、pretty()方法以格式化的方式来显示文档
-        示例：db.student.find().pretty()
+    delay_ms(500);
 
-    d、findOne()方法查询匹配结果的第一条数据
-        示例：db.student.findOne({gender:0})
-5、查询条件操作符
-    作用：条件操作符用于比较两个表达式并从Mongodb集合中获取数据
-    a、大于 - $gt
-        语法：db.集合名.find({&lt;key&gt;:{$gt:&lt;value&gt;}})
-        示例：db.student.find({age:{$gt:20}})
-    b、大于等于 - $gte
-        语法：db.集合名.find({&lt;key&gt;:{$gte:&lt;value&gt;}})
-    c、小于 - $lt
-        语法：db.集合名.find({&lt;key&gt;:{$lt:&lt;value&gt;}})
-    d、小于等于 - $lte
-        语法：db.集合名.find({&lt;key&gt;:{$lte:&lt;value&gt;}})
-    e、大于等于 和 小于等于 - $gte 和 $lte
-        语法：db.集合名.find({&lt;key&gt;:{$gte:&lt;value&gt;,$lte:&lt;value&gt;}})
-    f、等于 - :
-        语法：db.集合名.find({&lt;key&gt;:&lt;value&gt;})
-    g、使用_id进行查询
-        语法：db.student.find({&quot;_id&quot;:ObjectId(&quot;id值&quot;)})
-        示例：db.student.find({&quot;_id&quot;:ObjectId(&quot;5995084b019723fe2a0d8d14&quot;)})
-    h、查询某个结果集的数据条数
-        db.student.find().count()
-    i、查询某个字段的值当中是否包含另一个值
-        语法：
-        示例：db.student.find({name:/ile/})
-    j、查询某个字段的值是否以另一个值开头
-        示例：db.student.find({name:/^li/})
-6、条件查询and 和 or
-    a、AND条件
-        语法：db.集合名.find({条件1,条件2,……,条件n})
-        示例：db.student.find({gender:0,age:{$gt:16}})
-    b、OR条件
-        语法：
-            db.集合名.find(
-                {
-                    $or:[{条件1},{条件2},……,{条件n}]
-                }
-            )
-        示例：db.student.find({$or:[{age:17},{age:{$gte:20}}]})
-    c、AND和OR联合使用
-        语法：
-            db.集合名.find(
-                {
-                    条件1,
-                    条件2,
-                    $or:[{条件3},{条件4}]
-                }
-            )
-7、limit、skip
-    a、limit()：读取指定数量的数据记录
-        db.student.find().limit(3)
-    b、skip()：跳过指定数量的数据
-        db.student.find().skip(3)
-    c、skip与limit联合使用
-        通常用这种方式来实现分页功能
-        示例：db.student.find().skip(3).limit(3)
-8、排序
-    语法：db.集合名.find().sort({&lt;key&gt;:1|-1})
-    示例：db.student.find().sort({age:1})
-    注意：1表示升序，-1表示降序</code></pre>
+
+    GPIO_ResetBits(GPIOD,GPIO_Pin_2);
+    GPIO_ResetBits(GPIOA,GPIO_Pin_8);
+    delay_ms(500);
+
+}
+
+}</code></pre>
       
     </div>
     
@@ -550,7 +470,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/MangoDb/" rel="tag"># MangoDb</a>
+            <a href="/tags/stm32/" rel="tag"># stm32</a>
           
         </div>
       
@@ -563,8 +483,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/04/25/Pipeline/" rel="next" title="Pipeline">
-                <i class="fa fa-chevron-left"></i> Pipeline
+              <a href="/2020/07/17/GPIO%E9%85%8D%E7%BD%AE/" rel="next" title="GPIO配置">
+                <i class="fa fa-chevron-left"></i> GPIO配置
               </a>
             
           </div>
@@ -573,8 +493,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/04/25/git/" rel="prev" title="git">
-                git <i class="fa fa-chevron-right"></i>
+              <a href="/2020/07/21/GPIO%E4%BD%8D%E6%93%8D%E4%BD%9C/" rel="prev" title="GPIO位操作">
+                GPIO位操作 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -716,7 +636,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、操作mongodb数据库"><span class="nav-number">1.</span> <span class="nav-text">一、操作mongodb数据库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、集合操作"><span class="nav-number">2.</span> <span class="nav-text">二、集合操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、文档操作"><span class="nav-number">3.</span> <span class="nav-text">三、文档操作</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#头文件和源文件"><span class="nav-number">1.</span> <span class="nav-text">头文件和源文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#函数介绍"><span class="nav-number">2.</span> <span class="nav-text">函数介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化函数："><span class="nav-number">2.1.</span> <span class="nav-text">初始化函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读取输入电平函数："><span class="nav-number">2.2.</span> <span class="nav-text">读取输入电平函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读取输出电平函数："><span class="nav-number">2.3.</span> <span class="nav-text">读取输出电平函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置输出电平函数："><span class="nav-number">2.4.</span> <span class="nav-text">设置输出电平函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#这两个函数不常用，也是用来设置IO口输出电平。"><span class="nav-number">2.5.</span> <span class="nav-text">这两个函数不常用，也是用来设置IO口输出电平。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跑马灯配置"><span class="nav-number">2.6.</span> <span class="nav-text">跑马灯配置:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置步骤："><span class="nav-number">2.6.1.</span> <span class="nav-text">配置步骤：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置"><span class="nav-number">2.6.2.</span> <span class="nav-text">配置</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
