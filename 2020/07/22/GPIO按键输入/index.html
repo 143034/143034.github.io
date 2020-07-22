@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="stm32," />
 
 
 
@@ -79,17 +79,16 @@
 
 
 
-<meta name="description" content="this is a index">
-<meta property="og:type" content="website">
-<meta property="og:title" content="about">
-<meta property="og:url" content="http://yoursite.com/about/index.html">
+<meta name="description" content="一、GPIO读取输入读取IO口输入电平调用库函数为： uint8_t GPIO_ReadInputDataBit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);  读取IO口输入电平操作寄存器为：GPIOx_IDR:端口输入寄存器使用位带操作读取IO口输入电平：PEin(4)          -读取GPIOE.4口电平 PEin(n)          -读取G">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GPIO按键输入">
+<meta property="og:url" content="http://yoursite.com/2020/07/22/GPIO%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5/index.html">
 <meta property="og:site_name" content="Blog">
-<meta property="og:description" content="this is a index">
-<meta property="article:published_time" content="2020-04-13T08:36:27.000Z">
-<meta property="article:modified_time" content="2020-04-20T14:24:20.389Z">
+<meta property="og:description" content="一、GPIO读取输入读取IO口输入电平调用库函数为： uint8_t GPIO_ReadInputDataBit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);  读取IO口输入电平操作寄存器为：GPIOx_IDR:端口输入寄存器使用位带操作读取IO口输入电平：PEin(4)          -读取GPIOE.4口电平 PEin(n)          -读取G">
+<meta property="article:published_time" content="2020-07-22T03:49:53.000Z">
+<meta property="article:modified_time" content="2020-07-22T04:07:10.743Z">
 <meta property="article:author" content="Arsenic">
-<meta property="article:tag" content="blog">
-<meta property="article:tag" content="diary">
+<meta property="article:tag" content="stm32">
 <meta name="twitter:card" content="summary">
 
 
@@ -120,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/about/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/07/22/GPIO按键输入/"/>
 
 
 
 
 
-  <title>about | Blog</title>
+  <title>GPIO按键输入 | Blog</title>
   
 
 
@@ -251,34 +250,208 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/22/GPIO%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arsenic">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h1 class="post-title" itemprop="name headline">about</h1>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <p>this is a index</p>
-
+          <h1 class="post-title" itemprop="name headline">GPIO按键输入</h1>
         
-      </div>
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-22T11:49:53+08:00">
+                2020-07-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/" itemprop="url" rel="index">
+                    <span itemprop="name">单片机</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/" itemprop="url" rel="index">
+                    <span itemprop="name">stm32</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <h1 id="一、GPIO读取输入"><a href="#一、GPIO读取输入" class="headerlink" title="一、GPIO读取输入"></a>一、GPIO读取输入</h1><h3 id="读取IO口输入电平调用库函数为："><a href="#读取IO口输入电平调用库函数为：" class="headerlink" title="读取IO口输入电平调用库函数为："></a>读取IO口输入电平调用库函数为：</h3><blockquote>
+<p>uint8_t GPIO_ReadInputDataBit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);</p>
+</blockquote>
+<h3 id="读取IO口输入电平操作寄存器为："><a href="#读取IO口输入电平操作寄存器为：" class="headerlink" title="读取IO口输入电平操作寄存器为："></a>读取IO口输入电平操作寄存器为：</h3><pre><code>GPIOx_IDR:端口输入寄存器</code></pre><h3 id="使用位带操作读取IO口输入电平："><a href="#使用位带操作读取IO口输入电平：" class="headerlink" title="使用位带操作读取IO口输入电平："></a>使用位带操作读取IO口输入电平：</h3><pre><code>PEin(4)          -读取GPIOE.4口电平
+PEin(n)          -读取GPIOE.n口电平</code></pre><h1 id="二、按键输入实验配置步骤"><a href="#二、按键输入实验配置步骤" class="headerlink" title="二、按键输入实验配置步骤:"></a>二、按键输入实验配置步骤:</h1><pre><code>1、使能按键对应IO口时钟。调用函数：
+RCC_APB2PeriphClockCmd();
+2、初始化IO模式：上拉/下拉输入。调用函数：
+GPIO_Init();
+3、扫描IO口电平（库函数/寄存器/位操作）。</code></pre><h1 id="三、按键扫描"><a href="#三、按键扫描" class="headerlink" title="三、按键扫描"></a>三、按键扫描</h1><h3 id="支持连续按"><a href="#支持连续按" class="headerlink" title="支持连续按"></a>支持连续按</h3><pre><code>u8 KEY_Scan(void)
+    {
+      if(KEY按下）
+     {
+           delay_ms(10)；//延时10-20ms，防抖。
+           if(KEY确实按下)
+            {
+               return KEY_Value；
+             }
+          return 无效值；
+     }
+    }</code></pre><h3 id="不支持连续按"><a href="#不支持连续按" class="headerlink" title="不支持连续按"></a>不支持连续按</h3><pre><code>u8 KEY_Scan(void)
+    {
+     static u8 key_up=1;
+      if（key_up &amp;&amp;  KEY按下）
+      {
+        delay_ms(10);//延时，防抖
+        key_up=0;//标记这次key已经按下
+        if(KEY确实按下)
+          {
+           return KEY_VALUE;
+          }
+        }else if(KEY没有按下)  key_up=1;
+       return 没有按下
+    }</code></pre>
       
     </div>
     
     
     
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/stm32/" rel="tag"># stm32</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/21/GPIO%E4%BD%8D%E6%93%8D%E4%BD%9C/" rel="next" title="GPIO位操作">
+                <i class="fa fa-chevron-left"></i> GPIO位操作
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -311,8 +484,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -381,6 +563,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、GPIO读取输入"><span class="nav-number">1.</span> <span class="nav-text">一、GPIO读取输入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#读取IO口输入电平调用库函数为："><span class="nav-number">1.0.1.</span> <span class="nav-text">读取IO口输入电平调用库函数为：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读取IO口输入电平操作寄存器为："><span class="nav-number">1.0.2.</span> <span class="nav-text">读取IO口输入电平操作寄存器为：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用位带操作读取IO口输入电平："><span class="nav-number">1.0.3.</span> <span class="nav-text">使用位带操作读取IO口输入电平：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、按键输入实验配置步骤"><span class="nav-number">2.</span> <span class="nav-text">二、按键输入实验配置步骤:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、按键扫描"><span class="nav-number">3.</span> <span class="nav-text">三、按键扫描</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#支持连续按"><span class="nav-number">3.0.1.</span> <span class="nav-text">支持连续按</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不支持连续按"><span class="nav-number">3.0.2.</span> <span class="nav-text">不支持连续按</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
