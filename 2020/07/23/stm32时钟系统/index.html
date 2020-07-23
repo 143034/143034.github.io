@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Pipeline," />
+  <meta name="keywords" content="stm32,时钟系统," />
 
 
 
@@ -79,17 +79,20 @@
 
 
 
-<meta name="description" content="scrapy框架中的使用Pipeline1.settings文件中设置（整体设置）ITEM_PIPELINES &#x3D; {    &#39;paper_downloader.pipelines.CsvPipeline&#39;: 302, } 2.在爬虫文件中编写特定的管道（单个设置）在爬虫文件中引入custom_settings &#x3D; {     &#39;ITEM_PIPELINES&#39;:{">
+<meta name="description" content="介绍: 1、STM32 有5个时钟源:HSI、HSE、LSI、LSE、PLL。①、HSI是高速内部时钟，RC振荡器，频率为8MHz，精度不高。  ②、HSE是高速外部时钟，可接石英&#x2F;陶瓷谐振器，或者接外部时 钟源，频率范围为4MHz~16MHz。  ③、LSI是低速内部时钟，RC振荡器，频率为40kHz，提供低功耗时钟。WDG  ④、LSE是低速外部时钟，接频率为32.768kHz的石英晶体。RT">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Pipeline">
-<meta property="og:url" content="http://yoursite.com/2020/04/25/Pipeline/index.html">
+<meta property="og:title" content="stm32时钟系统">
+<meta property="og:url" content="http://yoursite.com/2020/07/23/stm32%E6%97%B6%E9%92%9F%E7%B3%BB%E7%BB%9F/index.html">
 <meta property="og:site_name" content="Blog">
-<meta property="og:description" content="scrapy框架中的使用Pipeline1.settings文件中设置（整体设置）ITEM_PIPELINES &#x3D; {    &#39;paper_downloader.pipelines.CsvPipeline&#39;: 302, } 2.在爬虫文件中编写特定的管道（单个设置）在爬虫文件中引入custom_settings &#x3D; {     &#39;ITEM_PIPELINES&#39;:{">
-<meta property="article:published_time" content="2020-04-24T16:43:31.000Z">
-<meta property="article:modified_time" content="2020-04-29T13:19:20.007Z">
+<meta property="og:description" content="介绍: 1、STM32 有5个时钟源:HSI、HSE、LSI、LSE、PLL。①、HSI是高速内部时钟，RC振荡器，频率为8MHz，精度不高。  ②、HSE是高速外部时钟，可接石英&#x2F;陶瓷谐振器，或者接外部时 钟源，频率范围为4MHz~16MHz。  ③、LSI是低速内部时钟，RC振荡器，频率为40kHz，提供低功耗时钟。WDG  ④、LSE是低速外部时钟，接频率为32.768kHz的石英晶体。RT">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E6%97%B6%E9%92%9F%E5%9B%BE.png">
+<meta property="article:published_time" content="2020-07-23T10:01:41.000Z">
+<meta property="article:modified_time" content="2020-07-23T10:16:39.890Z">
 <meta property="article:author" content="Arsenic">
-<meta property="article:tag" content="Pipeline">
+<meta property="article:tag" content="stm32">
+<meta property="article:tag" content="时钟系统">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E6%97%B6%E9%92%9F%E5%9B%BE.png">
 
 
 
@@ -119,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/04/25/Pipeline/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/07/23/stm32时钟系统/"/>
 
 
 
 
 
-  <title>Pipeline | Blog</title>
+  <title>stm32时钟系统 | Blog</title>
   
 
 
@@ -262,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/25/Pipeline/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/23/stm32%E6%97%B6%E9%92%9F%E7%B3%BB%E7%BB%9F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Arsenic">
@@ -279,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Pipeline</h1>
+          <h1 class="post-title" itemprop="name headline">stm32时钟系统</h1>
         
 
         <div class="post-meta">
@@ -291,8 +294,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-25T00:43:31+08:00">
-                2020-04-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-23T18:01:41+08:00">
+                2020-07-23
               </time>
             
 
@@ -314,8 +317,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/scrapy/" itemprop="url" rel="index">
-                    <span itemprop="name">scrapy</span>
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/" itemprop="url" rel="index">
+                    <span itemprop="name">单片机</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/" itemprop="url" rel="index">
+                    <span itemprop="name">stm32</span>
                   </a>
                 </span>
 
@@ -351,18 +365,36 @@
       
 
       
-        <h1 id="scrapy框架中的使用Pipeline"><a href="#scrapy框架中的使用Pipeline" class="headerlink" title="scrapy框架中的使用Pipeline"></a>scrapy框架中的使用Pipeline</h1><h2 id="1-settings文件中设置（整体设置）"><a href="#1-settings文件中设置（整体设置）" class="headerlink" title="1.settings文件中设置（整体设置）"></a>1.settings文件中设置（整体设置）</h2><p><code>ITEM_PIPELINES = {
-   &#39;paper_downloader.pipelines.CsvPipeline&#39;: 302,
-}</code></p>
-<h2 id="2-在爬虫文件中编写特定的管道（单个设置）"><a href="#2-在爬虫文件中编写特定的管道（单个设置）" class="headerlink" title="2.在爬虫文件中编写特定的管道（单个设置）"></a>2.在爬虫文件中编写特定的管道（单个设置）</h2><h3 id="在爬虫文件中引入"><a href="#在爬虫文件中引入" class="headerlink" title="在爬虫文件中引入"></a>在爬虫文件中引入</h3><p><code>custom_settings = {
-    &#39;ITEM_PIPELINES&#39;:{
-        &#39;paper_downloader.pipelines.CsvPipeline&#39;: 302,
-    }    
-}</code></p>
-<h3 id="同时要在settings文件进行整体设置"><a href="#同时要在settings文件进行整体设置" class="headerlink" title="同时要在settings文件进行整体设置"></a>同时要在settings文件进行整体设置</h3><p><code>ITEM_PIPELINES = {
-    &#39;paper_downloader.pipelines.CsvPipeline&#39;: 302,
-}</code></p>
+        <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍:"></a>介绍:</h1><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E6%97%B6%E9%92%9F%E5%9B%BE.png" alt="时钟图"></p>
+<h2 id="1、STM32-有5个时钟源-HSI、HSE、LSI、LSE、PLL。"><a href="#1、STM32-有5个时钟源-HSI、HSE、LSI、LSE、PLL。" class="headerlink" title="1、STM32 有5个时钟源:HSI、HSE、LSI、LSE、PLL。"></a>1、STM32 有5个时钟源:HSI、HSE、LSI、LSE、PLL。</h2><pre><code>①、HSI是高速内部时钟，RC振荡器，频率为8MHz，精度不高。
 
+②、HSE是高速外部时钟，可接石英/陶瓷谐振器，或者接外部时 钟源，频率范围为4MHz~16MHz。
+
+③、LSI是低速内部时钟，RC振荡器，频率为40kHz，提供低功耗时钟。WDG
+
+④、LSE是低速外部时钟，接频率为32.768kHz的石英晶体。RTC
+
+⑤、PLL为锁相环倍频输出，其时钟输入源可选择为HSI/2、HSE或者HSE/2。倍频可选择为2~16倍，但是其输出频率最大不得超过72MHz。</code></pre><h2 id="2、-系统时钟SYSCLK可来源于三个时钟源："><a href="#2、-系统时钟SYSCLK可来源于三个时钟源：" class="headerlink" title="2、 系统时钟SYSCLK可来源于三个时钟源："></a>2、 系统时钟SYSCLK可来源于三个时钟源：</h2><pre><code>①、HSI振荡器时钟
+②、HSE振荡器时钟
+③、PLL时钟</code></pre><h2 id="3、注意："><a href="#3、注意：" class="headerlink" title="3、注意："></a>3、注意：</h2><pre><code>STM32可以选择一个时钟信号输出到MCO脚(PA8)上，可以选择为PLL输出的2分频、HSI、HSE、或者系统时钟。
+
+任何一个外设在使用之前，必须首先使能其相应的时钟。</code></pre><h2 id="4、几个重要的时钟："><a href="#4、几个重要的时钟：" class="headerlink" title="4、几个重要的时钟："></a>4、几个重要的时钟：</h2><pre><code>SYSCLK(系统时钟) :
+AHB总线时钟
+APB1总线时钟(低速): 速度最高36MHz
+APB2总线时钟(高速): 速度最高72MHz
+PLL时钟</code></pre><h2 id="5、相关配置寄存器"><a href="#5、相关配置寄存器" class="headerlink" title="5、相关配置寄存器"></a>5、相关配置寄存器</h2><pre><code>typedef struct
+{
+  __IO uint32_t CR;                //HSI,HSE,CSS,PLL等的使能和就绪标志位 
+  __IO uint32_t CFGR;           //PLL等的时钟源选择，分频系数设定
+  __IO uint32_t CIR;               // 清除/使能 时钟就绪中断
+  __IO uint32_t APB2RSTR;  //APB2线上外设复位寄存器
+  __IO uint32_t APB1RSTR;   //APB1线上外设复位寄存器
+  __IO uint32_t AHBENR;    //DMA，SDIO等时钟使能
+  __IO uint32_t APB2ENR;   //APB2线上外设时钟使能
+  __IO uint32_t APB1ENR;   //APB1线上外设时钟使能
+  __IO uint32_t BDCR;        //备份域控制寄存器
+  __IO uint32_t CSR;           //控制状态寄存器
+} RCC_TypeDef;</code></pre>
       
     </div>
     
@@ -379,7 +411,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Pipeline/" rel="tag"># Pipeline</a>
+            <a href="/tags/stm32/" rel="tag"># stm32</a>
+          
+            <a href="/tags/%E6%97%B6%E9%92%9F%E7%B3%BB%E7%BB%9F/" rel="tag"># 时钟系统</a>
           
         </div>
       
@@ -392,8 +426,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/04/22/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="next" title="正则表达式">
-                <i class="fa fa-chevron-left"></i> 正则表达式
+              <a href="/2020/07/22/GPIO%E6%8C%89%E9%94%AE%E8%BE%93%E5%85%A5/" rel="next" title="GPIO按键输入">
+                <i class="fa fa-chevron-left"></i> GPIO按键输入
               </a>
             
           </div>
@@ -401,10 +435,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/04/25/MangoDb/" rel="prev" title="MangoDb">
-                MangoDb <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -545,7 +575,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#scrapy框架中的使用Pipeline"><span class="nav-number">1.</span> <span class="nav-text">scrapy框架中的使用Pipeline</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-settings文件中设置（整体设置）"><span class="nav-number">1.1.</span> <span class="nav-text">1.settings文件中设置（整体设置）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-在爬虫文件中编写特定的管道（单个设置）"><span class="nav-number">1.2.</span> <span class="nav-text">2.在爬虫文件中编写特定的管道（单个设置）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在爬虫文件中引入"><span class="nav-number">1.2.1.</span> <span class="nav-text">在爬虫文件中引入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同时要在settings文件进行整体设置"><span class="nav-number">1.2.2.</span> <span class="nav-text">同时要在settings文件进行整体设置</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍:</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、STM32-有5个时钟源-HSI、HSE、LSI、LSE、PLL。"><span class="nav-number">1.1.</span> <span class="nav-text">1、STM32 有5个时钟源:HSI、HSE、LSI、LSE、PLL。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、-系统时钟SYSCLK可来源于三个时钟源："><span class="nav-number">1.2.</span> <span class="nav-text">2、 系统时钟SYSCLK可来源于三个时钟源：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、注意："><span class="nav-number">1.3.</span> <span class="nav-text">3、注意：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、几个重要的时钟："><span class="nav-number">1.4.</span> <span class="nav-text">4、几个重要的时钟：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、相关配置寄存器"><span class="nav-number">1.5.</span> <span class="nav-text">5、相关配置寄存器</span></a></li></ol></li></ol></div>
             
 
           </div>
