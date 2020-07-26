@@ -79,17 +79,20 @@
 
 
 
-<meta name="description" content="头文件和源文件头文件：stm32f10x_gpio.h  源文件：stm32f10x_gpio.c函数介绍初始化函数： void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct);  作用：初始化一个或者多个IO口（同一组）的工作方式和速度。  该函数主要是操作GPIO_CRL(CRH)寄存器，在上拉或者下拉的时候有">
+<meta name="description" content="一、中断管理方法：首先，对STM32中断进行分组，组0~4。同时，对每个中断设置一个抢占优先级和一个响应优先级值。 分组配置是在寄存器SCB-&gt;AIRCR中配置： 组    AIRCR[10：8]     IP bit[7：4]分配情况            分配结果 0        111               0：4            0位抢占优先级，4位响应优先级 1">
 <meta property="og:type" content="article">
-<meta property="og:title" content="GPIO配置代码">
-<meta property="og:url" content="http://yoursite.com/2020/07/20/GPIO%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%A0%81/index.html">
+<meta property="og:title" content="中断优先级管理">
+<meta property="og:url" content="http://yoursite.com/2020/07/26/%E4%B8%AD%E6%96%AD%E4%BC%98%E5%85%88%E7%BA%A7%E7%AE%A1%E7%90%86/index.html">
 <meta property="og:site_name" content="Blog">
-<meta property="og:description" content="头文件和源文件头文件：stm32f10x_gpio.h  源文件：stm32f10x_gpio.c函数介绍初始化函数： void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct);  作用：初始化一个或者多个IO口（同一组）的工作方式和速度。  该函数主要是操作GPIO_CRL(CRH)寄存器，在上拉或者下拉的时候有">
-<meta property="article:published_time" content="2020-07-20T06:19:02.000Z">
-<meta property="article:modified_time" content="2020-07-20T07:00:57.377Z">
+<meta property="og:description" content="一、中断管理方法：首先，对STM32中断进行分组，组0~4。同时，对每个中断设置一个抢占优先级和一个响应优先级值。 分组配置是在寄存器SCB-&gt;AIRCR中配置： 组    AIRCR[10：8]     IP bit[7：4]分配情况            分配结果 0        111               0：4            0位抢占优先级，4位响应优先级 1">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/NVIC%E4%B8%AD%E6%96%AD%E4%BC%98%E5%85%88%E7%BA%A7/%E5%8F%AF%E5%B1%8F%E8%94%BD%E4%B8%AD%E6%96%AD1.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/NVIC%E4%B8%AD%E6%96%AD%E4%BC%98%E5%85%88%E7%BA%A7/%E5%8F%AF%E5%B1%8F%E8%94%BD%E4%B8%AD%E6%96%AD2.png">
+<meta property="article:published_time" content="2020-07-26T14:35:45.000Z">
+<meta property="article:modified_time" content="2020-07-26T15:30:30.157Z">
 <meta property="article:author" content="Arsenic">
 <meta property="article:tag" content="stm32">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/NVIC%E4%B8%AD%E6%96%AD%E4%BC%98%E5%85%88%E7%BA%A7/%E5%8F%AF%E5%B1%8F%E8%94%BD%E4%B8%AD%E6%96%AD1.png">
 
 
 
@@ -119,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/07/20/GPIO配置代码/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/07/26/中断优先级管理/"/>
 
 
 
 
 
-  <title>GPIO配置代码 | Blog</title>
+  <title>中断优先级管理 | Blog</title>
   
 
 
@@ -262,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/20/GPIO%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%A0%81/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/26/%E4%B8%AD%E6%96%AD%E4%BC%98%E5%85%88%E7%BA%A7%E7%AE%A1%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Arsenic">
@@ -279,7 +282,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">GPIO配置代码</h1>
+          <h1 class="post-title" itemprop="name headline">中断优先级管理</h1>
         
 
         <div class="post-meta">
@@ -291,8 +294,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-20T14:19:02+08:00">
-                2020-07-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-26T22:35:45+08:00">
+                2020-07-26
               </time>
             
 
@@ -362,98 +365,65 @@
       
 
       
-        <h1 id="头文件和源文件"><a href="#头文件和源文件" class="headerlink" title="头文件和源文件"></a>头文件和源文件</h1><pre><code>头文件：stm32f10x_gpio.h
+        <h1 id="一、中断管理方法："><a href="#一、中断管理方法：" class="headerlink" title="一、中断管理方法："></a>一、中断管理方法：</h1><pre><code>首先，对STM32中断进行分组，组0~4。同时，对每个中断设置一个抢占优先级和一个响应优先级值。
+分组配置是在寄存器SCB-&gt;AIRCR中配置：
+组    AIRCR[10：8]     IP bit[7：4]分配情况            分配结果
+0        111               0：4            0位抢占优先级，4位响应优先级
+1        110                  1：3            1位抢占优先级，3位响应优先级
+2        101                  2：2            2位抢占优先级，2位响应优先级
+3        100                  3：1            3位抢占优先级，1位响应优先级
+4        011                  4：0            4位抢占优先级，0位响应优先级</code></pre><h2 id="STM32F103系列上面，有60个可屏蔽中断"><a href="#STM32F103系列上面，有60个可屏蔽中断" class="headerlink" title="STM32F103系列上面，有60个可屏蔽中断"></a>STM32F103系列上面，有60个可屏蔽中断</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/NVIC%E4%B8%AD%E6%96%AD%E4%BC%98%E5%85%88%E7%BA%A7/%E5%8F%AF%E5%B1%8F%E8%94%BD%E4%B8%AD%E6%96%AD1.png" alt="可屏蔽中断1"></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/NVIC%E4%B8%AD%E6%96%AD%E4%BC%98%E5%85%88%E7%BA%A7/%E5%8F%AF%E5%B1%8F%E8%94%BD%E4%B8%AD%E6%96%AD2.png" alt="可屏蔽中断2"></p>
+<h2 id="抢占优先级-amp-响应优先级区别："><a href="#抢占优先级-amp-响应优先级区别：" class="headerlink" title="抢占优先级 &amp; 响应优先级区别："></a>抢占优先级 &amp; 响应优先级区别：</h2><p><strong>1、高优先级的抢占优先级是可以打断正在进行的低抢占优先级中断的。</strong></p>
+<p><strong>2、抢占优先级相同的中断，高响应优先级不可以打断低响应优先级的中断。</strong></p>
+<p><strong>3、抢占优先级相同的中断，当两个中断同时发生的情况下，哪个响应优先级高，哪个先执行。</strong></p>
+<p><strong>4、如果两个中断的抢占优先级和响应优先级都是一样的话，则看哪个中断先发生就先执行；</strong></p>
+<h2 id="中断优先级分组函数："><a href="#中断优先级分组函数：" class="headerlink" title="中断优先级分组函数："></a>中断优先级分组函数：</h2><pre><code>void NVIC_PriorityGroupConfig(uint32_t NVIC_PriorityGroup);
 
-源文件：stm32f10x_gpio.c</code></pre><h1 id="函数介绍"><a href="#函数介绍" class="headerlink" title="函数介绍"></a>函数介绍</h1><h2 id="初始化函数："><a href="#初始化函数：" class="headerlink" title="初始化函数："></a>初始化函数：</h2><blockquote>
-<p>void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct);</p>
-</blockquote>
-<pre><code>作用：初始化一个或者多个IO口（同一组）的工作方式和速度。
+NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);</code></pre><h2 id="设置单个中断的抢占优先级和响应优先级"><a href="#设置单个中断的抢占优先级和响应优先级" class="headerlink" title="设置单个中断的抢占优先级和响应优先级"></a>设置单个中断的抢占优先级和响应优先级</h2><pre><code>中断设置相关寄存器 
+_IO uint8_t  IP[240]; //中断优先级控制的寄存器组
 
-该函数主要是操作GPIO_CRL(CRH)寄存器，在上拉或者下拉的时候有设置BSRR或者BRR寄存器 
-GPIOx: GPIOA~GPIOG
+__IO uint32_t ISER[8]; //中断使能寄存器组
+__IO uint32_t ICER[8]; //中断失能寄存器组
+__IO uint32_t ISPR[8]; //中断挂起寄存器组
+__IO uint32_t ICPR[8]; //中断解挂寄存器组
+__IO uint32_t IABR[8]; //中断激活标志位寄存器组</code></pre><h1 id="二、中断寄存器介绍"><a href="#二、中断寄存器介绍" class="headerlink" title="二、中断寄存器介绍"></a>二、中断寄存器介绍</h1><h2 id="中断优先级控制的寄存器组：IP-240"><a href="#中断优先级控制的寄存器组：IP-240" class="headerlink" title="中断优先级控制的寄存器组：IP[240]"></a>中断优先级控制的寄存器组：IP[240]</h2><p><strong>全称是：Interrupt Priority Registers</strong></p>
+<p><strong>240个8位寄存器，每个中断使用一个寄存器来确定优先级。STM32F10x系列一共60个可屏蔽中断，使用IP[59]~IP[0]。</strong></p>
+<p><strong>每个IP寄存器的高4位用来设置抢占和响应优先级（根据分组），低4位没有用到。</strong></p>
+<h2 id="中断使能寄存器组：ISER-8"><a href="#中断使能寄存器组：ISER-8" class="headerlink" title="中断使能寄存器组：ISER[8]"></a>中断使能寄存器组：ISER[8]</h2><p><strong>作用：用来使能中断</strong></p>
+<p><strong>32位寄存器，每个位控制一个中断的使能。STM32F10x只有60个可屏蔽中断，所以只使用了其中的ISER[0]和ISER[1]。</strong></p>
+<p><strong>ISER[0]的bit0<del>bit31分别对应中断0</del>31。ISER[1]的bit0<del>27对应中断32</del>59；</strong></p>
+<h2 id="中断失能寄存器组：ICER-8"><a href="#中断失能寄存器组：ICER-8" class="headerlink" title="中断失能寄存器组：ICER[8]"></a>中断失能寄存器组：ICER[8]</h2><p><strong>作用：用来失能中断</strong></p>
+<p><strong>32位寄存器，每个位控制一个中断的失能。STM32F10x只有60个可屏蔽中断，所以只使用了其中的ICER[0]和ICER[1]。</strong></p>
+<p><strong>ICER[0]的bit0<del>bit31分别对应中断0</del>31。ICER[1]的bit0<del>27对应中断32</del>59；</strong></p>
+<p><strong>配置方法跟ISER一样。</strong></p>
+<h2 id="中断挂起控制寄存器组：ISPR-8"><a href="#中断挂起控制寄存器组：ISPR-8" class="headerlink" title="中断挂起控制寄存器组：ISPR[8]"></a>中断挂起控制寄存器组：ISPR[8]</h2><p><strong>作用：用来挂起中断</strong></p>
+<h2 id="中断解挂控制寄存器组：ICPR-8"><a href="#中断解挂控制寄存器组：ICPR-8" class="headerlink" title="中断解挂控制寄存器组：ICPR[8]"></a>中断解挂控制寄存器组：ICPR[8]</h2><p><strong>作用：用来解挂中断</strong></p>
+<pre><code>static __INLINE void NVIC_SetPendingIRQ(IRQn_Type IRQn)；
+static __INLINE uint32_t NVIC_GetPendingIRQ(IRQn_Type IRQn)；
+static __INLINE void NVIC_ClearPendingIRQ(IRQn_Type IRQn)</code></pre><h2 id="中断激活标志位寄存器组：IABR-8"><a href="#中断激活标志位寄存器组：IABR-8" class="headerlink" title="中断激活标志位寄存器组：IABR [8]"></a>中断激活标志位寄存器组：IABR [8]</h2><p><strong>作用：只读，通过它可以知道当前在执行的中断是哪一个,如果对应位为1，说明该中断正在执行。</strong></p>
+<pre><code>static __INLINE uint32_t NVIC_GetActive(IRQn_Type IRQn)</code></pre><h1 id="三、中断参数初始化函数"><a href="#三、中断参数初始化函数" class="headerlink" title="三、中断参数初始化函数"></a>三、中断参数初始化函数</h1><pre><code>void NVIC_Init(NVIC_InitTypeDef* NVIC_InitStruct);
 
 typedef struct
-   {
-     uint16_t GPIO_Pin;             //指定要初始化的IO口         
-     GPIOSpeed_TypeDef GPIO_Speed; //设置IO口输出速度
-     GPIOMode_TypeDef GPIO_Mode;    //设置工作模式：8种中的一个
-   }GPIO_InitTypeDef;
-
-
-GPIO_InitTypeDef  GPIO_InitStructure;
-GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5; //LED0--&gt;PB.5 端口配置
-GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;  //推挽输出
-GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; //IO口速度为50MHz
-GPIO_Init(GPIOB, &amp;GPIO_InitStructure);     //根据设定参数初始化GPIOB.5</code></pre><h2 id="读取输入电平函数："><a href="#读取输入电平函数：" class="headerlink" title="读取输入电平函数："></a>读取输入电平函数：</h2><blockquote>
-<p>uint8_t GPIO_ReadInputDataBit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);</p>
-</blockquote>
-<pre><code>作用：读取某个GPIO的输入电平。实际操作的是GPIOx_IDR寄存器。
-GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_5);//读取GPIOA.5的输入电平</code></pre><blockquote>
-<p>uint16_t GPIO_ReadInputData(GPIO_TypeDef* GPIOx);</p>
-</blockquote>
-<pre><code>作用：读取某组GPIO的输入电平。实际操作的是GPIOx_IDR寄存器。
-GPIO_ReadInputData(GPIOA);//读取GPIOA组中所有io口输入电平</code></pre><h2 id="读取输出电平函数："><a href="#读取输出电平函数：" class="headerlink" title="读取输出电平函数："></a>读取输出电平函数：</h2><blockquote>
-<p>uint8_t GPIO_ReadOutputDataBit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);</p>
-</blockquote>
-<pre><code>作用：读取某个GPIO的输出电平。实际操作的是GPIO_ODR寄存器。
-GPIO_ReadOutputDataBit(GPIOA, GPIO_Pin_5);//读取GPIOA.5的输出电平</code></pre><blockquote>
-<p>uint16_t GPIO_ReadOutputData(GPIO_TypeDef* GPIOx);<br>    作用：读取某组GPIO的输出电平。实际操作的是GPIO_ODR寄存器。</p>
-</blockquote>
-<pre><code>GPIO_ReadOutputData(GPIOA);//读取GPIOA组中所有io口输出电平</code></pre><h2 id="设置输出电平函数："><a href="#设置输出电平函数：" class="headerlink" title="设置输出电平函数："></a>设置输出电平函数：</h2><blockquote>
-<p>void GPIO_SetBits(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);</p>
-</blockquote>
-<pre><code>作用：设置某个IO口输出为高电平（1）。实际操作BSRR寄存器</code></pre><blockquote>
-<p>void GPIO_ResetBits(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin);<br>    作用：设置某个IO口输出为低电平（0）。实际操作的BRR寄存器。</p>
-</blockquote>
-<h2 id="这两个函数不常用，也是用来设置IO口输出电平。"><a href="#这两个函数不常用，也是用来设置IO口输出电平。" class="headerlink" title="这两个函数不常用，也是用来设置IO口输出电平。"></a>这两个函数不常用，也是用来设置IO口输出电平。</h2><pre><code>void GPIO_WriteBit(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin, BitAction BitVal);
-void GPIO_Write(GPIO_TypeDef* GPIOx, uint16_t PortVal);</code></pre><h2 id="跑马灯配置"><a href="#跑马灯配置" class="headerlink" title="跑马灯配置:"></a>跑马灯配置:</h2><h3 id="配置步骤："><a href="#配置步骤：" class="headerlink" title="配置步骤："></a>配置步骤：</h3><pre><code>1、使能IO口时钟。调用函数RCC_APB2PeriphColckCmd();不同的IO组，调用的时钟使能函数不一样。
-2、初始化IO口模式。调用函数GPIO_Init();
-3、操作IO口，输出高低电平。
-    GPIO_SetBits();
-    GPIO_ResetBits();</code></pre><h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><pre><code>led.c
-void LED_Init(void)
 {
-  GPIO_InitTypeDef GPIO_InitStructure;
-
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD,ENABLE);//GPIOD
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);//GPIOA
-
-    GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;
-    GPIO_InitStructure.GPIO_Pin=GPIO_Pin_2;
-    GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
-    GPIO_Init(GPIOD,&amp;GPIO_InitStructure);
-    GPIO_SetBits(GPIOD,GPIO_Pin_2);
+  uint8_t NVIC_IRQChannel; //设置中断通道
+  uint8_t NVIC_IRQChannelPreemptionPriority;//设置响应优先级
+  uint8_t NVIC_IRQChannelSubPriority; //设置抢占优先级
+  FunctionalState NVIC_IRQChannelCmd; //使能/使能
+} NVIC_InitTypeDef;
 
 
-    GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;
-    GPIO_InitStructure.GPIO_Pin=GPIO_Pin_8;
-    GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA,&amp;GPIO_InitStructure);
-    GPIO_SetBits(GPIOA,GPIO_Pin_8);
-}
-
-main.c
-int main(void)
-{
-
-delay_init();
-LED_Init();
-
-while(1){
-
-    GPIO_SetBits(GPIOD,GPIO_Pin_2);
-    GPIO_SetBits(GPIOA,GPIO_Pin_8);
-
-    delay_ms(500);
-
-
-    GPIO_ResetBits(GPIOD,GPIO_Pin_2);
-    GPIO_ResetBits(GPIOA,GPIO_Pin_8);
-    delay_ms(500);
-
-}
-
-}</code></pre>
+NVIC_InitTypeDef   NVIC_InitStructure;
+NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;//串口1中断
+NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=1 ;// 抢占优先级为1
+NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;// 子优先级位2
+NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;//IRQ通道使能
+NVIC_Init(&amp;NVIC_InitStructure);    //根据上面指定的参数初始化NVIC寄存器</code></pre><h1 id="四、中断优先级设置步骤"><a href="#四、中断优先级设置步骤" class="headerlink" title="四、中断优先级设置步骤"></a>四、中断优先级设置步骤</h1><pre><code>1、系统运行后先设置中断优先级分组。调用函数：
+void NVIC_PriorityGroupConfig(uint32_t NVIC_PriorityGroup);
+ 整个系统执行过程中，只设置一次中断分组。
+2、针对每个中断，设置对应的抢占优先级和响应优先级：
+void NVIC_Init(NVIC_InitTypeDef* NVIC_InitStruct);
+3、如果需要挂起/解挂，查看中断当前激活状态，分别调用相关函数即可。</code></pre>
       
     </div>
     
@@ -483,8 +453,8 @@ while(1){
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/07/17/GPIO%E9%85%8D%E7%BD%AE/" rel="next" title="GPIO配置">
-                <i class="fa fa-chevron-left"></i> GPIO配置
+              <a href="/2020/07/25/%E7%AB%AF%E5%8F%A3%E5%A4%8D%E7%94%A8%E5%92%8C%E9%87%8D%E6%98%A0%E5%B0%84/" rel="next" title="端口复用和重映射">
+                <i class="fa fa-chevron-left"></i> 端口复用和重映射
               </a>
             
           </div>
@@ -492,10 +462,6 @@ while(1){
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/07/21/GPIO%E4%BD%8D%E6%93%8D%E4%BD%9C/" rel="prev" title="GPIO位操作">
-                GPIO位操作 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -636,7 +602,7 @@ while(1){
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#头文件和源文件"><span class="nav-number">1.</span> <span class="nav-text">头文件和源文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#函数介绍"><span class="nav-number">2.</span> <span class="nav-text">函数介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#初始化函数："><span class="nav-number">2.1.</span> <span class="nav-text">初始化函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读取输入电平函数："><span class="nav-number">2.2.</span> <span class="nav-text">读取输入电平函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读取输出电平函数："><span class="nav-number">2.3.</span> <span class="nav-text">读取输出电平函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置输出电平函数："><span class="nav-number">2.4.</span> <span class="nav-text">设置输出电平函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#这两个函数不常用，也是用来设置IO口输出电平。"><span class="nav-number">2.5.</span> <span class="nav-text">这两个函数不常用，也是用来设置IO口输出电平。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跑马灯配置"><span class="nav-number">2.6.</span> <span class="nav-text">跑马灯配置:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置步骤："><span class="nav-number">2.6.1.</span> <span class="nav-text">配置步骤：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置"><span class="nav-number">2.6.2.</span> <span class="nav-text">配置</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、中断管理方法："><span class="nav-number">1.</span> <span class="nav-text">一、中断管理方法：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#STM32F103系列上面，有60个可屏蔽中断"><span class="nav-number">1.1.</span> <span class="nav-text">STM32F103系列上面，有60个可屏蔽中断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#抢占优先级-amp-响应优先级区别："><span class="nav-number">1.2.</span> <span class="nav-text">抢占优先级 &amp; 响应优先级区别：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中断优先级分组函数："><span class="nav-number">1.3.</span> <span class="nav-text">中断优先级分组函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置单个中断的抢占优先级和响应优先级"><span class="nav-number">1.4.</span> <span class="nav-text">设置单个中断的抢占优先级和响应优先级</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、中断寄存器介绍"><span class="nav-number">2.</span> <span class="nav-text">二、中断寄存器介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#中断优先级控制的寄存器组：IP-240"><span class="nav-number">2.1.</span> <span class="nav-text">中断优先级控制的寄存器组：IP[240]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中断使能寄存器组：ISER-8"><span class="nav-number">2.2.</span> <span class="nav-text">中断使能寄存器组：ISER[8]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中断失能寄存器组：ICER-8"><span class="nav-number">2.3.</span> <span class="nav-text">中断失能寄存器组：ICER[8]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中断挂起控制寄存器组：ISPR-8"><span class="nav-number">2.4.</span> <span class="nav-text">中断挂起控制寄存器组：ISPR[8]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中断解挂控制寄存器组：ICPR-8"><span class="nav-number">2.5.</span> <span class="nav-text">中断解挂控制寄存器组：ICPR[8]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中断激活标志位寄存器组：IABR-8"><span class="nav-number">2.6.</span> <span class="nav-text">中断激活标志位寄存器组：IABR [8]</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、中断参数初始化函数"><span class="nav-number">3.</span> <span class="nav-text">三、中断参数初始化函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、中断优先级设置步骤"><span class="nav-number">4.</span> <span class="nav-text">四、中断优先级设置步骤</span></a></li></ol></div>
             
 
           </div>
