@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="stm32," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="常用的串口相关寄存器USART_SR状态寄存器  FlagStatus USART_GetFlagStatus(USART_TypeDef* USARTx, uint16_t USART_FLAG);   USART_DR数据寄存器  void USART_SendData(USART_TypeDef* USARTx, uint16_t Data);   uint16_t USART_Receiv">
+<meta property="og:type" content="article">
+<meta property="og:title" content="串口配置函数">
+<meta property="og:url" content="http://yoursite.com/2020/07/28/%E4%B8%B2%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="常用的串口相关寄存器USART_SR状态寄存器  FlagStatus USART_GetFlagStatus(USART_TypeDef* USARTx, uint16_t USART_FLAG);   USART_DR数据寄存器  void USART_SendData(USART_TypeDef* USARTx, uint16_t Data);   uint16_t USART_Receiv">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E4%B8%B2%E5%8F%A3/%E7%8A%B6%E6%80%81%E5%AF%84%E5%AD%98%E5%99%A8USART_SR.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E4%B8%B2%E5%8F%A3/%E6%95%B0%E6%8D%AE%E5%AF%84%E5%AD%98%E5%99%A8USART_DR.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E4%B8%B2%E5%8F%A3/%E6%B3%A2%E7%89%B9%E7%8E%87%E5%AF%84%E5%AD%98%E5%99%A8USART_BRR.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E4%B8%B2%E5%8F%A3/%E6%B3%A2%E7%89%B9%E7%8E%87%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%951.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E4%B8%B2%E5%8F%A3/%E6%B3%A2%E7%89%B9%E7%8E%87%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%952.png">
+<meta property="article:published_time" content="2020-07-28T02:41:20.000Z">
+<meta property="article:modified_time" content="2020-07-28T03:24:10.467Z">
+<meta property="article:author" content="Arsenic">
+<meta property="article:tag" content="stm32">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E4%B8%B2%E5%8F%A3/%E7%8A%B6%E6%80%81%E5%AF%84%E5%AD%98%E5%99%A8USART_SR.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/07/28/串口配置函数/"/>
+
+
+
+
+
+  <title>串口配置函数 | Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/28/%E4%B8%B2%E5%8F%A3%E9%85%8D%E7%BD%AE%E5%87%BD%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arsenic">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">串口配置函数</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-28T10:41:20+08:00">
+                2020-07-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/" itemprop="url" rel="index">
+                    <span itemprop="name">单片机</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/" itemprop="url" rel="index">
+                    <span itemprop="name">stm32</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="常用的串口相关寄存器"><a href="#常用的串口相关寄存器" class="headerlink" title="常用的串口相关寄存器"></a>常用的串口相关寄存器</h1><p><strong>USART_SR状态寄存器</strong></p>
+<blockquote>
+<p>FlagStatus USART_GetFlagStatus(USART_TypeDef* USARTx, uint16_t USART_FLAG);</p>
+</blockquote>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E4%B8%B2%E5%8F%A3/%E7%8A%B6%E6%80%81%E5%AF%84%E5%AD%98%E5%99%A8USART_SR.png" alt="状态寄存器USART_SR"></p>
+<p><strong>USART_DR数据寄存器</strong></p>
+<blockquote>
+<p>void USART_SendData(USART_TypeDef* USARTx, uint16_t Data);</p>
+</blockquote>
+<blockquote>
+<p>uint16_t USART_ReceiveData(USART_TypeDef* USARTx);</p>
+</blockquote>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E4%B8%B2%E5%8F%A3/%E6%95%B0%E6%8D%AE%E5%AF%84%E5%AD%98%E5%99%A8USART_DR.png" alt="数据寄存器USART_DR"></p>
+<p><strong>USART_BRR波特率寄存器</strong> </p>
+<blockquote>
+<p>void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct);</p>
+</blockquote>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E4%B8%B2%E5%8F%A3/%E6%B3%A2%E7%89%B9%E7%8E%87%E5%AF%84%E5%AD%98%E5%99%A8USART_BRR.png" alt="波特率寄存器USART_BRR"></p>
+<h2 id="串口操作相关库函数（省略入口参数）："><a href="#串口操作相关库函数（省略入口参数）：" class="headerlink" title="串口操作相关库函数（省略入口参数）："></a>串口操作相关库函数（省略入口参数）：</h2><pre><code>void USART_Init(); //串口初始化：波特率，数据字长，奇偶校验，硬件流控以及收发使能
+void USART_Cmd();//使能串口
+void USART_ITConfig();//使能相关中断
+
+void USART_SendData();//发送数据到串口，DR
+uint16_t USART_ReceiveData();//接受数据，从DR读取接受到的数据
+
+FlagStatus USART_GetFlagStatus();//获取状态标志位
+void USART_ClearFlag();//清除状态标志位
+ITStatus USART_GetITStatus();//获取中断状态标志位
+void USART_ClearITPendingBit();//清除中断状态标志位</code></pre><h2 id="波特率计算方法"><a href="#波特率计算方法" class="headerlink" title="波特率计算方法"></a>波特率计算方法</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E4%B8%B2%E5%8F%A3/%E6%B3%A2%E7%89%B9%E7%8E%87%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%951.png" alt="波特率计算方法1"></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E4%B8%B2%E5%8F%A3/%E6%B3%A2%E7%89%B9%E7%8E%87%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%952.png" alt="波特率计算方法2"></p>
+<h1 id="串口配置的一般步骤"><a href="#串口配置的一般步骤" class="headerlink" title="串口配置的一般步骤"></a>串口配置的一般步骤</h1><p><strong>1、串口时钟使能，GPIO时钟使能:RCC_APB2PeriphClockCmd();</strong></p>
+<p><strong>2、串口复位:USART_DeInit(); 这一步不是必须的</strong></p>
+<p><strong>3、GPIO端口模式设置:GPIO_Init(); 模式设置为GPIO_Mode_AF_PP</strong></p>
+<p><strong>4、串口参数初始化：USART_Init();</strong></p>
+<p><strong>5、开启中断并且初始化NVIC（如果需要开启中断才需要这个步骤）</strong><br>      NVIC_Init();<br>      USART_ITConfig();</p>
+<p><strong>6、使能串口:USART_Cmd();</strong></p>
+<p><strong>7、编写中断处理函数：USARTx_IRQHandler();</strong></p>
+<p><strong>8、串口数据收发：</strong></p>
+<pre><code>void USART_SendData();//发送数据到串口，DR
+uint16_t USART_ReceiveData();//接受数据，从DR读取接受到的数据</code></pre><p><strong>9、串口传输状态获取：</strong></p>
+<pre><code>FlagStatus USART_GetFlagStatus(USART_TypeDef* USARTx, uint16_t USART_FLAG);
+void USART_ClearITPendingBit(USART_TypeDef* USARTx, uint16_t USART_IT);</code></pre><h1 id="代码"><a href="#代码" class="headerlink" title="代码:"></a>代码:</h1><pre><code>void My_USART1_Init(void)
+{
+    GPIO_InitTypeDef GPIO_InitStrue;
+    USART_InitTypeDef USART_InitStrue;
+    NVIC_InitTypeDef NVIC_InitStrue;
+
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);//¢Ù
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1,ENABLE);
+
+    GPIO_InitStrue.GPIO_Mode=GPIO_Mode_AF_PP;//推挽复用输出
+    GPIO_InitStrue.GPIO_Pin=GPIO_Pin_9;
+    GPIO_InitStrue.GPIO_Speed=GPIO_Speed_10MHz;
+    GPIO_Init(GPIOA,&amp;GPIO_InitStrue);//¢Ú
+
+    GPIO_InitStrue.GPIO_Mode=GPIO_Mode_IN_FLOATING;//浮空输入
+    GPIO_InitStrue.GPIO_Pin=GPIO_Pin_10;
+    GPIO_InitStrue.GPIO_Speed=GPIO_Speed_10MHz;
+    GPIO_Init(GPIOA,&amp;GPIO_InitStrue);//¢Ú
+
+    USART_InitStrue.USART_BaudRate=115200;//波特率
+    USART_InitStrue.USART_HardwareFlowControl=USART_HardwareFlowControl_None;//不适用硬件流
+    USART_InitStrue.USART_Mode=USART_Mode_Tx|USART_Mode_Rx;
+    USART_InitStrue.USART_Parity=USART_Parity_No;//关闭奇偶校验
+    USART_InitStrue.USART_StopBits=USART_StopBits_1;//停止位
+    USART_InitStrue.USART_WordLength=USART_WordLength_8b;//数据位
+
+    USART_Init(USART1,&amp;USART_InitStrue);
+
+    USART_Cmd(USART1,ENABLE);//使能串口
+
+    USART_ITConfig(USART1,USART_IT_RXNE,ENABLE);//开启接收中断
+
+    NVIC_InitStrue.NVIC_IRQChannel=USART1_IRQn;
+    NVIC_InitStrue.NVIC_IRQChannelCmd=ENABLE;
+    NVIC_InitStrue.NVIC_IRQChannelPreemptionPriority=1;
+    NVIC_InitStrue.NVIC_IRQChannelSubPriority=1;
+    NVIC_Init(&amp;NVIC_InitStrue);
+
+
+}
+
+void USART1_IRQHandler(void)//中断服务函数
+{
+    u8 res;
+     if(USART_GetITStatus(USART1,USART_IT_RXNE))
+ {
+     res= USART_ReceiveData(USART1); 
+     USART_SendData(USART1,res);   
+  }
+}
+int main(void)
+ {    
+  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+    My_USART1_Init();
+     while(1);
+
+ }</code></pre>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/stm32/" rel="tag"># stm32</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/27/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1%E5%8E%9F%E7%90%86/" rel="next" title="串口通信原理">
+                <i class="fa fa-chevron-left"></i> 串口通信原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>   
+    </div> 
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.gif"
+                alt="Arsenic" />
+            
+              <p class="site-author-name" itemprop="name">Arsenic</p>
+              <p class="site-description motion-element" itemprop="description">Write sonething words!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+          <div id="music163player">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=29932433&auto=0&height=66"></iframe>
+          </div>
+          <div id="music163player">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=167655&auto=0&height=66"></iframe>
+          </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#常用的串口相关寄存器"><span class="nav-number">1.</span> <span class="nav-text">常用的串口相关寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#串口操作相关库函数（省略入口参数）："><span class="nav-number">1.1.</span> <span class="nav-text">串口操作相关库函数（省略入口参数）：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#波特率计算方法"><span class="nav-number">1.2.</span> <span class="nav-text">波特率计算方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#串口配置的一般步骤"><span class="nav-number">2.</span> <span class="nav-text">串口配置的一般步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码"><span class="nav-number">3.</span> <span class="nav-text">代码:</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Arsenic</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+
+</body>
+</html>
