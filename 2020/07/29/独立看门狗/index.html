@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="选择器,scrapy," />
+  <meta name="keywords" content="stm32," />
 
 
 
@@ -79,20 +79,24 @@
 
 
 
-<meta name="description" content="一、概念 XPath即XML路径语言（XML Path Language），它是一种用来确定xml文档中某部分位置的语言。  二、基本语法 &#x2F;描述一个从根开始的绝对路径。E1&#x2F;E2选中E1子节点中的所有E2。&#x2F;&#x2F;E选中文档中的所有E，无论在什么位置。E1&#x2F;&#x2F;E2选中E1后代节点中的所有E2，无论在后代中的什么位置。E&#x2F;text()选中E的文本子节点。E&#x2F;*选中E的所有元素子节点。*&#x2F;E选中孙节点中">
+<meta name="description" content="一、介绍 出于对单片机运行状态进行实时监测的考虑，便产生了一种专门用于监测单片机程序运行状态的模块或者芯片，俗称“看门狗”(watchdog) 。  看门狗解决的问题是什么？在启动正常运行的时候，系统不能复位。在系统跑飞（程序异常执行）的情况，系统复位，程序重新执行。 STM32内置两个看门狗，提供了更高的安全性，时间的精确性和使用的灵活性。两个看门狗设备（独立看门狗&#x2F;窗口看门狗)可以用来检测和解">
 <meta property="og:type" content="article">
-<meta property="og:title" content="xpath">
-<meta property="og:url" content="http://yoursite.com/2020/04/30/xpath/index.html">
+<meta property="og:title" content="独立看门狗">
+<meta property="og:url" content="http://yoursite.com/2020/07/29/%E7%8B%AC%E7%AB%8B%E7%9C%8B%E9%97%A8%E7%8B%97/index.html">
 <meta property="og:site_name" content="Blog">
-<meta property="og:description" content="一、概念 XPath即XML路径语言（XML Path Language），它是一种用来确定xml文档中某部分位置的语言。  二、基本语法 &#x2F;描述一个从根开始的绝对路径。E1&#x2F;E2选中E1子节点中的所有E2。&#x2F;&#x2F;E选中文档中的所有E，无论在什么位置。E1&#x2F;&#x2F;E2选中E1后代节点中的所有E2，无论在后代中的什么位置。E&#x2F;text()选中E的文本子节点。E&#x2F;*选中E的所有元素子节点。*&#x2F;E选中孙节点中">
-<meta property="og:image" content="http://yoursite.com/images/xpath/xpath.png">
-<meta property="article:published_time" content="2020-04-30T15:43:18.000Z">
-<meta property="article:modified_time" content="2020-05-01T03:19:54.281Z">
+<meta property="og:description" content="一、介绍 出于对单片机运行状态进行实时监测的考虑，便产生了一种专门用于监测单片机程序运行状态的模块或者芯片，俗称“看门狗”(watchdog) 。  看门狗解决的问题是什么？在启动正常运行的时候，系统不能复位。在系统跑飞（程序异常执行）的情况，系统复位，程序重新执行。 STM32内置两个看门狗，提供了更高的安全性，时间的精确性和使用的灵活性。两个看门狗设备（独立看门狗&#x2F;窗口看门狗)可以用来检测和解">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E7%9C%8B%E9%97%A8%E7%8B%97/%E7%8B%AC%E7%AB%8B%E7%9C%8B%E9%97%A8%E7%8B%97%E6%A1%86%E5%9B%BE.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E7%9C%8B%E9%97%A8%E7%8B%97/%E9%94%AE%E5%AF%84%E5%AD%98%E5%99%A8KR.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E7%9C%8B%E9%97%A8%E7%8B%97/%E9%A2%84%E5%88%86%E9%A2%91%E5%AF%84%E5%AD%98%E5%99%A8.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E7%9C%8B%E9%97%A8%E7%8B%97/%E9%87%8D%E8%A3%85%E8%BD%BD%E5%AF%84%E5%AD%98%E5%99%A8.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E7%9C%8B%E9%97%A8%E7%8B%97/%E7%8A%B6%E6%80%81%E5%AF%84%E5%AD%98%E5%99%A8.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E7%9C%8B%E9%97%A8%E7%8B%97/%E7%9C%8B%E9%97%A8%E7%8B%97%E8%B6%85%E6%97%B6%E6%97%B6%E9%97%B4.png">
+<meta property="article:published_time" content="2020-07-29T07:26:54.000Z">
+<meta property="article:modified_time" content="2020-07-30T03:13:01.110Z">
 <meta property="article:author" content="Arsenic">
-<meta property="article:tag" content="选择器">
-<meta property="article:tag" content="scrapy">
+<meta property="article:tag" content="stm32">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/images/xpath/xpath.png">
+<meta name="twitter:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E7%9C%8B%E9%97%A8%E7%8B%97/%E7%8B%AC%E7%AB%8B%E7%9C%8B%E9%97%A8%E7%8B%97%E6%A1%86%E5%9B%BE.png">
 
 
 
@@ -122,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/04/30/xpath/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/07/29/独立看门狗/"/>
 
 
 
 
 
-  <title>xpath | Blog</title>
+  <title>独立看门狗 | Blog</title>
   
 
 
@@ -265,7 +269,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/30/xpath/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/07/29/%E7%8B%AC%E7%AB%8B%E7%9C%8B%E9%97%A8%E7%8B%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Arsenic">
@@ -282,7 +286,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">xpath</h1>
+          <h1 class="post-title" itemprop="name headline">独立看门狗</h1>
         
 
         <div class="post-meta">
@@ -294,8 +298,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-30T23:43:18+08:00">
-                2020-04-30
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-29T15:26:54+08:00">
+                2020-07-29
               </time>
             
 
@@ -317,8 +321,19 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/scrapy/" itemprop="url" rel="index">
-                    <span itemprop="name">scrapy</span>
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/" itemprop="url" rel="index">
+                    <span itemprop="name">单片机</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/" itemprop="url" rel="index">
+                    <span itemprop="name">stm32</span>
                   </a>
                 </span>
 
@@ -354,19 +369,64 @@
       
 
       
-        <h1 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h1><blockquote>
-<p>XPath即XML路径语言（XML Path Language），它是一种用来确定xml文档中某部分位置的语言。</p>
+        <h1 id="一、介绍"><a href="#一、介绍" class="headerlink" title="一、介绍"></a>一、介绍</h1><blockquote>
+<p>出于对单片机运行状态进行实时监测的考虑，便产生了一种专门用于监测单片机程序运行状态的模块或者芯片，俗称“看门狗”(watchdog) 。</p>
 </blockquote>
-<h1 id="二、基本语法"><a href="#二、基本语法" class="headerlink" title="二、基本语法"></a>二、基本语法</h1><p><img src="/images/xpath/xpath.png" alt="xpath"></p>
-<h2 id=""><a href="#" class="headerlink" title="/"></a>/</h2><pre><code>描述一个从根开始的绝对路径。</code></pre><h2 id="E1-E2"><a href="#E1-E2" class="headerlink" title="E1/E2"></a>E1/E2</h2><pre><code>选中E1子节点中的所有E2。</code></pre><h2 id="E"><a href="#E" class="headerlink" title="//E"></a>//E</h2><pre><code>选中文档中的所有E，无论在什么位置。</code></pre><h2 id="E1-E2-1"><a href="#E1-E2-1" class="headerlink" title="E1//E2"></a>E1//E2</h2><pre><code>选中E1后代节点中的所有E2，无论在后代中的什么位置。</code></pre><h2 id="E-text"><a href="#E-text" class="headerlink" title="E/text()"></a>E/text()</h2><pre><code>选中E的文本子节点。</code></pre><h2 id="E-1"><a href="#E-1" class="headerlink" title="E/*"></a>E/*</h2><pre><code>选中E的所有元素子节点。</code></pre><h2 id="E-2"><a href="#E-2" class="headerlink" title="*/E"></a>*/E</h2><pre><code>选中孙节点中的所有E。</code></pre><h2 id="E-ATTR"><a href="#E-ATTR" class="headerlink" title="E/@ATTR"></a>E/@ATTR</h2><pre><code>选中E的ATTR属性。
-response.xpath(&apos;//img/@src&apos;)</code></pre><h2 id="ATTR"><a href="#ATTR" class="headerlink" title="//@ATTR"></a>//@ATTR</h2><pre><code>选中文档中所有ATTR属性。
-response.xpath(&apos;//@href&apos;)</code></pre><h2 id="E-3"><a href="#E-3" class="headerlink" title="E/@*"></a>E/@*</h2><pre><code>选中E的所有属性。
-response.xpath(&apos;//a[1]/img/@*&apos;)</code></pre><h2 id="-1"><a href="#-1" class="headerlink" title="."></a>.</h2><pre><code>选中当前节点，用来描述相对路径。</code></pre><h2 id="-2"><a href="#-2" class="headerlink" title=".."></a>..</h2><pre><code>选中当前节点的父节点，用来描述相对路径。</code></pre><h2 id="last函数"><a href="#last函数" class="headerlink" title="last函数"></a>last函数</h2><pre><code>选中最后1个
-response.xpath(&apos;//a[last()]&apos;)</code></pre><h2 id="position函数"><a href="#position函数" class="headerlink" title="position函数"></a>position函数</h2><pre><code>选中前3个
-response.xpath(&apos;//a[position()&lt;=3]&apos;)</code></pre><h2 id="选中所有含有id属性的div"><a href="#选中所有含有id属性的div" class="headerlink" title="选中所有含有id属性的div"></a>选中所有含有id属性的div</h2><pre><code>response.xpath(&apos;//div[@id]&apos;)</code></pre><h2 id="选中所有含有id属性且值为”images”的div"><a href="#选中所有含有id属性且值为”images”的div" class="headerlink" title="选中所有含有id属性且值为”images”的div"></a>选中所有含有id属性且值为”images”的div</h2><pre><code>response.xpath(&apos;//div[@id=&quot;images&quot;]&apos;)</code></pre><h1 id="三、常用函数"><a href="#三、常用函数" class="headerlink" title="三、常用函数"></a>三、常用函数</h1><h2 id="string-arg"><a href="#string-arg" class="headerlink" title="string(arg)"></a>string(arg)</h2><pre><code>返回参数的字符串值。（将列表字符串自动合并）
+<h2 id="看门狗解决的问题是什么？"><a href="#看门狗解决的问题是什么？" class="headerlink" title="看门狗解决的问题是什么？"></a>看门狗解决的问题是什么？</h2><p><strong>在启动正常运行的时候，系统不能复位。</strong><br><strong>在系统跑飞（程序异常执行）的情况，系统复位，程序重新执行。</strong></p>
+<pre><code>STM32内置两个看门狗，提供了更高的安全性，时间的精确性和使用的灵活性。两个看门狗设备（独立看门狗/窗口看门狗)可以用来检测和解决由软件错误引起的故障。当计数器达到给定的超时值时，触发一个中断（仅适用窗口看门狗）或者产生系统复位。
+独立看门狗（IWDG)由专用的低速时钟（LSI)驱动，即使主时钟发生故障它仍有效。
 
-sel.xpath(&apos;string(/html/body/a/strong)&apos;).extract()</code></pre><h2 id="contains-str1-str2"><a href="#contains-str1-str2" class="headerlink" title="contains(str1, str2)"></a>contains(str1, str2)</h2><pre><code>判断str1中是否包含str2，返回布尔值。
-sel.xpath(&apos;//p[contains(@class, &quot;small&quot;)]&apos;)</code></pre>
+独立看门狗适合应用于需要看门狗作为一个在主程序之外 能够完全独立工作，并且对时间精度要求低的场合。
+
+窗口看门狗由从APB1时钟分频后得到时钟驱动。通过可配置的时间窗口来检测应用程序非正常的过迟或过早操作。  
+窗口看门狗最适合那些要求看门狗在精确计时窗口起作用的程序。</code></pre><h2 id="独立看门狗功能描述"><a href="#独立看门狗功能描述" class="headerlink" title="独立看门狗功能描述"></a>独立看门狗功能描述</h2><p><strong>在键值寄存器（IWDG_KR)中写入0xCCCC，开始启用独立看门狗。此时计数器开始从其复位值0xFFF递减，当计数器值计数到尾值0x000时会产生一个复位信号（IWDG_RESET)。</strong></p>
+<p><strong>无论何时，只要在键值寄存器IWDG_KR中写入0xAAAA（通常说的喂狗）, 自动重装载寄存器IWDG_RLR的值就会重新加载到计数器，从而避免看门狗复位。</strong></p>
+<p><strong>如果程序异常，就无法正常喂狗，从而系统复位。</strong></p>
+<h1 id="二、寄存器介绍"><a href="#二、寄存器介绍" class="headerlink" title="二、寄存器介绍"></a>二、寄存器介绍</h1><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E7%9C%8B%E9%97%A8%E7%8B%97/%E7%8B%AC%E7%AB%8B%E7%9C%8B%E9%97%A8%E7%8B%97%E6%A1%86%E5%9B%BE.png" alt="独立看门狗框图"></p>
+<pre><code>键值寄存器IWDG_KR: 0~15位有效
+预分频寄存器IWDG_PR：0~2位有效。具有写保护功能，要操作先取消写保护
+重装载寄存器IWDG_RLR：0~11位有效。具有写保护功能，要操作先取消写保护。
+状态寄存器IWDG_SR：0~1位有效</code></pre><p><strong>键寄存器KR</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E7%9C%8B%E9%97%A8%E7%8B%97/%E9%94%AE%E5%AF%84%E5%AD%98%E5%99%A8KR.png" alt="键寄存器KR"></p>
+<p><strong>预分频寄存器</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E7%9C%8B%E9%97%A8%E7%8B%97/%E9%A2%84%E5%88%86%E9%A2%91%E5%AF%84%E5%AD%98%E5%99%A8.png" alt="预分频寄存器"></p>
+<p><strong>重装载寄存器</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E7%9C%8B%E9%97%A8%E7%8B%97/%E9%87%8D%E8%A3%85%E8%BD%BD%E5%AF%84%E5%AD%98%E5%99%A8.png" alt="重装载寄存器"></p>
+<p><strong>状态寄存器</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E7%9C%8B%E9%97%A8%E7%8B%97/%E7%8A%B6%E6%80%81%E5%AF%84%E5%AD%98%E5%99%A8.png" alt="状态寄存器"></p>
+<p><strong>独立看门狗超时时间</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E7%9C%8B%E9%97%A8%E7%8B%97/%E7%9C%8B%E9%97%A8%E7%8B%97%E8%B6%85%E6%97%B6%E6%97%B6%E9%97%B4.png" alt="看门狗超时时间"></p>
+<h2 id="溢出时间计算："><a href="#溢出时间计算：" class="headerlink" title="溢出时间计算："></a>溢出时间计算：</h2><pre><code>Tout=((4×2^prer) ×rlr) /40 （M3)
+时钟频率LSI=40K， 一个看门狗时钟周期就是最短超时时间。
+最长超时时间= (IWDG_RLR寄存器最大值）X看门狗时钟周期</code></pre><h2 id="IWDG独立看门狗操作库函数"><a href="#IWDG独立看门狗操作库函数" class="headerlink" title="IWDG独立看门狗操作库函数"></a>IWDG独立看门狗操作库函数</h2><p><strong>void IWDG_WriteAccessCmd(uint16_t IWDG_WriteAccess);//取消写保护：0x5555使能</strong></p>
+<p><strong>void IWDG_SetPrescaler(uint8_t IWDG_Prescaler);//设置预分频系数：写PR</strong></p>
+<p><strong>void IWDG_SetReload(uint16_t Reload);//设置重装载值：写RLR</strong></p>
+<p><strong>void IWDG_ReloadCounter(void);//喂狗：写0xAAAA到KR</strong></p>
+<p><strong>void IWDG_Enable(void);//使能看门狗：写0xCCCC到KR</strong></p>
+<p><strong>FlagStatus IWDG_GetFlagStatus(uint16_t IWDG_FLAG);//状态：重装载/预分频 更新</strong></p>
+<h1 id="独立看门狗操作步骤"><a href="#独立看门狗操作步骤" class="headerlink" title="独立看门狗操作步骤"></a>独立看门狗操作步骤</h1><p><strong>1、取消寄存器写保护：</strong></p>
+<pre><code>IWDG_WriteAccessCmd();</code></pre><p><strong>2、设置独立看门狗的预分频系数，确定时钟:</strong></p>
+<pre><code>IWDG_SetPrescaler();</code></pre><p><strong>3、设置看门狗重装载值，确定溢出时间:</strong></p>
+<pre><code>IWDG_SetReload();</code></pre><p><strong>4、使能看门狗</strong></p>
+<pre><code>IWDG_Enable();</code></pre><p><strong>5、应用程序喂狗:</strong></p>
+<pre><code>IWDG_ReloadCounter();</code></pre><p><strong>6、溢出时间计算：</strong></p>
+<pre><code>Tout=((4×2^prer) ×rlr) /40 （M3)</code></pre><h1 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h1><pre><code>void IWDG_Init(u8 prer,u16 rlr) 
+{    
+     IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);  
+
+    IWDG_SetPrescaler(prer);  
+
+    IWDG_SetReload(rlr);  
+
+    IWDG_ReloadCounter(); 
+
+    IWDG_Enable();  
+}
+
+void IWDG_Feed(void)
+{   
+     IWDG_ReloadCounter();                                           
+}</code></pre>
       
     </div>
     
@@ -383,9 +443,7 @@ sel.xpath(&apos;//p[contains(@class, &quot;small&quot;)]&apos;)</code></pre>
       
         <div class="post-tags">
           
-            <a href="/tags/%E9%80%89%E6%8B%A9%E5%99%A8/" rel="tag"># 选择器</a>
-          
-            <a href="/tags/scrapy/" rel="tag"># scrapy</a>
+            <a href="/tags/stm32/" rel="tag"># stm32</a>
           
         </div>
       
@@ -398,8 +456,8 @@ sel.xpath(&apos;//p[contains(@class, &quot;small&quot;)]&apos;)</code></pre>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/04/29/%E4%BD%BF%E7%94%A8LinkExtractor%E6%8F%90%E5%8F%96%E9%93%BE%E6%8E%A5/" rel="next" title="使用LinkExtractor提取链接">
-                <i class="fa fa-chevron-left"></i> 使用LinkExtractor提取链接
+              <a href="/2020/07/29/%E5%A4%96%E9%83%A8%E4%B8%AD%E6%96%AD/" rel="next" title="外部中断">
+                <i class="fa fa-chevron-left"></i> 外部中断
               </a>
             
           </div>
@@ -407,10 +465,6 @@ sel.xpath(&apos;//p[contains(@class, &quot;small&quot;)]&apos;)</code></pre>
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/05/01/css/" rel="prev" title="css">
-                css <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -551,7 +605,7 @@ sel.xpath(&apos;//p[contains(@class, &quot;small&quot;)]&apos;)</code></pre>
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、概念"><span class="nav-number">1.</span> <span class="nav-text">一、概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、基本语法"><span class="nav-number">2.</span> <span class="nav-text">二、基本语法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">2.1.</span> <span class="nav-text">&#x2F;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E1-E2"><span class="nav-number">2.2.</span> <span class="nav-text">E1&#x2F;E2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E"><span class="nav-number">2.3.</span> <span class="nav-text">&#x2F;&#x2F;E</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E1-E2-1"><span class="nav-number">2.4.</span> <span class="nav-text">E1&#x2F;&#x2F;E2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-text"><span class="nav-number">2.5.</span> <span class="nav-text">E&#x2F;text()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-1"><span class="nav-number">2.6.</span> <span class="nav-text">E&#x2F;*</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-2"><span class="nav-number">2.7.</span> <span class="nav-text">*&#x2F;E</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-ATTR"><span class="nav-number">2.8.</span> <span class="nav-text">E&#x2F;@ATTR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ATTR"><span class="nav-number">2.9.</span> <span class="nav-text">&#x2F;&#x2F;@ATTR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-3"><span class="nav-number">2.10.</span> <span class="nav-text">E&#x2F;@*</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-1"><span class="nav-number">2.11.</span> <span class="nav-text">.</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#-2"><span class="nav-number">2.12.</span> <span class="nav-text">..</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#last函数"><span class="nav-number">2.13.</span> <span class="nav-text">last函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#position函数"><span class="nav-number">2.14.</span> <span class="nav-text">position函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选中所有含有id属性的div"><span class="nav-number">2.15.</span> <span class="nav-text">选中所有含有id属性的div</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选中所有含有id属性且值为”images”的div"><span class="nav-number">2.16.</span> <span class="nav-text">选中所有含有id属性且值为”images”的div</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、常用函数"><span class="nav-number">3.</span> <span class="nav-text">三、常用函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#string-arg"><span class="nav-number">3.1.</span> <span class="nav-text">string(arg)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#contains-str1-str2"><span class="nav-number">3.2.</span> <span class="nav-text">contains(str1, str2)</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、介绍"><span class="nav-number">1.</span> <span class="nav-text">一、介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#看门狗解决的问题是什么？"><span class="nav-number">1.1.</span> <span class="nav-text">看门狗解决的问题是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#独立看门狗功能描述"><span class="nav-number">1.2.</span> <span class="nav-text">独立看门狗功能描述</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、寄存器介绍"><span class="nav-number">2.</span> <span class="nav-text">二、寄存器介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#溢出时间计算："><span class="nav-number">2.1.</span> <span class="nav-text">溢出时间计算：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IWDG独立看门狗操作库函数"><span class="nav-number">2.2.</span> <span class="nav-text">IWDG独立看门狗操作库函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#独立看门狗操作步骤"><span class="nav-number">3.</span> <span class="nav-text">独立看门狗操作步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码"><span class="nav-number">4.</span> <span class="nav-text">代码</span></a></li></ol></div>
             
 
           </div>
