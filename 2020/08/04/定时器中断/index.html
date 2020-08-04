@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="stm32," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、定时器工作过程 1、时钟选择计数器时钟可以由下列时钟源提供： 内部时钟(CK_INT) 外部时钟模式1：外部输入脚(TIx) 外部时钟模式2：外部触发输入(ETR) 内部触发输入(ITRx)：使用一个定时器作为另一个定时器的预分频器，如可以配置一个定时器Timer1而作为另一个定时器Timer2的预分频器。 2、内部时钟选择  除非APB1的分频系数是1，否则通用定时器的时钟等于APB1时钟的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="定时器中断">
+<meta property="og:url" content="http://yoursite.com/2020/08/04/%E5%AE%9A%E6%97%B6%E5%99%A8%E4%B8%AD%E6%96%AD/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="一、定时器工作过程 1、时钟选择计数器时钟可以由下列时钟源提供： 内部时钟(CK_INT) 外部时钟模式1：外部输入脚(TIx) 外部时钟模式2：外部触发输入(ETR) 内部触发输入(ITRx)：使用一个定时器作为另一个定时器的预分频器，如可以配置一个定时器Timer1而作为另一个定时器Timer2的预分频器。 2、内部时钟选择  除非APB1的分频系数是1，否则通用定时器的时钟等于APB1时钟的">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/%E9%80%9A%E7%94%A8%E5%AE%9A%E6%97%B6%E5%99%A8%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/%E5%86%85%E9%83%A8%E6%97%B6%E9%92%9F%E9%80%89%E6%8B%A9.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/%E6%97%B6%E9%92%9F%E8%AE%A1%E7%AE%97.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/%E5%90%91%E4%B8%8B%E8%AE%A1%E6%95%B0.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/%E5%90%91%E4%B8%8A%E8%AE%A1%E6%95%B0.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/%E4%B8%AD%E5%A4%AE%E5%AF%B9%E9%BD%90%E8%AE%A1%E6%95%B0.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/TIMx_CNT.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/TIMx_PSC.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/TIMx_ARR.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/TIMx_CR1.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/TIMx_DIER.png">
+<meta property="article:published_time" content="2020-08-04T04:03:04.000Z">
+<meta property="article:modified_time" content="2020-08-04T05:01:36.625Z">
+<meta property="article:author" content="Arsenic">
+<meta property="article:tag" content="stm32">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/%E9%80%9A%E7%94%A8%E5%AE%9A%E6%97%B6%E5%99%A8%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/08/04/定时器中断/"/>
+
+
+
+
+
+  <title>定时器中断 | Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/04/%E5%AE%9A%E6%97%B6%E5%99%A8%E4%B8%AD%E6%96%AD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arsenic">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">定时器中断</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-04T12:03:04+08:00">
+                2020-08-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/" itemprop="url" rel="index">
+                    <span itemprop="name">单片机</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/" itemprop="url" rel="index">
+                    <span itemprop="name">stm32</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、定时器工作过程"><a href="#一、定时器工作过程" class="headerlink" title="一、定时器工作过程"></a>一、定时器工作过程</h1><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/%E9%80%9A%E7%94%A8%E5%AE%9A%E6%97%B6%E5%99%A8%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B.png" alt="通用定时器工作过程"></p>
+<h2 id="1、时钟选择"><a href="#1、时钟选择" class="headerlink" title="1、时钟选择"></a>1、时钟选择</h2><p><strong>计数器时钟可以由下列时钟源提供：</strong></p>
+<p><strong>内部时钟(CK_INT)</strong></p>
+<p><strong>外部时钟模式1：外部输入脚(TIx)</strong></p>
+<p><strong>外部时钟模式2：外部触发输入(ETR)</strong></p>
+<p><strong>内部触发输入(ITRx)：使用一个定时器作为另一个定时器的预分频器，如可以配置一个定时器Timer1而作为另一个定时器Timer2的预分频器。</strong></p>
+<h2 id="2、内部时钟选择"><a href="#2、内部时钟选择" class="headerlink" title="2、内部时钟选择"></a>2、内部时钟选择</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/%E5%86%85%E9%83%A8%E6%97%B6%E9%92%9F%E9%80%89%E6%8B%A9.png" alt="内部时钟选择"></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/%E6%97%B6%E9%92%9F%E8%AE%A1%E7%AE%97.png" alt="时钟计算"></p>
+<p><strong>除非APB1的分频系数是1，否则通用定时器的时钟等于APB1时钟的2倍。</strong></p>
+<pre><code>默认调用SystemInit函数情况下：
+SYSCLK=72M
+AHB时钟=72M
+APB1时钟=36M
+所以APB1的分频系数=AHB/APB1时钟=2
+所以，通用定时器时钟CK_INT=2*36M=72M</code></pre><h2 id="3、计数器模式"><a href="#3、计数器模式" class="headerlink" title="3、计数器模式"></a>3、计数器模式</h2><p>通用定时器可以<strong>向上计数、向下计数、向上向下双向计数模式</strong>。</p>
+<ul>
+<li><p>向上计数模式：计数器从0计数到自动加载值(TIMx_ARR)，然后重新从0开始计数并且产生一个计数器溢出事件。</p>
+</li>
+<li><p>向下计数模式：计数器从自动装入的值(TIMx_ARR)开始向下计数到0，然后从自动装入的值重新开始，并产生一个计数器向下溢出事件。</p>
+</li>
+<li><p>中央对齐模式（向上/向下计数）：计数器从0开始计数到自动装入的值-1，产生一个计数器溢出事件，然后向下计数到1并且产生一个计数器溢出事件；然后再从0开始重新计数。</p>
+</li>
+</ul>
+<h2 id="4、向下计数模式（时钟分频因子-1）"><a href="#4、向下计数模式（时钟分频因子-1）" class="headerlink" title="4、向下计数模式（时钟分频因子=1）"></a>4、向下计数模式（时钟分频因子=1）</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/%E5%90%91%E4%B8%8B%E8%AE%A1%E6%95%B0.png" alt="向下计数"></p>
+<h2 id="5、向上计数模式（时钟分频因子-1）"><a href="#5、向上计数模式（时钟分频因子-1）" class="headerlink" title="5、向上计数模式（时钟分频因子=1）"></a>5、向上计数模式（时钟分频因子=1）</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/%E5%90%91%E4%B8%8A%E8%AE%A1%E6%95%B0.png" alt="向上计数"></p>
+<h2 id="6、中央对齐计数模式（时钟分频因子-1-ARR-6）"><a href="#6、中央对齐计数模式（时钟分频因子-1-ARR-6）" class="headerlink" title="6、中央对齐计数模式（时钟分频因子=1  ARR=6）"></a>6、中央对齐计数模式（时钟分频因子=1  ARR=6）</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/%E4%B8%AD%E5%A4%AE%E5%AF%B9%E9%BD%90%E8%AE%A1%E6%95%B0.png" alt="中央对齐计数"></p>
+<h1 id="二、寄存器说明"><a href="#二、寄存器说明" class="headerlink" title="二、寄存器说明"></a>二、寄存器说明</h1><p><strong>计数器当前值寄存器CNT</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/TIMx_CNT.png" alt="TIMx_CNT"></p>
+<p><strong>预分频寄存器TIMx_PSC</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/TIMx_PSC.png" alt="TIMx_PSC"></p>
+<p><strong>自动重装载寄存器（TIMx_ARR)</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/TIMx_ARR.png" alt="TIMx_ARR"></p>
+<p><strong>控制寄存器1（TIMx_CR1）</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/TIMx_CR1.png" alt="TIMx_CR1"></p>
+<p><strong>DMA中断使能寄存器（TIMx_DIER）</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/TIMx_DIER.png" alt="TIMx_DIER"></p>
+<h1 id="三、常用库函数"><a href="#三、常用库函数" class="headerlink" title="三、常用库函数"></a>三、常用库函数</h1><h2 id="1、定时器参数初始化："><a href="#1、定时器参数初始化：" class="headerlink" title="1、定时器参数初始化："></a>1、定时器参数初始化：</h2><blockquote>
+<p>void TIM_TimeBaseInit(TIM_TypeDef* TIMx,TIM_TimeBaseInitTypeDef* TIM_TimeBaseInitStruct);</p>
+</blockquote>
+<pre><code>typedef struct
+{
+  uint16_t TIM_Prescaler;        
+  uint16_t TIM_CounterMode;     
+  uint16_t TIM_Period;        
+  uint16_t TIM_ClockDivision;  
+  uint8_t TIM_RepetitionCounter;
+} TIM_TimeBaseInitTypeDef; 
+
+
+TIM_TimeBaseStructure.TIM_Period = 4999; 
+TIM_TimeBaseStructure.TIM_Prescaler =7199; 
+TIM_TimeBaseStructure.TIM_ClockDivision =   TIM_CKD_DIV1; 
+TIM_TimeBaseStructure.TIM_CounterMode =   TIM_CounterMode_Up; 
+TIM_TimeBaseInit(TIM3, &amp;TIM_TimeBaseStructure); </code></pre><h2 id="2、定时器使能函数："><a href="#2、定时器使能函数：" class="headerlink" title="2、定时器使能函数："></a>2、定时器使能函数：</h2><blockquote>
+<p>void TIM_Cmd(TIM_TypeDef* TIMx, FunctionalState NewState)</p>
+</blockquote>
+<h2 id="3、定时器中断使能函数："><a href="#3、定时器中断使能函数：" class="headerlink" title="3、定时器中断使能函数："></a>3、定时器中断使能函数：</h2><blockquote>
+<p>void TIM_ITConfig(TIM_TypeDef* TIMx, uint16_t TIM_IT, FunctionalState NewState);</p>
+</blockquote>
+<h2 id="4、状态标志位获取和清除"><a href="#4、状态标志位获取和清除" class="headerlink" title="4、状态标志位获取和清除"></a>4、状态标志位获取和清除</h2><blockquote>
+<p>FlagStatus TIM_GetFlagStatus(TIM_TypeDef* TIMx, uint16_t TIM_FLAG);</p>
+</blockquote>
+<blockquote>
+<p>void TIM_ClearFlag(TIM_TypeDef* TIMx, uint16_t TIM_FLAG);</p>
+</blockquote>
+<blockquote>
+<p>ITStatus TIM_GetITStatus(TIM_TypeDef* TIMx, uint16_t TIM_IT);</p>
+</blockquote>
+<blockquote>
+<p>void TIM_ClearITPendingBit(TIM_TypeDef* TIMx, uint16_t TIM_IT);</p>
+</blockquote>
+<h1 id="四、定时器中断实现步骤"><a href="#四、定时器中断实现步骤" class="headerlink" title="四、定时器中断实现步骤"></a>四、定时器中断实现步骤</h1><ul>
+<li><p>能定时器时钟。</p>
+<pre><code>RCC_APB1PeriphClockCmd();</code></pre></li>
+<li><p>初始化定时器，配置ARR,PSC。</p>
+<pre><code>TIM_TimeBaseInit();</code></pre></li>
+<li><p>开启定时器中断，配置NVIC。</p>
+<pre><code>void TIM_ITConfig();
+NVIC_Init();</code></pre></li>
+<li><p>使能定时器。</p>
+<pre><code>TIM_Cmd();</code></pre></li>
+<li><p>编写中断服务函数。</p>
+<pre><code>TIMx_IRQHandler();</code></pre></li>
+</ul>
+<p><strong>Tout（溢出时间）=（ARR+1)(PSC+1)/Tclk</strong></p>
+<h1 id="五、代码"><a href="#五、代码" class="headerlink" title="五、代码:"></a>五、代码:</h1><pre><code>void TIM3_Int_Init(u16 arr,u16 psc)
+{
+    TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
+    NVIC_InitTypeDef NVIC_InitStructure;
+
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE); 
+    TIM_TimeBaseStructure.TIM_Period = arr; 
+    TIM_TimeBaseStructure.TIM_Prescaler =psc;   
+    TIM_TimeBaseStructure.TIM_ClockDivision = 0; 
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up; 
+    TIM_TimeBaseInit(TIM3, &amp;TIM_TimeBaseStructure); //定时器初始化
+
+    TIM_ITConfig(  //开启中断
+        TIM3, //TIM2
+        TIM_IT_Update ,
+        ENABLE 
+        );
+    NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;  
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0; 
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3; 
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; 
+    NVIC_Init(&amp;NVIC_InitStructure); //中断向量配置
+
+    TIM_Cmd(TIM3, ENABLE);  
+
+}
+
+void TIM3_IRQHandler(void)   //中断函数
+{
+    if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET) 
+        {
+        TIM_ClearITPendingBit(TIM3, TIM_IT_Update  );  
+        LED1=!LED1;
+        }
+}</code></pre>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/stm32/" rel="tag"># stm32</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/01/%E9%80%9A%E7%94%A8%E5%AE%9A%E6%97%B6%E5%99%A8%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86/" rel="next" title="通用定时器基本原理">
+                <i class="fa fa-chevron-left"></i> 通用定时器基本原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/08/04/PWM%E8%BE%93%E5%87%BA/" rel="prev" title="PWM输出">
+                PWM输出 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>   
+    </div> 
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.gif"
+                alt="Arsenic" />
+            
+              <p class="site-author-name" itemprop="name">Arsenic</p>
+              <p class="site-description motion-element" itemprop="description">Write sonething words!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">33</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+          <div id="music163player">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=29932433&auto=0&height=66"></iframe>
+          </div>
+          <div id="music163player">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=167655&auto=0&height=66"></iframe>
+          </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、定时器工作过程"><span class="nav-number">1.</span> <span class="nav-text">一、定时器工作过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、时钟选择"><span class="nav-number">1.1.</span> <span class="nav-text">1、时钟选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、内部时钟选择"><span class="nav-number">1.2.</span> <span class="nav-text">2、内部时钟选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、计数器模式"><span class="nav-number">1.3.</span> <span class="nav-text">3、计数器模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、向下计数模式（时钟分频因子-1）"><span class="nav-number">1.4.</span> <span class="nav-text">4、向下计数模式（时钟分频因子&#x3D;1）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、向上计数模式（时钟分频因子-1）"><span class="nav-number">1.5.</span> <span class="nav-text">5、向上计数模式（时钟分频因子&#x3D;1）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6、中央对齐计数模式（时钟分频因子-1-ARR-6）"><span class="nav-number">1.6.</span> <span class="nav-text">6、中央对齐计数模式（时钟分频因子&#x3D;1  ARR&#x3D;6）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、寄存器说明"><span class="nav-number">2.</span> <span class="nav-text">二、寄存器说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、常用库函数"><span class="nav-number">3.</span> <span class="nav-text">三、常用库函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、定时器参数初始化："><span class="nav-number">3.1.</span> <span class="nav-text">1、定时器参数初始化：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、定时器使能函数："><span class="nav-number">3.2.</span> <span class="nav-text">2、定时器使能函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、定时器中断使能函数："><span class="nav-number">3.3.</span> <span class="nav-text">3、定时器中断使能函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、状态标志位获取和清除"><span class="nav-number">3.4.</span> <span class="nav-text">4、状态标志位获取和清除</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、定时器中断实现步骤"><span class="nav-number">4.</span> <span class="nav-text">四、定时器中断实现步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、代码"><span class="nav-number">5.</span> <span class="nav-text">五、代码:</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Arsenic</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+
+</body>
+</html>
