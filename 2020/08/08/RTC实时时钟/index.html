@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="stm32," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、介绍 RTC是个独立的定时器。RTC模块拥有一个连续计数的计数器，在相应的软件配置下，可以提供时钟日历的功能。修改计数器的值可以重新设置当前时间和日期。  RTC模块和时钟配置系统(RCC_BDCR寄存器)是在后备区域，即在系统复位或从待机模式唤醒后RTC的设置和时间维持不变。但是在系统复位后，会自动禁止访问后备寄存器和RTC，以防止对后备区域(BKP)的意外写操作。所以在要设置时间之前， 先">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RTC实时时钟">
+<meta property="og:url" content="http://yoursite.com/2020/08/08/RTC%E5%AE%9E%E6%97%B6%E6%97%B6%E9%92%9F/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="一、介绍 RTC是个独立的定时器。RTC模块拥有一个连续计数的计数器，在相应的软件配置下，可以提供时钟日历的功能。修改计数器的值可以重新设置当前时间和日期。  RTC模块和时钟配置系统(RCC_BDCR寄存器)是在后备区域，即在系统复位或从待机模式唤醒后RTC的设置和时间维持不变。但是在系统复位后，会自动禁止访问后备寄存器和RTC，以防止对后备区域(BKP)的意外写操作。所以在要设置时间之前， 先">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC%E7%89%B9%E5%BE%81.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E6%A1%86%E5%9B%BE.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC%E6%97%B6%E9%92%9F%E6%BA%90.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/BKP%E5%A4%87%E4%BB%BD%E5%AF%84%E5%AD%98%E5%99%A8.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC_CRH.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC_CRL.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC_PRLH%E5%92%8CRTC_PRLL.PNG">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC_DIVH%E5%92%8CRTC_DIVL.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC_CNTH%E5%92%8CRTC_CNTL.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC_ALRH%E5%92%8CRTC_ALRL.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/%E9%85%8D%E7%BD%AERTC%E5%AF%84%E5%AD%98%E5%99%A8.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/%E8%AF%BBRTC%E5%AF%84%E5%AD%98%E5%99%A8.png">
+<meta property="article:published_time" content="2020-08-08T01:37:21.000Z">
+<meta property="article:modified_time" content="2020-08-08T02:23:08.839Z">
+<meta property="article:author" content="Arsenic">
+<meta property="article:tag" content="stm32">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC%E7%89%B9%E5%BE%81.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/08/08/RTC实时时钟/"/>
+
+
+
+
+
+  <title>RTC实时时钟 | Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/08/RTC%E5%AE%9E%E6%97%B6%E6%97%B6%E9%92%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arsenic">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RTC实时时钟</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-08T09:37:21+08:00">
+                2020-08-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/" itemprop="url" rel="index">
+                    <span itemprop="name">单片机</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/" itemprop="url" rel="index">
+                    <span itemprop="name">stm32</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、介绍"><a href="#一、介绍" class="headerlink" title="一、介绍"></a>一、介绍</h1><blockquote>
+<p>RTC是个独立的定时器。RTC模块拥有一个连续计数的计数器，在相应的软件配置下，可以提供时钟日历的功能。修改计数器的值可以重新设置当前时间和日期。</p>
+</blockquote>
+<p><strong>RTC模块和时钟配置系统(RCC_BDCR寄存器)是在后备区域，即在系统复位或从待机模式唤醒后RTC的设置和时间维持不变。但是在系统复位后，会自动禁止访问后备寄存器和RTC，以防止对后备区域(BKP)的意外写操作。所以在要设置时间之前， 先要取消备份区域（BKP）写保护。</strong></p>
+<h2 id="RTC特征"><a href="#RTC特征" class="headerlink" title="RTC特征"></a>RTC特征</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC%E7%89%B9%E5%BE%81.png" alt="RTC特征"></p>
+<h2 id="RTC工作原理框图"><a href="#RTC工作原理框图" class="headerlink" title="RTC工作原理框图"></a>RTC工作原理框图</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E6%A1%86%E5%9B%BE.png" alt="RTC工作原理框图"></p>
+<h2 id="TC由两部分组成"><a href="#TC由两部分组成" class="headerlink" title="TC由两部分组成"></a>TC由两部分组成</h2><p><strong>APB1接口</strong>：用来和APB1总线相连。通过APB1接口可以访问RTC的相关寄存器（预分频值，计数器值，闹钟值）。</p>
+<p><strong>RTC核心</strong>：由一组可编程计数器组成。分两个主要模块。</p>
+<ul>
+<li>第一个是RTC预分频模块，它可以编程产生最长1秒的RTC时间基TR_CLK。如果设置了秒中断允许位，可以产生秒中断。</li>
+<li>第二个是32位的可编程计数器，可被初始化为当前时间。系统时间按TR_CLK周期累加并与存储在RTC_ALR寄存器中的可编程时间相比，当匹配时候如果设置了闹钟中断允许位，可以产生闹钟中断。</li>
+</ul>
+<p><strong>RTC内核完全独立于APB1接口，软件通过APB1接口对RTC相关寄存器访问。但是相关寄存器只在RTC APB1时钟进行重新同步的RTC时钟的上升沿被更新。所以软件必须先等待寄存器同步标志位（RTC_CRL的RSF位）被硬件置1才读。</strong></p>
+<h2 id="RTC时钟源"><a href="#RTC时钟源" class="headerlink" title="RTC时钟源"></a>RTC时钟源</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC%E6%97%B6%E9%92%9F%E6%BA%90.png" alt="RTC时钟源"></p>
+<h1 id="二、寄存器"><a href="#二、寄存器" class="headerlink" title="二、寄存器"></a>二、寄存器</h1><h2 id="BKP备份寄存器"><a href="#BKP备份寄存器" class="headerlink" title="BKP备份寄存器"></a>BKP备份寄存器</h2><ul>
+<li>备份寄存器是42个16位的寄存器。可用来存储84个字节数据。</li>
+<li>它们处在备份区域，当VDD电源切断，仍然由VBAT维持供电。</li>
+<li>当系统在待机模式下被唤醒，或者系统复位或者电源复位，它们也不会复位。</li>
+<li>执行以下操作将使能对后备寄存器和RTC访问：</li>
+<li>设置寄存器RCC_APB1ENR的PWREN和BKPEN位，使能电源和后备时钟。</li>
+<li>设置寄存器PWR_CR的DBP位，使能对RTC和后备寄存器的访问。</li>
+</ul>
+<p><strong>提醒：一共有42个16位备份寄存器。常用来保存一些系统配置信息和相关标志位。</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/BKP%E5%A4%87%E4%BB%BD%E5%AF%84%E5%AD%98%E5%99%A8.png" alt="BKP备份寄存器"></p>
+<h2 id="RTC相关寄存器"><a href="#RTC相关寄存器" class="headerlink" title="RTC相关寄存器"></a>RTC相关寄存器</h2><pre><code>RTC控制寄存器             (RTC_CRH，   RTC_CRL)
+RTC预分频装载寄存器       (RTC_PRLH， RTC_PRLL)
+RTC预分频余数寄存器       (RTC_DIVH，  RTC_DIVL)
+RTC计数器寄存器           (RTC_CNTH， RTC_CNTL)
+RTC闹钟寄存器             (RTC_ALRH ，RTC_ALRL)</code></pre><h2 id="RTC控制寄存器高位（RTC-CRH"><a href="#RTC控制寄存器高位（RTC-CRH" class="headerlink" title="RTC控制寄存器高位（RTC_CRH)"></a>RTC控制寄存器高位（RTC_CRH)</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC_CRH.png" alt="RTC_CRH"></p>
+<h2 id="RTC控制寄存器低位（RTC-CRL"><a href="#RTC控制寄存器低位（RTC-CRL" class="headerlink" title="RTC控制寄存器低位（RTC_CRL)"></a>RTC控制寄存器低位（RTC_CRL)</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC_CRL.png" alt="RTC_CRL"></p>
+<p><strong>修改CRH/CRL寄存器，必须先判断RSF位，确定已经同步。</strong></p>
+<p><strong>修改CNT,ALR,PRL的时候，必须先配置CNF位进入配置模式，修改完之后，设置CNF位为0退出配置模式</strong></p>
+<p><strong>同时在对RTC相关寄存器写操作之前，必须判断上一次写操作已经结束，也就是判断RTOFF位是否置位。</strong></p>
+<h2 id="RTC-PRLH和RTC-PRLL"><a href="#RTC-PRLH和RTC-PRLL" class="headerlink" title="RTC_PRLH和RTC_PRLL"></a>RTC_PRLH和RTC_PRLL</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC_PRLH%E5%92%8CRTC_PRLL.PNG" alt="RTC_PRLH和RTC_PRLL"></p>
+<h2 id="RTC-DIVH和RTC-DIVL"><a href="#RTC-DIVH和RTC-DIVL" class="headerlink" title="RTC_DIVH和RTC_DIVL"></a>RTC_DIVH和RTC_DIVL</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC_DIVH%E5%92%8CRTC_DIVL.png" alt="RTC_DIVH和RTC_DIVL"></p>
+<h2 id="RTC-CNTH和RTC-CNTL"><a href="#RTC-CNTH和RTC-CNTL" class="headerlink" title="RTC_CNTH和RTC_CNTL"></a>RTC_CNTH和RTC_CNTL</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC_CNTH%E5%92%8CRTC_CNTL.png" alt="RTC_CNTH和RTC_CNTL"></p>
+<h2 id="RTC-ALRH和RTC-ALRL"><a href="#RTC-ALRH和RTC-ALRL" class="headerlink" title="RTC_ALRH和RTC_ALRL"></a>RTC_ALRH和RTC_ALRL</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/RTC_ALRH%E5%92%8CRTC_ALRL.png" alt="RTC_ALRH和RTC_ALRL"></p>
+<h2 id="配置RTC寄存器"><a href="#配置RTC寄存器" class="headerlink" title="配置RTC寄存器"></a>配置RTC寄存器</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/%E9%85%8D%E7%BD%AERTC%E5%AF%84%E5%AD%98%E5%99%A8.png" alt="配置RTC寄存器"></p>
+<h2 id="读RTC寄存器"><a href="#读RTC寄存器" class="headerlink" title="读RTC寄存器"></a>读RTC寄存器</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/RTC/%E8%AF%BBRTC%E5%AF%84%E5%AD%98%E5%99%A8.png" alt="读RTC寄存器"></p>
+<h1 id="RTC相关库函数讲解"><a href="#RTC相关库函数讲解" class="headerlink" title="RTC相关库函数讲解"></a>RTC相关库函数讲解</h1><pre><code>void RTC_ITConfig(uint16_t RTC_IT, FunctionalState NewState);
+void RTC_EnterConfigMode(void);
+void RTC_ExitConfigMode(void);
+uint32_t  RTC_GetCounter(void);
+void RTC_SetCounter(uint32_t CounterValue);
+void RTC_SetPrescaler(uint32_t PrescalerValue);
+void RTC_SetAlarm(uint32_t AlarmValue);
+uint32_t  RTC_GetDivider(void);
+void RTC_WaitForLastTask(void);
+void RTC_WaitForSynchro(void);
+FlagStatus RTC_GetFlagStatus(uint16_t RTC_FLAG);
+void RTC_ClearFlag(uint16_t RTC_FLAG);
+ITStatus RTC_GetITStatus(uint16_t RTC_IT);
+void RTC_ClearITPendingBit(uint16_t RTC_IT);</code></pre><h1 id="三、RTC时钟源和时钟操作函数："><a href="#三、RTC时钟源和时钟操作函数：" class="headerlink" title="三、RTC时钟源和时钟操作函数："></a>三、RTC时钟源和时钟操作函数：</h1><blockquote>
+<p>void RCC_RTCCLKConfig(uint32_t  CLKSource)；//时钟源选择</p>
+</blockquote>
+<blockquote>
+<p>void RCC_RTCCLKCmd(FunctionalState NewState)//时钟使能</p>
+</blockquote>
+<h2 id="RTC配置函数（预分频，计数值："><a href="#RTC配置函数（预分频，计数值：" class="headerlink" title="RTC配置函数（预分频，计数值："></a>RTC配置函数（预分频，计数值：</h2><blockquote>
+<p>void RTC_SetPrescaler(uint32_t PrescalerValue);//预分频配置：PRLH/PRLL</p>
+</blockquote>
+<blockquote>
+<p>void RTC_SetCounter(uint32_t CounterValue)；//设置计数器值：CNTH/CNTL</p>
+</blockquote>
+<blockquote>
+<p>void RTC_SetAlarm(uint32_t AlarmValue)；//闹钟设置：ALRH/ALRL</p>
+</blockquote>
+<h2 id="RTC中断设置函数："><a href="#RTC中断设置函数：" class="headerlink" title="RTC中断设置函数："></a>RTC中断设置函数：</h2><blockquote>
+<p>void RTC_ITConfig(uint16_t RTC_IT, FunctionalState NewState);//CRH</p>
+</blockquote>
+<h2 id="RTC允许配置和退出配置函数："><a href="#RTC允许配置和退出配置函数：" class="headerlink" title="RTC允许配置和退出配置函数："></a>RTC允许配置和退出配置函数：</h2><blockquote>
+<p>void RTC_EnterConfigMode(void);//允许RTC配置 :CRL位 CNF</p>
+</blockquote>
+<blockquote>
+<p>void RTC_ExitConfigMode(void);//退出配置模式:CRL位 CNF</p>
+</blockquote>
+<h2 id="同步函数："><a href="#同步函数：" class="headerlink" title="同步函数："></a>同步函数：</h2><blockquote>
+<p>void RTC_WaitForLastTask(void)；//等待上次操作完成：CRL位RTOFF</p>
+</blockquote>
+<blockquote>
+<p>void RTC_WaitForSynchro(void)；//等待时钟同步：CRL位RSF</p>
+</blockquote>
+<h2 id="相关状态位获取清除函数："><a href="#相关状态位获取清除函数：" class="headerlink" title="相关状态位获取清除函数："></a>相关状态位获取清除函数：</h2><blockquote>
+<p>FlagStatus RTC_GetFlagStatus(uint16_t RTC_FLAG);</p>
+</blockquote>
+<blockquote>
+<p>void RTC_ClearFlag(uint16_t RTC_FLAG);</p>
+</blockquote>
+<blockquote>
+<p>ITStatus RTC_GetITStatus(uint16_t RTC_IT);</p>
+</blockquote>
+<blockquote>
+<p>void RTC_ClearITPendingBit(uint16_t RTC_IT);</p>
+</blockquote>
+<h2 id="其他相关函数（BKP等）"><a href="#其他相关函数（BKP等）" class="headerlink" title="其他相关函数（BKP等）"></a>其他相关函数（BKP等）</h2><blockquote>
+<p>PWR_BackupAccessCmd();//BKP后备区域访问使能</p>
+</blockquote>
+<blockquote>
+<p>RCC_APB1PeriphClockCmd();//能PWR和BKP时钟</p>
+</blockquote>
+<blockquote>
+<p>RCC_LSEConfig();//开启LSE，RTC选择LSE作为时钟源    </p>
+</blockquote>
+<h2 id="其他相关函数（BKP等）-1"><a href="#其他相关函数（BKP等）-1" class="headerlink" title="其他相关函数（BKP等）"></a>其他相关函数（BKP等）</h2><blockquote>
+<p>PWR_BackupAccessCmd();//BKP后备区域访问使能</p>
+</blockquote>
+<blockquote>
+<p>uint16_t BKP_ReadBackupRegister(uint16_t BKP_DR);//读BKP寄存器</p>
+</blockquote>
+<blockquote>
+<p>void BKP_WriteBackupRegister(uint16_t BKP_DR, uint16_t Data);//写BKP</p>
+</blockquote>
+<h2 id="RTC配置一般步骤"><a href="#RTC配置一般步骤" class="headerlink" title="RTC配置一般步骤"></a>RTC配置一般步骤</h2><ul>
+<li><p><strong>使能PWR和BKP时钟</strong>：RCC_APB1PeriphClockCmd();</p>
+</li>
+<li><p><strong>使能后备寄存器访问</strong>:   PWR_BackupAccessCmd();</p>
+</li>
+<li><p><strong>配置RTC时钟源</strong>，<strong>使能RTC时钟</strong>：</p>
+<pre><code>RCC_RTCCLKConfig();
+
+RCC_RTCCLKCmd();
+
+如果使用LSE，要打开LSE：RCC_LSEConfig(RCC_LSE_ON);</code></pre></li>
+<li><p><strong>设置RTC预分频系数</strong>：RTC_SetPrescaler();</p>
+</li>
+<li><p><strong>设置时间</strong>：RTC_SetCounter();</p>
+</li>
+<li><p><strong>开启相关中断</strong>（如果需要）:RTC_ITConfig()；</p>
+</li>
+<li><p><strong>编写中断服务函数</strong>：RTC_IRQHandler();</p>
+</li>
+<li><p><strong>部分操作要等待写操作完成和同步</strong>。</p>
+<p>  RTC_WaitForLastTask();//等待最近一次对RTC寄存器的写操作完成</p>
+<p>  RTC_WaitForSynchro();    //等待RTC寄存器同步 </p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/stm32/" rel="tag"># stm32</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/07/%E8%BE%93%E5%85%A5%E6%8D%95%E8%8E%B7/" rel="next" title="输入捕获">
+                <i class="fa fa-chevron-left"></i> 输入捕获
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/08/09/ADC%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86/" rel="prev" title="ADC基本原理">
+                ADC基本原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>   
+    </div> 
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.gif"
+                alt="Arsenic" />
+            
+              <p class="site-author-name" itemprop="name">Arsenic</p>
+              <p class="site-description motion-element" itemprop="description">Write sonething words!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+          <div id="music163player">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=29932433&auto=0&height=66"></iframe>
+          </div>
+          <div id="music163player">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=167655&auto=0&height=66"></iframe>
+          </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、介绍"><span class="nav-number">1.</span> <span class="nav-text">一、介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RTC特征"><span class="nav-number">1.1.</span> <span class="nav-text">RTC特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RTC工作原理框图"><span class="nav-number">1.2.</span> <span class="nav-text">RTC工作原理框图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TC由两部分组成"><span class="nav-number">1.3.</span> <span class="nav-text">TC由两部分组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RTC时钟源"><span class="nav-number">1.4.</span> <span class="nav-text">RTC时钟源</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、寄存器"><span class="nav-number">2.</span> <span class="nav-text">二、寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BKP备份寄存器"><span class="nav-number">2.1.</span> <span class="nav-text">BKP备份寄存器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RTC相关寄存器"><span class="nav-number">2.2.</span> <span class="nav-text">RTC相关寄存器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RTC控制寄存器高位（RTC-CRH"><span class="nav-number">2.3.</span> <span class="nav-text">RTC控制寄存器高位（RTC_CRH)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RTC控制寄存器低位（RTC-CRL"><span class="nav-number">2.4.</span> <span class="nav-text">RTC控制寄存器低位（RTC_CRL)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RTC-PRLH和RTC-PRLL"><span class="nav-number">2.5.</span> <span class="nav-text">RTC_PRLH和RTC_PRLL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RTC-DIVH和RTC-DIVL"><span class="nav-number">2.6.</span> <span class="nav-text">RTC_DIVH和RTC_DIVL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RTC-CNTH和RTC-CNTL"><span class="nav-number">2.7.</span> <span class="nav-text">RTC_CNTH和RTC_CNTL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RTC-ALRH和RTC-ALRL"><span class="nav-number">2.8.</span> <span class="nav-text">RTC_ALRH和RTC_ALRL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置RTC寄存器"><span class="nav-number">2.9.</span> <span class="nav-text">配置RTC寄存器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#读RTC寄存器"><span class="nav-number">2.10.</span> <span class="nav-text">读RTC寄存器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RTC相关库函数讲解"><span class="nav-number">3.</span> <span class="nav-text">RTC相关库函数讲解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、RTC时钟源和时钟操作函数："><span class="nav-number">4.</span> <span class="nav-text">三、RTC时钟源和时钟操作函数：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RTC配置函数（预分频，计数值："><span class="nav-number">4.1.</span> <span class="nav-text">RTC配置函数（预分频，计数值：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RTC中断设置函数："><span class="nav-number">4.2.</span> <span class="nav-text">RTC中断设置函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RTC允许配置和退出配置函数："><span class="nav-number">4.3.</span> <span class="nav-text">RTC允许配置和退出配置函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同步函数："><span class="nav-number">4.4.</span> <span class="nav-text">同步函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关状态位获取清除函数："><span class="nav-number">4.5.</span> <span class="nav-text">相关状态位获取清除函数：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他相关函数（BKP等）"><span class="nav-number">4.6.</span> <span class="nav-text">其他相关函数（BKP等）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他相关函数（BKP等）-1"><span class="nav-number">4.7.</span> <span class="nav-text">其他相关函数（BKP等）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RTC配置一般步骤"><span class="nav-number">4.8.</span> <span class="nav-text">RTC配置一般步骤</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Arsenic</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+
+</body>
+</html>
