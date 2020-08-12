@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="stm32," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、DMA简介 DMA 全称Direct Memory Access，即直接存储器访问。   DMA传输将数据从一个地址空间复制到另一个地址空间。当CPU初始化这个传输动作，传输动作本身是由DMA控制器来实现和完成的。   DMA传输方式无需CPU直接控制传输，也没有中断处理方式那样保留现场和恢复现场过程，通过硬件为RAM和IO设备开辟一条直接传输数据的通道，使得CPU的效率大大提高。   作用：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DMA基本原理">
+<meta property="og:url" content="http://yoursite.com/2020/08/12/DMA%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="一、DMA简介 DMA 全称Direct Memory Access，即直接存储器访问。   DMA传输将数据从一个地址空间复制到另一个地址空间。当CPU初始化这个传输动作，传输动作本身是由DMA控制器来实现和完成的。   DMA传输方式无需CPU直接控制传输，也没有中断处理方式那样保留现场和恢复现场过程，通过硬件为RAM和IO设备开辟一条直接传输数据的通道，使得CPU的效率大大提高。   作用：">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/DMA%E6%A1%86%E5%9B%BE.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/DMA1%E6%8E%A7%E5%88%B6%E5%99%A8.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/DMA2%E6%8E%A7%E5%88%B6%E5%99%A8.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/DMA%E5%A4%84%E7%90%86.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/DMA_CCRX%E5%AF%84%E5%AD%98%E5%99%A8.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/%E4%BB%B2%E8%A3%81%E5%99%A8.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/DMA_CCRX%E5%AF%84%E5%AD%98%E5%99%A81.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/DMA%E9%80%9A%E9%81%93.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/%E6%8C%87%E9%92%88%E5%A2%9E%E9%87%8F.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/%E5%BE%AA%E7%8E%AF%E6%A8%A1%E5%BC%8F.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/%E5%AD%98%E5%82%A8%E5%99%A8%E5%88%B0%E5%AD%98%E5%82%A8%E5%99%A8%E6%A8%A1%E5%BC%8F.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/%E9%80%9A%E9%81%93%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE%E9%87%8F.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/%E4%B8%AD%E6%96%AD.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/%E9%80%9A%E9%81%93%E9%85%8D%E7%BD%AE%E8%BF%87%E7%A8%8B.png">
+<meta property="article:published_time" content="2020-08-12T11:31:50.000Z">
+<meta property="article:modified_time" content="2020-08-12T12:21:41.471Z">
+<meta property="article:author" content="Arsenic">
+<meta property="article:tag" content="stm32">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/DMA%E6%A1%86%E5%9B%BE.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/08/12/DMA基本原理/"/>
+
+
+
+
+
+  <title>DMA基本原理 | Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/12/DMA%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arsenic">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">DMA基本原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-12T19:31:50+08:00">
+                2020-08-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/" itemprop="url" rel="index">
+                    <span itemprop="name">单片机</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/" itemprop="url" rel="index">
+                    <span itemprop="name">stm32</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、DMA简介"><a href="#一、DMA简介" class="headerlink" title="一、DMA简介"></a>一、DMA简介</h1><blockquote>
+<p>DMA 全称Direct Memory Access，即直接存储器访问。</p>
+</blockquote>
+<blockquote>
+<p>DMA传输将数据从一个地址空间复制到另一个地址空间。当CPU初始化这个传输动作，传输动作本身是由DMA控制器来实现和完成的。</p>
+</blockquote>
+<blockquote>
+<p>DMA传输方式无需CPU直接控制传输，也没有中断处理方式那样保留现场和恢复现场过程，通过硬件为RAM和IO设备开辟一条直接传输数据的通道，使得CPU的效率大大提高。</p>
+</blockquote>
+<blockquote>
+<p><strong>作用：为CPU减负。</strong></p>
+</blockquote>
+<p><strong>STM32最多有2个DMA控制器（DMA2仅存在大容量产品中），DMA1有7个通道。DMA2有5个通道。每个通道专门用来管理来自于一个或多个外设对存储器访问的请求。还有一个仲裁起来协调各个DMA请求的优先权。</strong></p>
+<h2 id="DMA框图"><a href="#DMA框图" class="headerlink" title="DMA框图"></a>DMA框图</h2><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/DMA%E6%A1%86%E5%9B%BE.png" alt="DMA框图"></p>
+<h2 id="STM32的DMA有以下一些特性"><a href="#STM32的DMA有以下一些特性" class="headerlink" title="STM32的DMA有以下一些特性"></a>STM32的DMA有以下一些特性</h2><ul>
+<li>每个通道都直接连接专用的硬件DMA请求，都支持软件触发，这些通过软件来配置。</li>
+<li>在七个请求间的优先权可以通过软件编程设置(共有四级：很高、高、中等和低)，假如在相等优先权时由硬件决定(请求0优先于请求1，依此类推) 。 </li>
+<li>独立的源和目标数据区的传输宽度(字节、半字、全字)，模拟打包和拆包的过程。源和目标地址必须按数据传输宽度对齐。 </li>
+<li>支持循环的缓冲器管理 </li>
+<li>每个通道都有3个事件标志(DMA 半传输，DMA传输完成和DMA传输出错)，这3个事件标志逻辑或成为一个单独的中断请求。 </li>
+<li>外设和存储器，存储器和外设的传输 ，存储器和存储器间的传输</li>
+<li>闪存、SRAM、外设的SRAM、APB1 APB2和AHB外设均可作为访问的源和目标。 </li>
+<li>可编程的数据传输数目：最大为65536</li>
+</ul>
+<p><strong>DMA1控制器</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/DMA1%E6%8E%A7%E5%88%B6%E5%99%A8.png" alt="DMA1控制器"></p>
+<p><strong>DMA2控制器</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/DMA2%E6%8E%A7%E5%88%B6%E5%99%A8.png" alt="DMA2控制器"></p>
+<p><strong>DMA处理</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/DMA%E5%A4%84%E7%90%86.png" alt="DMA处理"></p>
+<p><strong>DMA_CCRX寄存器</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/DMA_CCRX%E5%AF%84%E5%AD%98%E5%99%A8.png" alt="DMA_CCRX寄存器"></p>
+<p><strong>仲裁器</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/%E4%BB%B2%E8%A3%81%E5%99%A8.png" alt="仲裁器"></p>
+<p><strong>DMA_CCRX寄存器1</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/DMA_CCRX%E5%AF%84%E5%AD%98%E5%99%A81.png" alt="DMA_CCRX寄存器1"></p>
+<p><strong>DMA通道</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/DMA%E9%80%9A%E9%81%93.png" alt="DMA通道"></p>
+<p><strong>指针增量</strong><br><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/%E6%8C%87%E9%92%88%E5%A2%9E%E9%87%8F.png" alt="指针增量"></p>
+<p><strong>循环模式</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/%E5%BE%AA%E7%8E%AF%E6%A8%A1%E5%BC%8F.png" alt="循环模式"></p>
+<p><strong>存储器到存储器模式</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/%E5%AD%98%E5%82%A8%E5%99%A8%E5%88%B0%E5%AD%98%E5%82%A8%E5%99%A8%E6%A8%A1%E5%BC%8F.png" alt="存储器到存储器模式"></p>
+<p><strong>通道传输数据量</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/%E9%80%9A%E9%81%93%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE%E9%87%8F.png" alt="通道传输数据量"></p>
+<p><strong>中断</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/%E4%B8%AD%E6%96%AD.png" alt="中断"></p>
+<p><strong>通道配置过程</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DMA/%E9%80%9A%E9%81%93%E9%85%8D%E7%BD%AE%E8%BF%87%E7%A8%8B.png" alt="通道配置过程"></p>
+<h2 id="常用DMA库函数"><a href="#常用DMA库函数" class="headerlink" title="常用DMA库函数"></a>常用DMA库函数</h2><pre><code>void DMA_Init(DMA_Channel_TypeDef* DMAy_Channelx, 
+                                                          DMA_InitTypeDef* DMA_InitStruct);
+void DMA_Cmd(DMA_Channel_TypeDef* DMAy_Channelx,
+                                                           FunctionalState NewState);
+void DMA_ITConfig(DMA_Channel_TypeDef* DMAy_Channelx, 
+                                   uint32_t DMA_IT, FunctionalState NewState);
+void DMA_SetCurrDataCounter(DMA_Channel_TypeDef* DMAy_Channelx,
+                                    uint16_t DataNumber); 
+uint16_t DMA_GetCurrDataCounter(DMA_Channel_TypeDef* DMAy_Channelx);
+
+FlagStatus DMA_GetFlagStatus(uint32_t DMAy_FLAG);
+void DMA_ClearFlag(uint32_t DMAy_FLAG);
+ITStatus DMA_GetITStatus(uint32_t DMAy_IT);
+void DMA_ClearITPendingBit(uint32_t DMAy_IT);</code></pre><h2 id="常用的外设DMA使能库函数"><a href="#常用的外设DMA使能库函数" class="headerlink" title="常用的外设DMA使能库函数"></a>常用的外设DMA使能库函数</h2><pre><code>void USART_DMACmd(USART_TypeDef* USARTx, uint16_t USART_DMAReq,
+                                                                             FunctionalState NewState);
+void ADC_DMACmd(ADC_TypeDef* ADCx, FunctionalState NewState);
+void DAC_DMACmd(uint32_t DAC_Channel, FunctionalState NewState);
+void I2C_DMACmd(I2C_TypeDef* I2Cx, FunctionalState NewState);
+void SDIO_DMACmd(FunctionalState NewState);
+void SPI_I2S_DMACmd(SPI_TypeDef* SPIx, uint16_t SPI_I2S_DMAReq, 
+                                                                          FunctionalState NewState);
+
+void TIM_DMAConfig(TIM_TypeDef* TIMx, uint16_t TIM_DMABase, 
+                                                                      uint16_t TIM_DMABurstLength)
+void TIM_DMACmd(TIM_TypeDef* TIMx, uint16_t TIM_DMASource,
+                                                                       FunctionalState NewState);</code></pre><blockquote>
+<p>void DMA_Init(DMA_Channel_TypeDef* DMAy_Channelx, DMA_InitTypeDef* DMA_InitStruct)</p>
+</blockquote>
+<pre><code>typedef struct
+{
+  uint32_t DMA_PeripheralBaseAddr; //外设基地址
+  uint32_t DMA_MemoryBaseAddr; //存储器基地址
+  uint32_t DMA_DIR;         //数据传输方向
+  uint32_t DMA_BufferSize;  //通道传输数据量
+  uint32_t DMA_PeripheralInc;//外设增量模式
+  uint32_t DMA_MemoryInc;  //存储器增量模式
+  uint32_t DMA_PeripheralDataSize; //外设数据宽度
+  uint32_t DMA_MemoryDataSize; //存储器数据宽度
+  uint32_t DMA_Mode;  //模式：是否循环
+  uint32_t DMA_Priority; //优先级
+  uint32_t DMA_M2M;    //是否存储器到存储器方式     
+}DMA_InitTypeDef;</code></pre><h1 id="二、DMA配置程序过程"><a href="#二、DMA配置程序过程" class="headerlink" title="二、DMA配置程序过程"></a>二、DMA配置程序过程</h1><ul>
+<li><p>使能DMA时钟</p>
+<p>  RCC_AHBPeriphClockCmd();</p>
+</li>
+<li><p>初始化DMA通道参数</p>
+<p>  DMA_Init();</p>
+</li>
+<li><p>使能串口DMA发送,串口DMA使能函数：</p>
+<p>  USART_DMACmd();</p>
+</li>
+<li><p>使能DMA1通道，启动传输。</p>
+<p>  DMA_Cmd();</p>
+</li>
+<li><p>查询DMA传输状态</p>
+<p>  DMA_GetFlagStatus();</p>
+</li>
+<li><p>获取/设置通道当前剩余数据量：</p>
+<p>  DMA_GetCurrDataCounter();<br>  DMA_SetCurrDataCounter();</p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/stm32/" rel="tag"># stm32</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/11/DAC%E6%95%B0%E6%A8%A1%E8%BD%AC%E6%8D%A2/" rel="next" title="DAC数模转换">
+                <i class="fa fa-chevron-left"></i> DAC数模转换
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>   
+    </div> 
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.gif"
+                alt="Arsenic" />
+            
+              <p class="site-author-name" itemprop="name">Arsenic</p>
+              <p class="site-description motion-element" itemprop="description">Write sonething words!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+          <div id="music163player">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=29932433&auto=0&height=66"></iframe>
+          </div>
+          <div id="music163player">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=167655&auto=0&height=66"></iframe>
+          </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、DMA简介"><span class="nav-number">1.</span> <span class="nav-text">一、DMA简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DMA框图"><span class="nav-number">1.1.</span> <span class="nav-text">DMA框图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#STM32的DMA有以下一些特性"><span class="nav-number">1.2.</span> <span class="nav-text">STM32的DMA有以下一些特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用DMA库函数"><span class="nav-number">1.3.</span> <span class="nav-text">常用DMA库函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用的外设DMA使能库函数"><span class="nav-number">1.4.</span> <span class="nav-text">常用的外设DMA使能库函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、DMA配置程序过程"><span class="nav-number">2.</span> <span class="nav-text">二、DMA配置程序过程</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Arsenic</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+
+</body>
+</html>
