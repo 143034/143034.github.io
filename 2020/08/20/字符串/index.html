@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="字符串," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="字符串是以单引号或双引号括起来的任意文本  字符串不可变 字符串运算字符串连接str1 + str2输出重复字符串print(str * 3)访问字符串中的某一个字符通过索引下标查找字符，索引从0开始 字符串名[下标] print(str[1])截取字符串中的一部分str1 &#x3D; &quot;aaasdsadsdadadsada!&quot;从给定下标出开始截取到给定下标之前str1[6:15]从">
+<meta property="og:type" content="article">
+<meta property="og:title" content="字符串">
+<meta property="og:url" content="http://yoursite.com/2020/08/20/%E5%AD%97%E7%AC%A6%E4%B8%B2/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="字符串是以单引号或双引号括起来的任意文本  字符串不可变 字符串运算字符串连接str1 + str2输出重复字符串print(str * 3)访问字符串中的某一个字符通过索引下标查找字符，索引从0开始 字符串名[下标] print(str[1])截取字符串中的一部分str1 &#x3D; &quot;aaasdsadsdadadsada!&quot;从给定下标出开始截取到给定下标之前str1[6:15]从">
+<meta property="article:published_time" content="2020-08-20T07:50:55.000Z">
+<meta property="article:modified_time" content="2020-08-20T08:30:46.188Z">
+<meta property="article:author" content="Arsenic">
+<meta property="article:tag" content="字符串">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/08/20/字符串/"/>
+
+
+
+
+
+  <title>字符串 | Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/20/%E5%AD%97%E7%AC%A6%E4%B8%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Arsenic">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">字符串</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-20T15:50:55+08:00">
+                2020-08-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p><strong>字符串是以单引号或双引号括起来的任意文本</strong></p>
+</blockquote>
+<p><strong>字符串不可变</strong></p>
+<h1 id="字符串运算"><a href="#字符串运算" class="headerlink" title="字符串运算"></a>字符串运算</h1><h3 id="字符串连接"><a href="#字符串连接" class="headerlink" title="字符串连接"></a>字符串连接</h3><pre><code>str1 + str2</code></pre><h3 id="输出重复字符串"><a href="#输出重复字符串" class="headerlink" title="输出重复字符串"></a>输出重复字符串</h3><pre><code>print(str * 3)</code></pre><h3 id="访问字符串中的某一个字符"><a href="#访问字符串中的某一个字符" class="headerlink" title="访问字符串中的某一个字符"></a>访问字符串中的某一个字符</h3><pre><code>通过索引下标查找字符，索引从0开始
+字符串名[下标]
+print(str[1])</code></pre><h3 id="截取字符串中的一部分"><a href="#截取字符串中的一部分" class="headerlink" title="截取字符串中的一部分"></a>截取字符串中的一部分</h3><pre><code>str1 = &quot;aaasdsadsdadadsada!&quot;</code></pre><h3 id="从给定下标出开始截取到给定下标之前"><a href="#从给定下标出开始截取到给定下标之前" class="headerlink" title="从给定下标出开始截取到给定下标之前"></a>从给定下标出开始截取到给定下标之前</h3><pre><code>str1[6:15]</code></pre><h3 id="从头截取到给定下标之前"><a href="#从头截取到给定下标之前" class="headerlink" title="从头截取到给定下标之前"></a>从头截取到给定下标之前</h3><pre><code>str1[:5]</code></pre><h3 id="从给定下标处开始截取到结尾"><a href="#从给定下标处开始截取到结尾" class="headerlink" title="从给定下标处开始截取到结尾"></a>从给定下标处开始截取到结尾</h3><pre><code>str1[16:]</code></pre><h3 id="格式化输出"><a href="#格式化输出" class="headerlink" title="格式化输出"></a>格式化输出</h3><pre><code>num = 10
+str1 = &quot;sunck is a nice man!&quot;
+f = 10.1267
+#  %d   %s   %f  占位符
+#                                   精确到小数点后3位，会四舍五入
+print(&quot;num = %d, str1 = %s, f = %.3f&quot; % (num, str1, f))</code></pre><h3 id="转义字符"><a href="#转义字符" class="headerlink" title="转义字符\"></a>转义字符\</h3><p><strong>将一些字符转换成有特殊含义的字符</strong></p>
+<h3 id="n回车"><a href="#n回车" class="headerlink" title="\n回车"></a>\n回车</h3><pre><code>print(&quot;num = %d\nstr1 = %s\nf = %.3f&quot; % (num, str1, f))</code></pre><h3 id="“-quot"><a href="#“-quot" class="headerlink" title="\“&quot;"></a>\“&quot;</h3><h3 id="39-quot-“引号”"><a href="#39-quot-“引号”" class="headerlink" title="&#39;   &quot; “引号”"></a>&#39;   &quot; “引号”</h3><pre><code>print(&apos;tom is a \&apos;good\&apos; man&apos;)
+print(&quot;tom is a \&quot;good\&quot; man&quot;)</code></pre><h3 id="t-制表符"><a href="#t-制表符" class="headerlink" title="\t   制表符"></a>\t   制表符</h3><pre><code>print(&quot;sunck\tgood&quot;)</code></pre><h3 id="内部的字符串默认不转义"><a href="#内部的字符串默认不转义" class="headerlink" title="内部的字符串默认不转义"></a>内部的字符串默认不转义</h3><pre><code>print(r&quot;\\\t\\&quot;)</code></pre><h1 id="字符串函数"><a href="#字符串函数" class="headerlink" title="字符串函数"></a>字符串函数</h1><h3 id="eval-str"><a href="#eval-str" class="headerlink" title="eval(str)"></a>eval(str)</h3><p><strong>功能：将字符串str当成有效的表达式来求值并返回计算结果</strong></p>
+<pre><code>num1 = eval(&quot;123&quot;)
+print(num1)
+print(type(num1))
+print(eval(&quot;+123&quot;))
+print(eval(&quot;-123&quot;))
+print(eval(&quot;12+3&quot;))
+print(eval(&quot;12-3&quot;))</code></pre><h3 id="len-str"><a href="#len-str" class="headerlink" title="len(str)"></a>len(str)</h3><p><strong>返回字符串的长度(字符个数)</strong></p>
+<pre><code>print(len(str1))</code></pre><h3 id="lower"><a href="#lower" class="headerlink" title="lower()"></a>lower()</h3><p><strong>转换字符串中大写字母为小写字母</strong></p>
+<pre><code>str2 = str1.lower()</code></pre><h3 id="upper"><a href="#upper" class="headerlink" title="upper()"></a>upper()</h3><p><strong>转换字符串中小写字母为大写字母</strong></p>
+<pre><code>print(str1.upper())</code></pre><h3 id="swapcase"><a href="#swapcase" class="headerlink" title="swapcase()"></a>swapcase()</h3><p><strong>转换字符串中小写字母为大写字母,大写字母为小写字母</strong></p>
+<pre><code>print(str1.swapcase())</code></pre><p>#capitalize() </p>
+<p><strong>首字母大写，其他小写</strong></p>
+<pre><code>print(str1.capitalize())</code></pre><h3 id="title"><a href="#title" class="headerlink" title="title()"></a>title()</h3><p><strong>每个单的首字母大写</strong></p>
+<pre><code>print(str1.title())</code></pre><h3 id="center-width-fillchar"><a href="#center-width-fillchar" class="headerlink" title="center(width[, fillchar])"></a>center(width[, fillchar])</h3><p><strong>返回一个指定宽度的居中字符串，fillchar为填充的字符串,默认空格填充</strong></p>
+<pre><code>print(str1.center(40,&quot;*&quot;))</code></pre><h3 id="ljust-width-fillchar"><a href="#ljust-width-fillchar" class="headerlink" title="ljust(width[, fillchar])"></a>ljust(width[, fillchar])</h3><p><strong>返回一个指定宽度的左对齐字符串，fllchar为填充字符，默认空格填充</strong></p>
+<pre><code>print(str1.ljust(40, &quot;%&quot;))</code></pre><h3 id="rjust-width-fillchar"><a href="#rjust-width-fillchar" class="headerlink" title="rjust(width[, fillchar])"></a>rjust(width[, fillchar])</h3><p><strong>返回一个指定宽度的右对齐字符串，fllchar为填充字符，默认空格填充</strong></p>
+<pre><code>print(str1.rjust(40, &quot;%&quot;))</code></pre><h3 id="zfill-width"><a href="#zfill-width" class="headerlink" title="zfill(width)"></a>zfill(width)</h3><p><strong>返回一个长度为width的字符串，原字符串右对齐，前面补0</strong></p>
+<pre><code>print(str1.zfill(40))</code></pre><h3 id="count-str-start-end"><a href="#count-str-start-end" class="headerlink" title="count(str[,start][,end])"></a>count(str[,start][,end])</h3><p><strong>返回字符串中strc出现的次数，可以指定一个范围，默认从头到尾</strong></p>
+<pre><code>print(str1.count(&quot;very&quot;,15, len(str29) ))</code></pre><h3 id="find-str-start-end"><a href="#find-str-start-end" class="headerlink" title="find(str[, start][,end])"></a>find(str[, start][,end])</h3><p><strong>从左向右检测str字符串是否包含在字符串中，可以指定范围，默认从头到尾。得到的是第一次出现的开始下标，没有返回-1</strong></p>
+<pre><code>print(str1.find(&quot;very&quot;, 15, len(str30)))</code></pre><h3 id="rfind-str-start-end"><a href="#rfind-str-start-end" class="headerlink" title="rfind(str[, start][,end])]"></a>rfind(str[, start][,end])]</h3><pre><code>print(str1.rfind(&quot;very&quot;, 0, 15))</code></pre><h3 id="index-str-start-0-end-len-str"><a href="#index-str-start-0-end-len-str" class="headerlink" title="index(str, start=0, end=len(str))"></a>index(str, start=0, end=len(str))</h3><p><strong>根find()一样，只不过如果str不存在的时候回报一个异常</strong></p>
+<pre><code>print(str1.index(&quot;good&quot;))</code></pre><h3 id="rindex-str-start-0-end-len-str"><a href="#rindex-str-start-0-end-len-str" class="headerlink" title="rindex(str, start=0, end=len(str))"></a>rindex(str, start=0, end=len(str))</h3><p><strong>根rfind()一样，只不过如果str不存在的时候回报一个异常</strong></p>
+<pre><code>print(str1.rindex(&quot;very&quot;))</code></pre><h3 id="stripe"><a href="#stripe" class="headerlink" title="stripe()"></a>stripe()</h3><p><strong>截取左右两边</strong></p>
+<pre><code>print(str1.strip(&quot;*&quot;))</code></pre><h3 id="lstrip"><a href="#lstrip" class="headerlink" title="lstrip()"></a>lstrip()</h3><p><strong>截掉字符串左侧指定的字符，默认为空格</strong></p>
+<pre><code>print(str1.lstrip(&quot;*&quot;))</code></pre><h3 id="rstrip"><a href="#rstrip" class="headerlink" title="rstrip()"></a>rstrip()</h3><p><strong>截掉字符串右侧指定的字符，默认为空格</strong></p>
+<pre><code>print(str1.rstrip(), &quot;*&quot;)</code></pre>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/" rel="tag"># 字符串</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/17/Sqlite3%E4%BD%BF%E7%94%A8/" rel="next" title="Sqlite3使用">
+                <i class="fa fa-chevron-left"></i> Sqlite3使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/12/51%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4/" rel="prev" title="51汇编指令">
+                51汇编指令 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>   
+    </div> 
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.gif"
+                alt="Arsenic" />
+            
+              <p class="site-author-name" itemprop="name">Arsenic</p>
+              <p class="site-description motion-element" itemprop="description">Write sonething words!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">49</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+          <div id="music163player">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=29932433&auto=0&height=66"></iframe>
+          </div>
+          <div id="music163player">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=167655&auto=0&height=66"></iframe>
+          </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#字符串运算"><span class="nav-number">1.</span> <span class="nav-text">字符串运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串连接"><span class="nav-number">1.0.1.</span> <span class="nav-text">字符串连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输出重复字符串"><span class="nav-number">1.0.2.</span> <span class="nav-text">输出重复字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#访问字符串中的某一个字符"><span class="nav-number">1.0.3.</span> <span class="nav-text">访问字符串中的某一个字符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#截取字符串中的一部分"><span class="nav-number">1.0.4.</span> <span class="nav-text">截取字符串中的一部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从给定下标出开始截取到给定下标之前"><span class="nav-number">1.0.5.</span> <span class="nav-text">从给定下标出开始截取到给定下标之前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从头截取到给定下标之前"><span class="nav-number">1.0.6.</span> <span class="nav-text">从头截取到给定下标之前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从给定下标处开始截取到结尾"><span class="nav-number">1.0.7.</span> <span class="nav-text">从给定下标处开始截取到结尾</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#格式化输出"><span class="nav-number">1.0.8.</span> <span class="nav-text">格式化输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#转义字符"><span class="nav-number">1.0.9.</span> <span class="nav-text">转义字符\</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#n回车"><span class="nav-number">1.0.10.</span> <span class="nav-text">\n回车</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#“-quot"><span class="nav-number">1.0.11.</span> <span class="nav-text">\“&quot;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#39-quot-“引号”"><span class="nav-number">1.0.12.</span> <span class="nav-text">&#39;   &quot; “引号”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#t-制表符"><span class="nav-number">1.0.13.</span> <span class="nav-text">\t   制表符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内部的字符串默认不转义"><span class="nav-number">1.0.14.</span> <span class="nav-text">内部的字符串默认不转义</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字符串函数"><span class="nav-number">2.</span> <span class="nav-text">字符串函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#eval-str"><span class="nav-number">2.0.1.</span> <span class="nav-text">eval(str)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#len-str"><span class="nav-number">2.0.2.</span> <span class="nav-text">len(str)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lower"><span class="nav-number">2.0.3.</span> <span class="nav-text">lower()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#upper"><span class="nav-number">2.0.4.</span> <span class="nav-text">upper()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#swapcase"><span class="nav-number">2.0.5.</span> <span class="nav-text">swapcase()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#title"><span class="nav-number">2.0.6.</span> <span class="nav-text">title()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#center-width-fillchar"><span class="nav-number">2.0.7.</span> <span class="nav-text">center(width[, fillchar])</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ljust-width-fillchar"><span class="nav-number">2.0.8.</span> <span class="nav-text">ljust(width[, fillchar])</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rjust-width-fillchar"><span class="nav-number">2.0.9.</span> <span class="nav-text">rjust(width[, fillchar])</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zfill-width"><span class="nav-number">2.0.10.</span> <span class="nav-text">zfill(width)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#count-str-start-end"><span class="nav-number">2.0.11.</span> <span class="nav-text">count(str[,start][,end])</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#find-str-start-end"><span class="nav-number">2.0.12.</span> <span class="nav-text">find(str[, start][,end])</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rfind-str-start-end"><span class="nav-number">2.0.13.</span> <span class="nav-text">rfind(str[, start][,end])]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#index-str-start-0-end-len-str"><span class="nav-number">2.0.14.</span> <span class="nav-text">index(str, start&#x3D;0, end&#x3D;len(str))</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rindex-str-start-0-end-len-str"><span class="nav-number">2.0.15.</span> <span class="nav-text">rindex(str, start&#x3D;0, end&#x3D;len(str))</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stripe"><span class="nav-number">2.0.16.</span> <span class="nav-text">stripe()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lstrip"><span class="nav-number">2.0.17.</span> <span class="nav-text">lstrip()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rstrip"><span class="nav-number">2.0.18.</span> <span class="nav-text">rstrip()</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Arsenic</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+
+</body>
+</html>
