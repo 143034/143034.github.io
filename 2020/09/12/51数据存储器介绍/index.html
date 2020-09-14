@@ -79,17 +79,18 @@
 
 
 
-<meta name="description" content="一、简介 STC89C52系列大容量单片机内部集成了1280字节RAM，可用于存放程序执行的中间结果和过程数据。内部数据存储器在物理和逻辑上都分为两个地址空间:内部RAM(256字节)和内部扩展RAM(1024字节)。此外，STC89C52系列单片机还可以访问在片外扩展的64KB外部数据存储器。  二、内部RAM2.1、内部RAM) 内部RAM共256字节，可分为 3个部分：低128字节RAM(与">
+<meta name="description" content="一、简介 STC89C52系列大容量单片机内部集成了1280字节RAM，可用于存放程序执行的中间结果和过程数据。内部数据存储器在物理和逻辑上都分为两个地址空间:内部RAM(256字节)和内部扩展RAM(1024字节)。此外，STC89C52系列单片机还可以访问在片外扩展的64KB外部数据存储器。  二、内部RAM2.1、内部RAM  内部RAM共256字节，可分为 3个部分：低128字节RAM(与">
 <meta property="og:type" content="article">
 <meta property="og:title" content="51数据存储器介绍">
 <meta property="og:url" content="http://yoursite.com/2020/09/12/51%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E5%99%A8%E4%BB%8B%E7%BB%8D/index.html">
 <meta property="og:site_name" content="Blog">
-<meta property="og:description" content="一、简介 STC89C52系列大容量单片机内部集成了1280字节RAM，可用于存放程序执行的中间结果和过程数据。内部数据存储器在物理和逻辑上都分为两个地址空间:内部RAM(256字节)和内部扩展RAM(1024字节)。此外，STC89C52系列单片机还可以访问在片外扩展的64KB外部数据存储器。  二、内部RAM2.1、内部RAM) 内部RAM共256字节，可分为 3个部分：低128字节RAM(与">
+<meta property="og:description" content="一、简介 STC89C52系列大容量单片机内部集成了1280字节RAM，可用于存放程序执行的中间结果和过程数据。内部数据存储器在物理和逻辑上都分为两个地址空间:内部RAM(256字节)和内部扩展RAM(1024字节)。此外，STC89C52系列单片机还可以访问在片外扩展的64KB外部数据存储器。  二、内部RAM2.1、内部RAM  内部RAM共256字节，可分为 3个部分：低128字节RAM(与">
 <meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E5%86%85%E9%83%A8RAM%E4%BB%8B%E7%BB%8D/%E5%86%85%E9%83%A8RAM%E4%BB%8B%E7%BB%8D.png">
 <meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E5%86%85%E9%83%A8RAM%E4%BB%8B%E7%BB%8D/%E4%BD%8E128%E5%AD%97%E8%8A%82%E5%86%85%E9%83%A8RAM.png">
 <meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E5%86%85%E9%83%A8RAM%E4%BB%8B%E7%BB%8D/%E7%A8%8B%E5%BA%8F%E7%8A%B6%E6%80%81%E5%AF%84%E5%AD%98%E5%99%A8.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E5%86%85%E9%83%A8RAM%E4%BB%8B%E7%BB%8D/%E7%89%B9%E6%AE%8A%E5%8A%9F%E8%83%BD%E5%AF%84%E5%AD%98%E5%99%A8.png">
 <meta property="article:published_time" content="2020-09-12T07:57:36.000Z">
-<meta property="article:modified_time" content="2020-09-12T08:37:28.211Z">
+<meta property="article:modified_time" content="2020-09-13T03:44:12.992Z">
 <meta property="article:author" content="Arsenic">
 <meta property="article:tag" content="52">
 <meta name="twitter:card" content="summary">
@@ -369,12 +370,14 @@
         <h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><blockquote>
 <p>STC89C52系列大容量单片机内部集成了<strong>1280字节RAM</strong>，可用于存放程序执行的中间结果和过程数据。内部数据存储器在物理和逻辑上都分为两个地址空间:<strong>内部RAM(256字节)和内部扩展RAM(1024字节)</strong>。此外，STC89C52系列单片机还可以访问在片外扩展的64KB外部数据存储器。</p>
 </blockquote>
-<h1 id="二、内部RAM"><a href="#二、内部RAM" class="headerlink" title="二、内部RAM"></a>二、内部RAM</h1><h3 id="2-1、内部RAM"><a href="#2-1、内部RAM" class="headerlink" title="2.1、内部RAM"></a>2.1、内部RAM</h3><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E5%86%85%E9%83%A8RAM%E4%BB%8B%E7%BB%8D/%E5%86%85%E9%83%A8RAM%E4%BB%8B%E7%BB%8D.png" alt="内部RAM介绍">)<img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E5%86%85%E9%83%A8RAM%E4%BB%8B%E7%BB%8D/%E4%BD%8E128%E5%AD%97%E8%8A%82%E5%86%85%E9%83%A8RAM.png" alt="低128字节内部RAM"></p>
+<h1 id="二、内部RAM"><a href="#二、内部RAM" class="headerlink" title="二、内部RAM"></a>二、内部RAM</h1><h3 id="2-1、内部RAM"><a href="#2-1、内部RAM" class="headerlink" title="2.1、内部RAM"></a>2.1、内部RAM</h3><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E5%86%85%E9%83%A8RAM%E4%BB%8B%E7%BB%8D/%E5%86%85%E9%83%A8RAM%E4%BB%8B%E7%BB%8D.png" alt="内部RAM介绍"></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E5%86%85%E9%83%A8RAM%E4%BB%8B%E7%BB%8D/%E4%BD%8E128%E5%AD%97%E8%8A%82%E5%86%85%E9%83%A8RAM.png" alt="低128字节内部RAM"></p>
 <p><strong>内部RAM</strong>共<strong>256字节</strong>，可分为 <strong>3个部分</strong>：<strong>低128字节RAM</strong>(与传统8051兼容)、<strong>高128字节RAM</strong>(Intel在8052中扩展了高128字节RAM)及<strong>特殊功能寄存器区</strong>。低128字节的数据存储器既可直接寻址也可间接寻址。高128字节RAM与特殊功能寄存器区貌似共用相同的地址范围，都使80H-FFH,地址空间虽然貌似重叠，但物理上是独立的，使用时通过不同的寻址方式加以区分。高128字节RAM只能间接寻址，特殊功能寄存器区只可直接寻址。</p>
 <p><strong>低128字节RAM也称通用RAM区</strong>。通用RAM区又可分为<strong>工作寄存器组区</strong>，<strong>可位寻址区</strong>，<strong>用户RAM区和堆栈区</strong>。工作寄存器组区地址从<strong>00H-1FH共32B(字节)单元</strong>，<strong>分为4组</strong>(每一组称为一个寄存器组)，<strong>每组包含8个8位的工作寄存器，编号均为R0 - R7，但属于不同的物理空间</strong>。通过使用工作寄存器组，可以提高运算速度。R0-R7是常用的寄存器，提供4组是因为1组往往不够用。<strong>程序状态字PSW寄存器中的RS1和RS0组合决定当前使用的工作寄存器组。</strong>见下面PSW寄存器的介绍。<strong>可位寻址区的地址从20H - 2FH共16个字节单元</strong>。20H-2FH单元既可向普通RAM单元一样按字节存取，也可以对单元中的任何一位单独存取，共128位，所对应的地址范围是00H-7FH。位地址范围00H-7FH，内部RAM低128字节的地址也是00H-7FH；从外表看，二者地址是一样的，实际上二者具有本质的区别；位地址指向的是一个位，而字节地址指向的是一个字节单元，在程序中使用不同的指令区分。<strong>内部RAM中的30H-FFH单元是用户RAM和堆栈区</strong>。<strong>一个8位的堆栈指针(SP)，用于指向堆栈区。单片机复位后，堆栈指针SP为07H，指向了工作寄存器组0中的R7，因此，用户初始化程序都应对SP设置初值，一般设置在80H以后的单元为宜。</strong></p>
 <p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E5%86%85%E9%83%A8RAM%E4%BB%8B%E7%BB%8D/%E7%A8%8B%E5%BA%8F%E7%8A%B6%E6%80%81%E5%AF%84%E5%AD%98%E5%99%A8.png" alt="程序状态寄存器"></p>
 <h3 id="2-2、堆栈指针-SP"><a href="#2-2、堆栈指针-SP" class="headerlink" title="2.2、堆栈指针(SP)"></a>2.2、堆栈指针(SP)</h3><p>堆栈指针是一个8位专用寄存器。它指示出堆栈顶部在内部RAM块中的位置。系统复位后，SP初始化位07H，使得堆栈事实上由08H单元开始，考虑08H-1FH单元分别属于工作寄存器组1-3，若在程序设计中用到这些区，则最好把SP值改变为80H或更大的值为宜。STC89C52系列单片机的堆栈是向上生长的，即将数据压入堆栈后，SP内容增大。</p>
-<h1 id="三、内部扩展RAM"><a href="#三、内部扩展RAM" class="headerlink" title="三、内部扩展RAM"></a>三、内部扩展RAM</h1>
+<h1 id="三、特殊功能寄存器"><a href="#三、特殊功能寄存器" class="headerlink" title="三、特殊功能寄存器"></a>三、特殊功能寄存器</h1><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E5%86%85%E9%83%A8RAM%E4%BB%8B%E7%BB%8D/%E7%89%B9%E6%AE%8A%E5%8A%9F%E8%83%BD%E5%AF%84%E5%AD%98%E5%99%A8.png" alt="特殊功能寄存器"></p>
+<h1 id="四、内部扩展RAM"><a href="#四、内部扩展RAM" class="headerlink" title="四、内部扩展RAM"></a>四、内部扩展RAM</h1>
       
     </div>
     
@@ -413,6 +416,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/13/%E6%8C%87%E4%BB%A4%E7%B3%BB%E7%BB%9F/" rel="prev" title="指令系统">
+                指令系统 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -493,7 +500,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">49</span>
+                  <span class="site-state-item-count">51</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -553,7 +560,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、简介"><span class="nav-number">1.</span> <span class="nav-text">一、简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、内部RAM"><span class="nav-number">2.</span> <span class="nav-text">二、内部RAM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1、内部RAM"><span class="nav-number">2.0.1.</span> <span class="nav-text">2.1、内部RAM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2、堆栈指针-SP"><span class="nav-number">2.0.2.</span> <span class="nav-text">2.2、堆栈指针(SP)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、内部扩展RAM"><span class="nav-number">3.</span> <span class="nav-text">三、内部扩展RAM</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、简介"><span class="nav-number">1.</span> <span class="nav-text">一、简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、内部RAM"><span class="nav-number">2.</span> <span class="nav-text">二、内部RAM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1、内部RAM"><span class="nav-number">2.0.1.</span> <span class="nav-text">2.1、内部RAM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2、堆栈指针-SP"><span class="nav-number">2.0.2.</span> <span class="nav-text">2.2、堆栈指针(SP)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、特殊功能寄存器"><span class="nav-number">3.</span> <span class="nav-text">三、特殊功能寄存器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、内部扩展RAM"><span class="nav-number">4.</span> <span class="nav-text">四、内部扩展RAM</span></a></li></ol></div>
             
 
           </div>
