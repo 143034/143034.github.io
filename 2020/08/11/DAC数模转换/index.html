@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next mist use-motion" lang="zh-Hans">
+<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -83,7 +83,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="DAC数模转换">
 <meta property="og:url" content="http://yoursite.com/2020/08/11/DAC%E6%95%B0%E6%A8%A1%E8%BD%AC%E6%8D%A2/index.html">
-<meta property="og:site_name" content="Blog">
+<meta property="og:site_name" content="Arsenic">
 <meta property="og:description" content="一、数模转换原理 STM32的DAC模块(数字&#x2F;模拟转换模块)是12位数字输入，电压输出型的DAC。DAC可以配置为8位或12位模式，也可以与DMA控制器配合使用。DAC工作在12位模式时，数据可以设置成左对齐或右对齐。DAC模块有2个输出通道，每个通道都有单独的转换器。在双DAC模式下，2个通道可以独立地进行转换，也可以同时进行转换并同步地更新2个通道的输出。DAC可以通过引脚输入参考电压VRE">
 <meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DAC%E6%95%B0%E6%A8%A1%E8%BD%AC%E6%8D%A2/DAC%E6%A8%A1%E5%9D%97%E6%96%B9%E5%9B%BE.png">
 <meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DAC%E6%95%B0%E6%A8%A1%E8%BD%AC%E6%8D%A2/DAC%E5%BC%95%E8%84%9A.png">
@@ -105,7 +105,7 @@
 <meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DAC%E6%95%B0%E6%A8%A1%E8%BD%AC%E6%8D%A2/%E9%85%8D%E7%BD%AE%E6%AD%A5%E9%AA%A43.png">
 <meta property="article:published_time" content="2020-08-11T06:39:17.000Z">
 <meta property="article:modified_time" content="2020-08-11T07:30:24.507Z">
-<meta property="article:author" content="Arsenic">
+<meta property="article:author" content="一觉到天亮">
 <meta property="article:tag" content="stm32">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/DAC%E6%95%B0%E6%A8%A1%E8%BD%AC%E6%8D%A2/DAC%E6%A8%A1%E5%9D%97%E6%96%B9%E5%9B%BE.png">
@@ -116,7 +116,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Mist',
+    scheme: 'Pisces',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -144,7 +144,7 @@
 
 
 
-  <title>DAC数模转换 | Blog</title>
+  <title>DAC数模转换 | Arsenic</title>
   
 
 
@@ -174,7 +174,7 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Blog</span>
+        <span class="site-title">Arsenic</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -284,13 +284,13 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/11/DAC%E6%95%B0%E6%A8%A1%E8%BD%AC%E6%8D%A2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Arsenic">
+      <meta itemprop="name" content="一觉到天亮">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blog">
+      <meta itemprop="name" content="Arsenic">
     </span>
 
     
@@ -579,9 +579,9 @@ void Dac1_Set_Vol(u16 vol)
             
               <img class="site-author-image" itemprop="image"
                 src="/uploads/avatar.gif"
-                alt="Arsenic" />
+                alt="一觉到天亮" />
             
-              <p class="site-author-name" itemprop="name">Arsenic</p>
+              <p class="site-author-name" itemprop="name">一觉到天亮</p>
               <p class="site-description motion-element" itemprop="description">Write sonething words!</p>
           </div>
 
@@ -623,6 +623,22 @@ void Dac1_Set_Vol(u16 vol)
           </nav>
           
 
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/143034" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="1430349989@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
           
 
           
@@ -784,6 +800,13 @@ void Dac1_Set_Vol(u16 vol)
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
   <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>

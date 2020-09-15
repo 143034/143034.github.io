@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next mist use-motion" lang="zh-Hans">
+<html class="theme-next pisces use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -83,7 +83,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="通用定时器基本原理">
 <meta property="og:url" content="http://yoursite.com/2020/08/01/%E9%80%9A%E7%94%A8%E5%AE%9A%E6%97%B6%E5%99%A8%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86/index.html">
-<meta property="og:site_name" content="Blog">
+<meta property="og:site_name" content="Arsenic">
 <meta property="og:description" content="一、介绍STM32F10x系列总共最多有8个定时器  三种STM32定时器区别 通用定时器功能特点描述STM32的通用 TIMx (TIM2、TIM3、TIM4 和 TIM5)定时器功能特点包括： 1. 位于低速的APB1总线上(APB1) 2. 16 位向上、向下、向上&#x2F;向下(中心对齐)计数模式，自动装载计数器（TIMx_CNT）。 3. 16 位可编程(可以实时修改)预分频器(TIMx_PSC">
 <meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/%E5%AE%9A%E6%97%B6%E5%99%A8%E6%95%B0%E9%87%8F.png">
 <meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/%E5%AE%9A%E6%97%B6%E5%99%A8%E7%A7%8D%E7%B1%BB.png">
@@ -96,7 +96,7 @@
 <meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/pwm%E6%A8%A1%E5%BC%8F.png">
 <meta property="article:published_time" content="2020-08-01T15:52:32.000Z">
 <meta property="article:modified_time" content="2020-08-01T16:33:15.205Z">
-<meta property="article:author" content="Arsenic">
+<meta property="article:author" content="一觉到天亮">
 <meta property="article:tag" content="stm32">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/stm32/%E5%AE%9A%E6%97%B6%E5%99%A8/%E5%AE%9A%E6%97%B6%E5%99%A8%E6%95%B0%E9%87%8F.png">
@@ -107,7 +107,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Mist',
+    scheme: 'Pisces',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -135,7 +135,7 @@
 
 
 
-  <title>通用定时器基本原理 | Blog</title>
+  <title>通用定时器基本原理 | Arsenic</title>
   
 
 
@@ -165,7 +165,7 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Blog</span>
+        <span class="site-title">Arsenic</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -275,13 +275,13 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/01/%E9%80%9A%E7%94%A8%E5%AE%9A%E6%97%B6%E5%99%A8%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Arsenic">
+      <meta itemprop="name" content="一觉到天亮">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Blog">
+      <meta itemprop="name" content="Arsenic">
     </span>
 
     
@@ -522,9 +522,9 @@ PWM 生成(边缘或中间对齐模式)
             
               <img class="site-author-image" itemprop="image"
                 src="/uploads/avatar.gif"
-                alt="Arsenic" />
+                alt="一觉到天亮" />
             
-              <p class="site-author-name" itemprop="name">Arsenic</p>
+              <p class="site-author-name" itemprop="name">一觉到天亮</p>
               <p class="site-description motion-element" itemprop="description">Write sonething words!</p>
           </div>
 
@@ -566,6 +566,22 @@ PWM 生成(边缘或中间对齐模式)
           </nav>
           
 
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/143034" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="1430349989@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
           
 
           
@@ -727,6 +743,13 @@ PWM 生成(边缘或中间对齐模式)
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
   <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
