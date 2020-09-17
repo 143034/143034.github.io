@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="52," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、简介 STC89C52系列单片机内部集成有一个功能很强的全双工串行通信口，与传统8051单片机的串口完全兼容。设有 2个互相独立的接收、发送缓冲器，可以同时发送和接收数据。发送缓冲器只能写入而不能读出，接收缓冲器只能读出而不能写入，，因而两个缓冲器可以共用一个地址码（99H）。两个缓冲器统称串行通信特殊功能寄存器SBUF。  串行通信设有4种工作方式，其中两种方式的波特率是可变的，另两种是固定">
+<meta property="og:type" content="article">
+<meta property="og:title" content="串口通信">
+<meta property="og:url" content="http://yoursite.com/2020/09/17/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/index.html">
+<meta property="og:site_name" content="Arsenic">
+<meta property="og:description" content="一、简介 STC89C52系列单片机内部集成有一个功能很强的全双工串行通信口，与传统8051单片机的串口完全兼容。设有 2个互相独立的接收、发送缓冲器，可以同时发送和接收数据。发送缓冲器只能写入而不能读出，接收缓冲器只能读出而不能写入，，因而两个缓冲器可以共用一个地址码（99H）。两个缓冲器统称串行通信特殊功能寄存器SBUF。  串行通信设有4种工作方式，其中两种方式的波特率是可变的，另两种是固定">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E4%B8%B2%E5%8F%A3%E7%9B%B8%E5%85%B3%E5%AF%84%E5%AD%98%E5%99%A8.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/SCON%E5%AF%84%E5%AD%98%E5%99%A8.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E4%B8%B2%E5%8F%A3%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F%E9%80%89%E6%8B%A9.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/PCON%E5%AF%84%E5%AD%98%E5%99%A8.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E4%B8%AD%E6%96%AD%E5%AF%84%E5%AD%98%E5%99%A8.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E4%B8%AD%E6%96%AD%E4%BC%98%E5%85%88%E7%BA%A7%E5%AF%84%E5%AD%98%E5%99%A8.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%96%B9%E5%BC%8F0%E8%BE%93%E5%87%BA.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%96%B9%E5%BC%8F0%E8%BE%93%E5%85%A5.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%96%B9%E5%BC%8F1%E6%95%B0%E6%8D%AE%E4%BD%8D.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%96%B9%E5%BC%8F1%E8%BE%93%E5%87%BA.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%96%B9%E5%BC%8F1%E8%BE%93%E5%85%A5.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%96%B9%E5%BC%8F2%E5%92%8C3%E6%95%B0%E6%8D%AE%E4%BD%8D.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%96%B9%E5%BC%8F2%E5%92%8C3%E8%BE%93%E5%87%BA.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%96%B9%E5%BC%8F2%E5%92%8C3%E8%BE%93%E5%85%A5.png">
+<meta property="og:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%B3%A2%E7%89%B9%E7%8E%87%E8%AE%A1%E7%AE%97.png">
+<meta property="article:published_time" content="2020-09-17T01:41:45.000Z">
+<meta property="article:modified_time" content="2020-09-17T04:31:18.581Z">
+<meta property="article:author" content="一觉到天亮">
+<meta property="article:tag" content="52">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E4%B8%B2%E5%8F%A3%E7%9B%B8%E5%85%B3%E5%AF%84%E5%AD%98%E5%99%A8.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/09/17/串口通信/"/>
+
+
+
+
+
+  <title>串口通信 | Arsenic</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arsenic</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/17/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="一觉到天亮">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arsenic">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">串口通信</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-17T09:41:45+08:00">
+                2020-09-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/" itemprop="url" rel="index">
+                    <span itemprop="name">单片机</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/" itemprop="url" rel="index">
+                    <span itemprop="name">52单片机</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><blockquote>
+<p>STC89C52系列单片机内部集成有一个功能很强的全双工串行通信口，与传统8051单片机的串口完全兼容。设有 2个互相独立的接收、发送缓冲器，可以同时发送和接收数据。发送缓冲器只能写入而不能读出，接收缓冲器只能读出而不能写入，，因而两个缓冲器可以共用一个地址码（99H）。两个缓冲器统称串行通信特殊功能寄存器SBUF。</p>
+</blockquote>
+<p>串行通信设有<strong>4种工作方式，其中两种方式的波特率是可变的，另两种是固定的</strong>，以供不同应用场合选用。<strong>波特率由内部定时器/计数器产生，用软件设置不同的波特率和选择不同的工作方式</strong>。主机可通过查询或中断方式对接收/发送进行程序处理，使用十分灵活。</p>
+<p>STC89C52系列单片机串行口对应的硬件部分对应的管脚是<strong>P3.0/RxD和P3.1/TxD。</strong></p>
+<h1 id="二、串行口相关寄存器"><a href="#二、串行口相关寄存器" class="headerlink" title="二、串行口相关寄存器"></a>二、串行口相关寄存器</h1><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E4%B8%B2%E5%8F%A3%E7%9B%B8%E5%85%B3%E5%AF%84%E5%AD%98%E5%99%A8.png" alt="串口相关寄存器"></p>
+<h3 id="2-1、串行口控制寄存器SCON和PCON"><a href="#2-1、串行口控制寄存器SCON和PCON" class="headerlink" title="2.1、串行口控制寄存器SCON和PCON"></a>2.1、串行口控制寄存器SCON和PCON</h3><p>STC89C52系列单片机的串行口设有两个控制寄存器：<strong>串行控制寄存器SCON和波特率选择特殊功能寄存器PCON。</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/SCON%E5%AF%84%E5%AD%98%E5%99%A8.png" alt="SCON寄存器"></p>
+<p><strong>SM0/FE</strong>：当PCON寄存器中的SMOD0/PCON.6位为1时，该位用于帧错误检测。当检测到一个    无效停止位时，通过UART接收器设置该位。它必须由软件清零。当PCON寄存器中的SMOD0/PCON.6位为0时，该位和SM1一起指定串行通信的工作方式，如下表所示。</p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E4%B8%B2%E5%8F%A3%E5%B7%A5%E4%BD%9C%E6%96%B9%E5%BC%8F%E9%80%89%E6%8B%A9.png" alt="串口工作方式选择"></p>
+<p><strong>SM2</strong>：允许方式2或方式3多机通信控制位。在方式2或方式3时，如SM2位为1，REN位为1，则从机处于只有接收到RB8位为1（地址帧）时才激活中断请求标志位RI为1，并向主机请求中断处理。被确认为寻址的丛机则复位SM2位为0，从而才接收RB8为0的数据帧。在方式1时，如果SM2位为1，则只有在接收到有效的停止位时才置位中断请求标志位RI为1；在方式0时，SM2 应为0。</p>
+<p><strong>REN</strong>：<strong>允许/禁止串行接收控制位</strong>。由软件置位REN，即REN=1为允许串行接收状态，可启动串行接收器RxD，开始接收信息。软件复位REN，即REN=0，则禁止接收。</p>
+<p><strong>TB8</strong>： <strong>在方式2或方式3，它为要发送的第9位数据，按需要由软件置位或清0</strong>。例如，可用作数据的校验位或多机通信中表示地址帧/数据帧的标志位。</p>
+<p><strong>RB8</strong>： <strong>在方式2或方式3，是接收到的第9位数据</strong>。在方式1，若SM2=0，则RB8是接收到的停止位。方式0不用RB8。</p>
+<p><strong>TI</strong>： <strong>发送中断请求标志位</strong>。在方式0，当串行发送数据第8位结束时，由内部硬件自动置位，即TI=1，向主机请求中断，响应中断后必须用软件复位，即TI=0。在其他方式中，则在停止位开始发送时由内部硬件置位，必须用软件复位。</p>
+<p><strong>RI</strong>： <strong>接收中断请求标志位</strong>。在方式0，当串行接收到第8位结束时由内部硬件自动置位RI=1， 向主机请求中断，响应中断后必须用软件复位，即RI=0。在其他方式中，串行接收到停止位的中间时刻由内部硬件置位，即RI=1（例外情况见SM2说明），必须由软件复位，即RI=0。</p>
+<p><strong>SCON的所有位可通过整机复位信号复位为全“0”。SCON的字节地址尾98H，可位寻址，各位地址为98H~~9FH，可用软件实现位设置。</strong></p>
+<p><strong>电源控制寄存器PCON中的SMOD/PCON.7用于设置方式1、方式2、方式3的波特率是否加倍。</strong></p>
+<h3 id="2-2、PCON-电源控制寄存器-不可位寻址"><a href="#2-2、PCON-电源控制寄存器-不可位寻址" class="headerlink" title="2.2、PCON:电源控制寄存器 (不可位寻址)"></a>2.2、PCON:电源控制寄存器 (不可位寻址)</h3><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/PCON%E5%AF%84%E5%AD%98%E5%99%A8.png" alt="PCON寄存器"></p>
+<p><strong>SMOD</strong>：波特率选择位。当用软件置位SMOD，即SMOD=1，则使串行通信方式1、2、3的波特率加倍；SMOD=0，则各工作方式的波特率加倍。复位时SMOD=0。</p>
+<p><strong>SMOD0</strong>：帧错误检测有效控制位。当SMOD0=1，SCON寄存器中的SM0/FE位用于FE(帧错误检测)功能；当SMOD0=0，SCON寄存器中的SM0/FE位用于SM0功能,和SM1一起指定串行口的工作方式。复位时SMOD0=0</p>
+<h3 id="2-3、串行口数据缓冲寄存器SBUF"><a href="#2-3、串行口数据缓冲寄存器SBUF" class="headerlink" title="2.3、串行口数据缓冲寄存器SBUF"></a>2.3、串行口数据缓冲寄存器SBUF</h3><p>STC89C52系列单片机的串行口缓冲寄存器(SBUF)的地址是99H，实际是2个缓冲器，写SBUF的操作完成待发送数据的加载，读SBUF的操作可获得已接收到的数据。两个操作分别对应两个不同的寄存器，1个是只写寄存器，1个是只读寄存器。</p>
+<p>串行通道内设有数据寄存器。在所有的串行通信方式中，在写入SBUF信号的控制下，把数据装入相同的9位移位寄存器，前面8位为数据字节，其最低位为移位寄存器的输出位。根据不同的工作方式会自动将“1”或TB8的值装入移位寄存器的第9位，并进行发送。</p>
+<h3 id="2-4、中断寄存器"><a href="#2-4、中断寄存器" class="headerlink" title="2.4、中断寄存器"></a>2.4、中断寄存器</h3><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E4%B8%AD%E6%96%AD%E5%AF%84%E5%AD%98%E5%99%A8.png" alt="中断寄存器"></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E4%B8%AD%E6%96%AD%E4%BC%98%E5%85%88%E7%BA%A7%E5%AF%84%E5%AD%98%E5%99%A8.png" alt="中断优先级寄存器"></p>
+<h1 id="三、串行通信的中断请求"><a href="#三、串行通信的中断请求" class="headerlink" title="三、串行通信的中断请求"></a>三、串行通信的中断请求</h1><p><strong>当一帧发送完成，内部硬件自动置位TI，即TI=1，请求中断处理；当接收完一帧信息时，内部硬件自动置位RI，即RI=1，请求中断处理。由于TI和RI以“或逻辑”关系向主机请求中断，所以主机响应中断时事先并不知道是TI还是RI请求的中断，必须在中断服务程序中查询TI和RI进行判别，然后分别处理。因此，两个中断请求标志位均不能由硬件自动置位，必须通过软件清0，否则将出现一次请求多次响应的错误。</strong></p>
+<h1 id="四、工作模式"><a href="#四、工作模式" class="headerlink" title="四、工作模式"></a>四、工作模式</h1><h3 id="4-1、串行口工作模式0：同步移位寄存器"><a href="#4-1、串行口工作模式0：同步移位寄存器" class="headerlink" title="4.1、串行口工作模式0：同步移位寄存器"></a>4.1、串行口工作模式0：同步移位寄存器</h3><p><strong>方式0时，串行口为同步移位寄存器的输入输出方式。主要用于扩展并行输入或输出口。数据由RXD（P3.0）引脚输入或输出，同步移位脉冲由TXD（P3.1）引脚输出。发送和接收均为8位数据，低位在先，高位在后。波特率固定为fosc/12。</strong></p>
+<h4 id="方式0输出"><a href="#方式0输出" class="headerlink" title="方式0输出"></a>方式0输出</h4><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%96%B9%E5%BC%8F0%E8%BE%93%E5%87%BA.png" alt="方式0输出"></p>
+<h4 id="方式0输入"><a href="#方式0输入" class="headerlink" title="方式0输入"></a>方式0输入</h4><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%96%B9%E5%BC%8F0%E8%BE%93%E5%85%A5.png" alt="方式0输入"></p>
+<p><strong>模式0的发送过程</strong>：当主机执行将数据写入发送缓冲器SBUF指令时启动发送，串行口即将8位数据以SYSclk/12或SYSclk/6的波特率从RxD管脚输出(从低位到高位)，发送完中断标志TI置”1”，TxD管脚输出同步移位脉冲（SHIFTCLOCK）。</p>
+<p><strong>模式0接收过程</strong>：模式0接收时，复位接收中断请求标志RI，即RI＝0，置位允许接收控制位REN=1时启动串行模式0接收过程。启动接收过程后，RxD为串行输入端，TxD为同步脉冲输出端。串行接收的波特率为SYSclk/12或SYSclk/6。</p>
+<p><strong>当接收完成一帧数据(8位)后，控制信号复位，中断标志RI被置”1”，呈中断申请状态。当再次接收时，必须通过软件将RI清0</strong></p>
+<h3 id="4-2、串行口工作模式1：8位UART，波特率可变"><a href="#4-2、串行口工作模式1：8位UART，波特率可变" class="headerlink" title="4.2、串行口工作模式1：8位UART，波特率可变"></a>4.2、串行口工作模式1：8位UART，波特率可变</h3><p><strong>方式1是10位数据的异步通信口。TXD为数据的发送引脚，RXD是数据的接受引脚。传送一帧数据的格式如图所示，其中1位起始位，8位数据位，1位停止位。</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%96%B9%E5%BC%8F1%E6%95%B0%E6%8D%AE%E4%BD%8D.png" alt="方式1数据位"></p>
+<h4 id="方式1输出"><a href="#方式1输出" class="headerlink" title="方式1输出"></a>方式1输出</h4><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%96%B9%E5%BC%8F1%E8%BE%93%E5%87%BA.png" alt="方式1输出"></p>
+<h4 id="方式1输入"><a href="#方式1输入" class="headerlink" title="方式1输入"></a>方式1输入</h4><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%96%B9%E5%BC%8F1%E8%BE%93%E5%85%A5.png" alt="方式1输入"></p>
+<p><strong>串行通信模式1的波特率是可变的，可变的波特由定时器/计数器1或独立波特率发生器产生。</strong></p>
+<pre><code>串行通信模式1的波特率=2^SMOD/32×(定时器/计数器1溢出率)
+当单片机工作在12T模式时，定时器1的溢出率 = SYSclk/12/( 256 - TH1)； 
+当单片机工作在6T模式时， 定时器1的溢出率 = SYSclk /6/ ( 256 - TH1)</code></pre><h3 id="4-3、方式2和方式3"><a href="#4-3、方式2和方式3" class="headerlink" title="4.3、方式2和方式3"></a>4.3、方式2和方式3</h3><p><strong>方式2或方式3时，为11位数据的异步通信口，TXD为数据发送引脚，RXD为数据接收引脚。</strong></p>
+<p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%96%B9%E5%BC%8F2%E5%92%8C3%E6%95%B0%E6%8D%AE%E4%BD%8D.png" alt="方式2和3数据位"></p>
+<p><strong>方式2、方式3，起始位1位、数据位9位（含附加的第九位，发送时为SCON中的TB8，接收时为SCON中的RB8）、停止位1位，一帧数据为11位。方式2的波特率固定为晶振频率的1/32或1/64。方式3的波特率由定时器T1的溢出率决定。</strong></p>
+<h4 id="方式2、方式3的输出"><a href="#方式2、方式3的输出" class="headerlink" title="方式2、方式3的输出"></a>方式2、方式3的输出</h4><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%96%B9%E5%BC%8F2%E5%92%8C3%E8%BE%93%E5%87%BA.png" alt="方式2和3输出"></p>
+<h4 id="方式2、方式3的输入"><a href="#方式2、方式3的输入" class="headerlink" title="方式2、方式3的输入"></a>方式2、方式3的输入</h4><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%96%B9%E5%BC%8F2%E5%92%8C3%E8%BE%93%E5%85%A5.png" alt="方式2和3输入"></p>
+<h1 id="五、波特率计算"><a href="#五、波特率计算" class="headerlink" title="五、波特率计算"></a>五、波特率计算</h1><p><img src="/images/%E5%8D%95%E7%89%87%E6%9C%BA/52%E5%8D%95%E7%89%87%E6%9C%BA/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/%E6%B3%A2%E7%89%B9%E7%8E%87%E8%AE%A1%E7%AE%97.png" alt="波特率计算"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/52/" rel="tag"># 52</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/15/%E5%AE%9A%E6%97%B6%E5%99%A8%E5%92%8C%E8%AE%A1%E6%95%B0%E5%99%A8/" rel="next" title="定时器和计数器">
+                <i class="fa fa-chevron-left"></i> 定时器和计数器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>   
+    </div> 
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.gif"
+                alt="一觉到天亮" />
+            
+              <p class="site-author-name" itemprop="name">一觉到天亮</p>
+              <p class="site-description motion-element" itemprop="description">Write sonething words!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/143034" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="1430349989@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、简介"><span class="nav-number">1.</span> <span class="nav-text">一、简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、串行口相关寄存器"><span class="nav-number">2.</span> <span class="nav-text">二、串行口相关寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1、串行口控制寄存器SCON和PCON"><span class="nav-number">2.0.1.</span> <span class="nav-text">2.1、串行口控制寄存器SCON和PCON</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2、PCON-电源控制寄存器-不可位寻址"><span class="nav-number">2.0.2.</span> <span class="nav-text">2.2、PCON:电源控制寄存器 (不可位寻址)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3、串行口数据缓冲寄存器SBUF"><span class="nav-number">2.0.3.</span> <span class="nav-text">2.3、串行口数据缓冲寄存器SBUF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4、中断寄存器"><span class="nav-number">2.0.4.</span> <span class="nav-text">2.4、中断寄存器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、串行通信的中断请求"><span class="nav-number">3.</span> <span class="nav-text">三、串行通信的中断请求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、工作模式"><span class="nav-number">4.</span> <span class="nav-text">四、工作模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1、串行口工作模式0：同步移位寄存器"><span class="nav-number">4.0.1.</span> <span class="nav-text">4.1、串行口工作模式0：同步移位寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#方式0输出"><span class="nav-number">4.0.1.1.</span> <span class="nav-text">方式0输出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方式0输入"><span class="nav-number">4.0.1.2.</span> <span class="nav-text">方式0输入</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2、串行口工作模式1：8位UART，波特率可变"><span class="nav-number">4.0.2.</span> <span class="nav-text">4.2、串行口工作模式1：8位UART，波特率可变</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#方式1输出"><span class="nav-number">4.0.2.1.</span> <span class="nav-text">方式1输出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方式1输入"><span class="nav-number">4.0.2.2.</span> <span class="nav-text">方式1输入</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3、方式2和方式3"><span class="nav-number">4.0.3.</span> <span class="nav-text">4.3、方式2和方式3</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#方式2、方式3的输出"><span class="nav-number">4.0.3.1.</span> <span class="nav-text">方式2、方式3的输出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方式2、方式3的输入"><span class="nav-number">4.0.3.2.</span> <span class="nav-text">方式2、方式3的输入</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、波特率计算"><span class="nav-number">5.</span> <span class="nav-text">五、波特率计算</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-[object Object]"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">一觉到天亮</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
