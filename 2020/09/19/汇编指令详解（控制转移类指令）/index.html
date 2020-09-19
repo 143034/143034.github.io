@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="汇编," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、控制转移类指令1.1、无条件转移类指令1.短转移类指令AJMP       addr11 2.长转移类指令LJMP       addr16 3.相对转移指令SJMP       rel 上面的三条指令，如果要仔细分析的话，区别较大，但初学时，可不理会这么多，统统理解成：JMP标号，也就是跳转到一个标号处。事实上，LJMP标号，在前面的例程中我们已接触过，并且也知道如何来使用了。而AJMP和S">
+<meta property="og:type" content="article">
+<meta property="og:title" content="汇编指令详解（控制转移类指令）">
+<meta property="og:url" content="http://yoursite.com/2020/09/19/%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%88%E6%8E%A7%E5%88%B6%E8%BD%AC%E7%A7%BB%E7%B1%BB%E6%8C%87%E4%BB%A4%EF%BC%89/index.html">
+<meta property="og:site_name" content="Arsenic">
+<meta property="og:description" content="一、控制转移类指令1.1、无条件转移类指令1.短转移类指令AJMP       addr11 2.长转移类指令LJMP       addr16 3.相对转移指令SJMP       rel 上面的三条指令，如果要仔细分析的话，区别较大，但初学时，可不理会这么多，统统理解成：JMP标号，也就是跳转到一个标号处。事实上，LJMP标号，在前面的例程中我们已接触过，并且也知道如何来使用了。而AJMP和S">
+<meta property="article:published_time" content="2020-09-19T04:17:14.000Z">
+<meta property="article:modified_time" content="2020-09-19T06:36:30.914Z">
+<meta property="article:author" content="一觉到天亮">
+<meta property="article:tag" content="汇编">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/09/19/汇编指令详解（控制转移类指令）/"/>
+
+
+
+
+
+  <title>汇编指令详解（控制转移类指令） | Arsenic</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arsenic</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/19/%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%88%E6%8E%A7%E5%88%B6%E8%BD%AC%E7%A7%BB%E7%B1%BB%E6%8C%87%E4%BB%A4%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="一觉到天亮">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arsenic">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">汇编指令详解（控制转移类指令）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-19T12:17:14+08:00">
+                2020-09-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/" itemprop="url" rel="index">
+                    <span itemprop="name">单片机</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" itemprop="url" rel="index">
+                    <span itemprop="name">汇编语言</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、控制转移类指令"><a href="#一、控制转移类指令" class="headerlink" title="一、控制转移类指令"></a>一、控制转移类指令</h1><h3 id="1-1、无条件转移类指令"><a href="#1-1、无条件转移类指令" class="headerlink" title="1.1、无条件转移类指令"></a>1.1、无条件转移类指令</h3><h4 id="1-短转移类指令"><a href="#1-短转移类指令" class="headerlink" title="1.短转移类指令"></a>1.短转移类指令</h4><p><strong>AJMP       addr11</strong></p>
+<h4 id="2-长转移类指令"><a href="#2-长转移类指令" class="headerlink" title="2.长转移类指令"></a>2.长转移类指令</h4><p><strong>LJMP       addr16</strong></p>
+<h4 id="3-相对转移指令"><a href="#3-相对转移指令" class="headerlink" title="3.相对转移指令"></a>3.相对转移指令</h4><p><strong>SJMP       rel</strong></p>
+<p>上面的三条指令，如果要仔细分析的话，区别较大，但初学时，可不理会这么多，统统理解成：JMP标号，也就是跳转到一个标号处。事实上，LJMP标号，在前面的例程中我们已接触过，并且也知道如何来使用了。而AJMP和SJMP也是一样。那么他们的区别何在呢？在于跳转的范围不一样。好比跳远，LJMP一下就能跳64K这么远（当然近了更没关系了）。而AJMP最多只能跳2K距离，而SJMP则最多只能跳256这么远。原则上，所有用SJMP或AJMP的地方都可以用LJMP来替代。因此在初学时，需要跳转时可以全用LJMP，除了一个场合。什么场合呢？先了解一下AJMP，AJMP是一条双字节指令，也就说这条指令本身占用存储器（ROM）的两个单元。而LJMP则是三字节指令，即这条指令占用存储器（ROM）的三个单元。下面是第四条跳转指令。</p>
+<h3 id="1-2、间接转移指令"><a href="#1-2、间接转移指令" class="headerlink" title="1.2、间接转移指令"></a>1.2、间接转移指令</h3><p><strong>JMP         @A+DPTR</strong></p>
+<p>这条指令的用途也是跳转，转到什么地方去呢？这可不能由标号简单地决定了。让我们从一个实际的例子入手吧。</p>
+<p>MOV    DPTR，#TAB       ;将TAB所代表的地址送入DPTR</p>
+<p>MOV    A，R0                  ;从R0中取数（详见下面说明）</p>
+<p>MOV    B，#2                        </p>
+<p>MUL    A，B           ;A中的值乘2（详见下面的说明）</p>
+<p>JMP    A，@A+DPTR      ;跳转</p>
+<p>TAB:      AJMP     S1          ;跳转表格</p>
+<p>AJMP     S2</p>
+<p>AJMP     S3</p>
+<p>应用背景介绍：在单片机开发中，经常要用到键盘，见上面的9个按键的键盘。我们的要求是：当按下功能键A………..G时去完成不同的功能。这用程序设计的语言来表达的话，就是：按下不同的键去执行不同的程序段，以完成不同的功能。怎么样来实现呢？</p>
+<p>前面的程序读入的是按键的值，如按下’A’键后获得的键值是0，按下’B’键后获得的值是’1’等等，然后根据不同的值进行跳转，如键值为0就转到S1执行，为1就转到S2执行。。。。如何来实现这一功能呢？</p>
+<p>先从程序的下面看起，是若干个AJMP语句，这若干个AJMP语句最后在存储器中是这样存放的，也就是每个AJMP语句都占用了两个存储器的空间，并且是连续存放的。而AJMP S1存放的地址是TAB，到底TAB等于多少，我们不需要知道，把它留给汇编程序来算好了。</p>
+<p>下面我们来看这段程序的执行过程：第一句MOV DPTR，#TAB执行完了之后，DPTR中的值就是TAB，第二句是MOV A，R0，我们假设R0是由按键处理程序获得的键值，比如按下A键，R0中的值是0，按下B键，R0中的值是1，以此类推，现在我们假设按下的是B键，则执行完第二条指令后，A中的值就是1。并且按我们的分析，按下B后应当执行S2这段程序，让我们来看一看是否是这样呢？第三条、第四条指令是将A中的值乘2，即执行完第4条指令后A中的值是2。下面就执行JMP @A+DPTR了，现在DPTR中的值是TAB，而A+DPTR后就是TAB+2，因此，执行此句程序后，将会跳到TAB+2这个地址继续执行。看一看在TAB+2这个地址里面放的是什么？就是AJMP    S2这条指令。因此，马上又执行AJMP              S2指令，程序将跳到S2处往下执行，这与我们的要求相符合。</p>
+<p>请大家自行分析按下键“A”、“C”、“D”……之后的情况。</p>
+<p>这样我们用JMP     @A+DPTR就实现了按下一键跳到相应的程序段去执行的这样一个要求。再问大家一个问题，为什么取得键值后要乘2？如果例程下面的所有指令换成LJMP，即：</p>
+<p>LJMP      S1,LJMP        S2……这段程序还能正确地执行吗？如果不能，应该怎么改？</p>
+<h3 id="1-3、条件转移指令"><a href="#1-3、条件转移指令" class="headerlink" title="1.3、条件转移指令"></a>1.3、条件转移指令</h3><p><strong>条件转移指令是指在满足一定条件时进行相对转移。</strong> </p>
+<h4 id="1-31、判A内容是否为0转移指令"><a href="#1-31、判A内容是否为0转移指令" class="headerlink" title="1.31、判A内容是否为0转移指令"></a>1.31、判A内容是否为0转移指令</h4><p><strong>JZ rel</strong></p>
+<p><strong>JNZ rel</strong></p>
+<p>第一指令的功能是：如果(A)=0，则转移，否则顺序执行（执行本指令的下一条指令）。转移到什么地方去呢？如果按照传统的方法，就要算偏移量，很麻烦，好在现在我们可以借助于机器汇编了。因此这第指令我们可以这样理解：JZ 标号。即转移到标号处。下面举一例说明：</p>
+<p>MOV A,R0</p>
+<p>JZ L1</p>
+<p>MOV R1,#00H</p>
+<p>AJMP L2</p>
+<p>L1: MOV R1,#0FFH</p>
+<p>L2: SJMP L2</p>
+<p>END</p>
+<p>在执行上面这段程序前如果R0中的值是0的话，就转移到L1执行，因此最终的执行结果是R1中的值为0FFH。而如果R0中的值不等于0，则顺序执行，也就是执行 MOV R1，#00H指令。最终的执行结果是R1中的值等于0。</p>
+<p>第一条指令的功能清楚了，第二条当然就好理解了，如果A中的值不等于0，就转移。把上面的那个例子中的JZ改成JNZ试试吧，看看程序执行的结果是什么?</p>
+<h4 id="1-32、比较转移指令"><a href="#1-32、比较转移指令" class="headerlink" title="1.32、比较转移指令"></a>1.32、比较转移指令</h4><p><strong>CJNE A,#data,rel</strong></p>
+<p><strong>CJNE A,direct,rel</strong></p>
+<p><strong>CJNE Rn,#data,rel</strong></p>
+<p><strong>CJNE @Ri,#data,rel</strong></p>
+<p>第一条指令的功能是将A中的值和立即数data比较，如果两者相等，就顺序执行（执行本指令的下一条指令），如果不相等，就转移，同样地，我们可以将rel理解成标号，即：CJNE A，#data,标号。这样利用这条指令，我们就可以判断两数是否相等，这在很多场合是非常有用的。但有时还想得知两数比较之后哪个大，哪个小，本条指令也具有这样的功能，如果两数不相等，则CPU还会反映出哪个数大，哪个数小，这是用CY（进位位）来实现的。如果前面的数（A中的）大，则CY=0，否则CY=1，因此在程序转移后再次利用CY就可判断出A中的数比data大还是小了。</p>
+<p>例：</p>
+<p>MOV A,R0</p>
+<p>CJNE A,#10H,L1</p>
+<p>MOV R1,#0FFH</p>
+<p>AJMP L3</p>
+<p>L1: JC L2</p>
+<p>MOV R1,#0AAH</p>
+<p>AJMP L3</p>
+<p>L2: MOV R1,#0FFH</p>
+<p>L3: SJMP L3</p>
+<p>上面的程序中有一条指令我们还没学过，即JC，这条指令的原型是JC rel,作用和上面的JZ类似，但是它是判CY是0，还是1进行转移，如果CY=1，则转移到JC后面的标号处执行，如果CY=0则顺序执行（执行它的下面一条指令）。</p>
+<p>分析一下上面的程序，如果（A）=10H，则顺序执行，即R1=0。如果（A）不等于10H，则转到L1处继续执行，在L1处，再次进行判断，如果（A）&gt;10H，则CY=1，将顺序执行，即执行MOV R1，#0AAH指令，而如果（A）&lt;10H，则将转移到L2处指行，即执行MOV R1，#0FFH指令。因此最终结果是：本程序执行前，如果（R0）=10H，则（R1）=00H，如果（R0）&gt;10H，则（R1）=0AAH，如果（R0）&lt;10H，则（R1）=0FFH。</p>
+<p>弄懂了这条指令，其它的几条就类似了，第二条是把A当中的值和直接地址中的值比较，第三条则是将直接地址中的值和立即数比较，第四条是将间址寻址得到的数和立即数比较，这里就不详谈了，下面给出几个相应的例子。</p>
+<p>CJNE A,10H ;把A中的值和10H中的值比较（注意和上题的区别）</p>
+<p>CJNE 10H，#35H ;把10H中的值和35H中的值比较</p>
+<p>CJNE @R0,#35H ;把R0中的值作为地址，从此地址中取数并和35H比较</p>
+<h3 id="1-33、循环转移指令"><a href="#1-33、循环转移指令" class="headerlink" title="1.33、循环转移指令"></a>1.33、循环转移指令</h3><p><strong>DJNZ Rn,rel</strong></p>
+<p><strong>DJNZ direct,rel</strong></p>
+<p>第一条指令在前面的例子中有详细的分析，这里就不多谈了。第二条指令，只是将Rn改成直接地址，其它一样，也不多说了，给一个例子。</p>
+<p>DJNZ 10H，LOOP</p>
+<p>调用与返回指令</p>
+<p>（1）主程序与子程序 在前面的灯的实验中，我们已用到过了子程序，只是我们并没有明确地介绍。子程序是干什么用的，为什么要用子程序技术呢？举个例子，我们数据老师布置了10道算术题，经过观察，每一道题中都包含一个（3<em>5+2）</em>3的运算，我们可以有两种选择，第一种，每做一道题，都把这个算式算一遍，第二种选择，我们可以先把这个结果算出来，也就是51，放在一边，然后要用到这个算式时就将51代进去。这两种方法哪种更好呢？不必多言。设计程序时也是这样，有时一个功能会在程序的不同地方反复使用，我们就可以把这个功能做成一段程序，每次需要用到这个功能时就“调用”一下。</p>
+<p>（2）调用及回过程：主程序调用了子程序，子程序执行完之后必须再回到主程序继续执行，不能“一去不回头”，那么回到什么地方呢？是回到调用子程序的下面一条指令继续执行（当然啦，要是还回到这条指令，不又要再调用子程序了吗？那可就没完没了了……）。 </p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%B1%87%E7%BC%96/" rel="tag"># 汇编</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/19/%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%88%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%B1%BB%E6%8C%87%E4%BB%A4%EF%BC%89/" rel="next" title="汇编指令详解（逻辑运算类指令）">
+                <i class="fa fa-chevron-left"></i> 汇编指令详解（逻辑运算类指令）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/19/%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%88%E4%BD%8D%E5%8F%8A%E4%BD%8D%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4%EF%BC%89/" rel="prev" title="汇编指令详解（位及位操作指令）">
+                汇编指令详解（位及位操作指令） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>   
+    </div> 
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.gif"
+                alt="一觉到天亮" />
+            
+              <p class="site-author-name" itemprop="name">一觉到天亮</p>
+              <p class="site-description motion-element" itemprop="description">Write sonething words!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/143034" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="1430349989@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、控制转移类指令"><span class="nav-number">1.</span> <span class="nav-text">一、控制转移类指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1、无条件转移类指令"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.1、无条件转移类指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-短转移类指令"><span class="nav-number">1.0.1.1.</span> <span class="nav-text">1.短转移类指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-长转移类指令"><span class="nav-number">1.0.1.2.</span> <span class="nav-text">2.长转移类指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-相对转移指令"><span class="nav-number">1.0.1.3.</span> <span class="nav-text">3.相对转移指令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2、间接转移指令"><span class="nav-number">1.0.2.</span> <span class="nav-text">1.2、间接转移指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3、条件转移指令"><span class="nav-number">1.0.3.</span> <span class="nav-text">1.3、条件转移指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-31、判A内容是否为0转移指令"><span class="nav-number">1.0.3.1.</span> <span class="nav-text">1.31、判A内容是否为0转移指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-32、比较转移指令"><span class="nav-number">1.0.3.2.</span> <span class="nav-text">1.32、比较转移指令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-33、循环转移指令"><span class="nav-number">1.0.4.</span> <span class="nav-text">1.33、循环转移指令</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-[object Object]"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">一觉到天亮</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

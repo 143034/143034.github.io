@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="汇编," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、算数运算类指令1.1、不带进位位的加法指令ADD A,#DATA ;例：ADD A，#10H ADD A,direct ;例：ADD A，10H ADD A,Rn ;例：ADD A，R7 ADD A,@Ri ;例：ADD A，@R0 用途：将A中的值与其后面的值相加，最终结果否是回到A中。 例： MOV A，#30H ADD A，#10H 则执行完本条指令后，A中的值为40H。 1.2、带进位">
+<meta property="og:type" content="article">
+<meta property="og:title" content="汇编指令详解（算数运算类指令）">
+<meta property="og:url" content="http://yoursite.com/2020/09/19/%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%88%E7%AE%97%E6%95%B0%E8%BF%90%E7%AE%97%E7%B1%BB%E6%8C%87%E4%BB%A4%EF%BC%89/index.html">
+<meta property="og:site_name" content="Arsenic">
+<meta property="og:description" content="一、算数运算类指令1.1、不带进位位的加法指令ADD A,#DATA ;例：ADD A，#10H ADD A,direct ;例：ADD A，10H ADD A,Rn ;例：ADD A，R7 ADD A,@Ri ;例：ADD A，@R0 用途：将A中的值与其后面的值相加，最终结果否是回到A中。 例： MOV A，#30H ADD A，#10H 则执行完本条指令后，A中的值为40H。 1.2、带进位">
+<meta property="article:published_time" content="2020-09-19T03:52:16.000Z">
+<meta property="article:modified_time" content="2020-09-19T06:36:46.190Z">
+<meta property="article:author" content="一觉到天亮">
+<meta property="article:tag" content="汇编">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/09/19/汇编指令详解（算数运算类指令）/"/>
+
+
+
+
+
+  <title>汇编指令详解（算数运算类指令） | Arsenic</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arsenic</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/19/%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%88%E7%AE%97%E6%95%B0%E8%BF%90%E7%AE%97%E7%B1%BB%E6%8C%87%E4%BB%A4%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="一觉到天亮">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arsenic">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">汇编指令详解（算数运算类指令）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-19T11:52:16+08:00">
+                2020-09-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/" itemprop="url" rel="index">
+                    <span itemprop="name">单片机</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" itemprop="url" rel="index">
+                    <span itemprop="name">汇编语言</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、算数运算类指令"><a href="#一、算数运算类指令" class="headerlink" title="一、算数运算类指令"></a>一、算数运算类指令</h1><h3 id="1-1、不带进位位的加法指令"><a href="#1-1、不带进位位的加法指令" class="headerlink" title="1.1、不带进位位的加法指令"></a>1.1、不带进位位的加法指令</h3><p><strong>ADD A,#DATA ;例：ADD A，#10H</strong></p>
+<p><strong>ADD A,direct ;例：ADD A，10H</strong></p>
+<p><strong>ADD A,Rn ;例：ADD A，R7</strong></p>
+<p><strong>ADD A,@Ri ;例：ADD A，@R0</strong></p>
+<p>用途：<strong>将A中的值与其后面的值相加，最终结果否是回到A中。</strong></p>
+<p>例：</p>
+<p>MOV A，#30H</p>
+<p>ADD A，#10H</p>
+<p>则执行完本条指令后，A中的值为40H。</p>
+<h3 id="1-2、带进位位的加法指令"><a href="#1-2、带进位位的加法指令" class="headerlink" title="1.2、带进位位的加法指令"></a>1.2、带进位位的加法指令</h3><p><strong>ADDC A，Rn</strong></p>
+<p><strong>ADDC A,direct</strong></p>
+<p><strong>ADDC A,@Ri</strong></p>
+<p><strong>ADDC A,#data</strong></p>
+<p>用途<strong>：将A中的值和其后面的值相加，并且加上进位位C中的值。</strong></p>
+<p>说明：由于51单片机是一种8位机，所以只能做8位的数学运算，但8位运算的范围只有0-255，这在实际工作中是不够的，因此就要进行扩展，一般是将2个8位的数学运算合起来，成为一个16位的运算，这样，可以表达的数的范围就可以达到0-65535。如何合并呢？其实很简单，让我们看一个10进制数的例子：</p>
+<p>66+78。</p>
+<p>这两个数相加，我们根本不在意这的过程，但事实上我们是这样做的：先做6+8（低位），然后再做6+7，这是高位。做了两次加法，只是我们做的时候并没有刻意分成两次加法来做罢了，或者说我们并没有意识到我们做了两次加法。之所以要分成两次来做，是因为这两个数超过了一位数所能表达的范置（0-9）。</p>
+<p>在做低位时产生了进位，我们做的时候是在适当的位置点一下，然后在做高位加法是将这一点加进去。那么计算机中做16位加法时同样如此，先做低8位的，如果两数相加产生了进位，也要“点一下”做个标记，这个标记就是进位位C，在PSW中。在进行高位加法是将这个C加进去。例：1067H+10A0H，先做67H+A0H=107H，而107H显然超过了0FFH，因此最终保存在A中的是7，而1则到了PSW中的CY位了，换言之，CY就相当于是100H。然后再做10H+10H+CY，结果是21H，所以最终的结果是2107H。</p>
+<h3 id="1-3、带借位的减法指令"><a href="#1-3、带借位的减法指令" class="headerlink" title="1.3、带借位的减法指令"></a>1.3、带借位的减法指令</h3><p><strong>SUBB A，Rn</strong></p>
+<p><strong>SUBB A,direct</strong></p>
+<p><strong>SUBB A,@Ri</strong></p>
+<p><strong>SUBB A,#data</strong></p>
+<p>设（每个H，（R2）=55H，CY=1，执行指令SUBB A，R2之后，A中的值为73H。</p>
+<p>说明：没有不带借位的减法指令，如果需要做不带位的减法指令（在做第一次相减时），只要将CY清零即可。</p>
+<h3 id="1-4、乘法指令"><a href="#1-4、乘法指令" class="headerlink" title="1.4、乘法指令"></a>1.4、乘法指令</h3><p><strong>MUL AB</strong></p>
+<p> 此指令的功能是将A和B中的两个8位无符号数相乘，两数相乘结果一般比较大，因此最终结果用1个16位数来表达，其中高8位放在B中，低8位放在A中。在乘积大于FFFFFH（65535）时，0V置1（溢出），否则OV为0，而CY总是0。</p>
+<p>例：（A）=4EH，（B）=5DH，执行指令</p>
+<p>MUL AB后，乘积是1C56H，所以在B中放的是1CH，而A中放的则是56H。</p>
+<h3 id="1-5、除法指令"><a href="#1-5、除法指令" class="headerlink" title="1.5、除法指令"></a>1.5、除法指令</h3><p><strong>DIV AB</strong></p>
+<p>此指令的功能是将A中的8位无符号数除以B中的8位无符号数（A/B）。除法一般会出现小数，但计算机中可没法直接表达小数，它用的是我们小学生还没接触到小数时用的商和余数的概念，如13/5，其商是2，余数是3。除了以后，商放在A中，余数放在B中。CY和OV都是0。如果在做除法前B中的值是00H，也就是除数为0，那么0V=1。</p>
+<h3 id="1-6、加1指令"><a href="#1-6、加1指令" class="headerlink" title="1.6、加1指令"></a>1.6、加1指令</h3><p><strong>INC A</strong></p>
+<p><strong>INC Rn</strong></p>
+<p><strong>INC direct</strong></p>
+<p><strong>INC @Ri</strong></p>
+<p><strong>INC DPTR</strong></p>
+<p>用途很简单，<strong>就是将后面目标中的值加1</strong>。例：（A）=12H，（R0）=33H，（21H）=32H，（34H）=22H，DPTR=1234H。执行下面的指令：</p>
+<p>INC A （A）=13H</p>
+<p>INC R2 （R0）=34H</p>
+<p>INC 21H （21H）=33H</p>
+<p>INC @R0 （34H）=23H</p>
+<p>INC DPTR 9; （ DPTR）=1235H</p>
+<p>结果如上所示。</p>
+<p>说明：从结果上看INC A和ADD A，#1差不多，但INC A是单字节，单周期指令，而ADD #1则是双字节，双周期指令，而且INC A不会影响PSW位，如（A）=0FFH，INC A后（A）=00H，而CY依然保持不变。如果是ADD A ，#1，则（A）=00H，而CY一定是1。因此加1指令并不适合做加法，事实上它主要是用来做计数、地址增加等用途。另外，加法类指令都是以A为核心的;其中一个数必须放在A中，而运算结果也必须放在A中，而加1类指令的对象则广泛得多，可以是寄存器、内存地址、间址寻址的地址等等。</p>
+<h3 id="1-7、减1指令"><a href="#1-7、减1指令" class="headerlink" title="1.7、减1指令"></a>1.7、减1指令</h3><p><strong>DEC A</strong></p>
+<p><strong>DEC RN</strong></p>
+<p><strong>DEC direct</strong></p>
+<p><strong>DEC @Ri</strong></p>
+<p>与加1指令类似，就不多说了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%B1%87%E7%BC%96/" rel="tag"># 汇编</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/19/%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%88%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%92%E7%B1%BB%EF%BC%89/" rel="next" title="汇编指令详解（数据传递类）">
+                <i class="fa fa-chevron-left"></i> 汇编指令详解（数据传递类）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/19/%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%88%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%B1%BB%E6%8C%87%E4%BB%A4%EF%BC%89/" rel="prev" title="汇编指令详解（逻辑运算类指令）">
+                汇编指令详解（逻辑运算类指令） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>   
+    </div> 
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.gif"
+                alt="一觉到天亮" />
+            
+              <p class="site-author-name" itemprop="name">一觉到天亮</p>
+              <p class="site-description motion-element" itemprop="description">Write sonething words!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/143034" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="1430349989@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、算数运算类指令"><span class="nav-number">1.</span> <span class="nav-text">一、算数运算类指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1、不带进位位的加法指令"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.1、不带进位位的加法指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2、带进位位的加法指令"><span class="nav-number">1.0.2.</span> <span class="nav-text">1.2、带进位位的加法指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3、带借位的减法指令"><span class="nav-number">1.0.3.</span> <span class="nav-text">1.3、带借位的减法指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4、乘法指令"><span class="nav-number">1.0.4.</span> <span class="nav-text">1.4、乘法指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5、除法指令"><span class="nav-number">1.0.5.</span> <span class="nav-text">1.5、除法指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6、加1指令"><span class="nav-number">1.0.6.</span> <span class="nav-text">1.6、加1指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7、减1指令"><span class="nav-number">1.0.7.</span> <span class="nav-text">1.7、减1指令</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-[object Object]"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">一觉到天亮</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

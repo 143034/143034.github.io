@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="汇编," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、逻辑运算类指令1.1、对累加器A的逻辑操作CLR A ；将A中的值清0，单周期单字节指令，与MOV A，#00H效果相同。 CPL A ；将A中的值按位取反 RL A ；将A中的值逻辑左移 RLC A ；将A中的值加上进位位进行逻辑左移 RR A ；将A中的值进行逻辑右移 RRC A ；将A中的值加上进位位进行逻辑右移 SWAP A ；将A中的值高、低4位交换。 例：（A）&#x3D;73H，则执行CP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="汇编指令详解（逻辑运算类指令）">
+<meta property="og:url" content="http://yoursite.com/2020/09/19/%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%88%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%B1%BB%E6%8C%87%E4%BB%A4%EF%BC%89/index.html">
+<meta property="og:site_name" content="Arsenic">
+<meta property="og:description" content="一、逻辑运算类指令1.1、对累加器A的逻辑操作CLR A ；将A中的值清0，单周期单字节指令，与MOV A，#00H效果相同。 CPL A ；将A中的值按位取反 RL A ；将A中的值逻辑左移 RLC A ；将A中的值加上进位位进行逻辑左移 RR A ；将A中的值进行逻辑右移 RRC A ；将A中的值加上进位位进行逻辑右移 SWAP A ；将A中的值高、低4位交换。 例：（A）&#x3D;73H，则执行CP">
+<meta property="article:published_time" content="2020-09-19T04:05:39.000Z">
+<meta property="article:modified_time" content="2020-09-19T06:36:36.886Z">
+<meta property="article:author" content="一觉到天亮">
+<meta property="article:tag" content="汇编">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/09/19/汇编指令详解（逻辑运算类指令）/"/>
+
+
+
+
+
+  <title>汇编指令详解（逻辑运算类指令） | Arsenic</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arsenic</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/19/%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%88%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%B1%BB%E6%8C%87%E4%BB%A4%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="一觉到天亮">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arsenic">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">汇编指令详解（逻辑运算类指令）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-19T12:05:39+08:00">
+                2020-09-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/" itemprop="url" rel="index">
+                    <span itemprop="name">单片机</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" itemprop="url" rel="index">
+                    <span itemprop="name">汇编语言</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、逻辑运算类指令"><a href="#一、逻辑运算类指令" class="headerlink" title="一、逻辑运算类指令"></a>一、逻辑运算类指令</h1><h3 id="1-1、对累加器A的逻辑操作"><a href="#1-1、对累加器A的逻辑操作" class="headerlink" title="1.1、对累加器A的逻辑操作"></a>1.1、对累加器A的逻辑操作</h3><p><strong>CLR A ；将A中的值清0，单周期单字节指令，与MOV A，#00H效果相同。</strong></p>
+<p><strong>CPL A ；将A中的值按位取反</strong></p>
+<p><strong>RL A ；将A中的值逻辑左移</strong></p>
+<p><strong>RLC A ；将A中的值加上进位位进行逻辑左移</strong></p>
+<p><strong>RR A ；将A中的值进行逻辑右移</strong></p>
+<p><strong>RRC A ；将A中的值加上进位位进行逻辑右移</strong></p>
+<p><strong>SWAP A ；将A中的值高、低4位交换。</strong></p>
+<p><strong>例</strong>：（A）=73H，则执行CPL A，这样进行：</p>
+<pre><code>73H化为二进制为01110011，
+
+逐位取反即为 10001100，也就是8CH。
+
+RL A是将（A）中的值的第7位送到第0位，第0位送1位，依次类推。</code></pre><p><strong>例</strong>：A中的值为68H，执行RL A。68H化为二进制为01101000，按上图进行移动。01101000化为11010000，即D0H。</p>
+<p>RLC A，是将（A）中的值带上进位位（C）进行移位。</p>
+<p><strong>例</strong>：A中的值为68H，C中的值为1，则执行RLC A</p>
+<p>1 01101000后，结果是0 11010001，也就是C进位位的值变成了0，而（A）则变成了D1H。</p>
+<p>RR A和RRC A就不多谈了。</p>
+<p>SWAP A，是将A中的值的高、低4位进行交换。</p>
+<p>例：（A）=39H，则执行SWAP A之后，A中的值就是93H。怎么正好是这么前后交换呢？因为这是一个16进制数，每1个16进位数字代表4个二进位。注意，如果是这样的：（A）=39，后面没H，执行SWAP A之后，可不是（A）=93。要将它化成二进制再算：39化为二进制是10111，也就是0001，0111高4位是0001，低4位是0111，交换后是01110001，也就是71H，即113。</p>
+<h3 id="1-2、逻辑与指令"><a href="#1-2、逻辑与指令" class="headerlink" title="1.2、逻辑与指令"></a>1.2、逻辑与指令</h3><p><strong>ANL              A,Rn        ;A与Rn中的值按位’与’，结果送入A中</strong></p>
+<p><strong>ANL              A,direct ;A与direct中的值按位’与’，结果送入A中</strong></p>
+<p><strong>ANL              A,@Ri ;A与间址寻址单元@Ri中的值按位’与’，结果送入A中</strong></p>
+<p><strong>ANL              A,#data ;A与立即数data按位’与’，结果送入A中</strong></p>
+<p><strong>ANL              direct,A ;direct中值与A中的值按位’与’，结果送入direct中</strong></p>
+<p><strong>ANL              direct,#data ;direct中的值与立即数data按位’与’，结果送入direct中。</strong></p>
+<p>这几条指令的关键是知道什么是逻辑与。<strong>这里的逻辑与是指按位与</strong></p>
+<p>例：71H和56H相与则将两数写成二进制形式：</p>
+<p>（71H） 01110001</p>
+<p>（56H） 00100110</p>
+<p>结果 00100000 即20H，从上面的式子可以看出，两个参与运算的值只要其中有一个位上是0，则这位的结果就是0，两个同是1，结果才是1。</p>
+<p>理解了逻辑与的运算规则，结果自然就出来了。看每条指令后面的注释</p>
+<p>下面再举一些例子来看。</p>
+<p>MOV              A，#45H ;(A)=45H</p>
+<p>MOV              R1，#25H ;(R1)=25H</p>
+<p>MOV              25H，#79H ;(25H)=79H</p>
+<p>ANL              A，@R1 ;45H与79H按位与，结果送入A中为 41H （A）=41H</p>
+<p>ANL              25H,#15H ;25H中的值（79H）与15H相与结果为（25H）=11H）</p>
+<p>ANL              25H,A ;25H中的值（11H）与A中的值（41H)相与，结果为(25H)=11H</p>
+<p>在知道了逻辑与指令的功能后，逻辑或和逻辑异或的功能就很简单了。逻辑或是按位“或”，即有“1”为1，全“0”为0。例：</p>
+<p>10011000</p>
+<p>或 01100001</p>
+<p>结果 11111001</p>
+<p>而异或则是按位“异或”，相同为“0”，相异为“1”。例：</p>
+<p>10011000</p>
+<p>异或 01100001</p>
+<p>结果 11111001</p>
+<p>而所有的或指令，就是将与指令中的ANL 换成ORL，而异或指令则是将ANL       换成XRL。</p>
+<p> 　　　　</p>
+<h3 id="1-3、逻辑或指令"><a href="#1-3、逻辑或指令" class="headerlink" title="1.3、逻辑或指令"></a>1.3、逻辑或指令</h3><p><strong>ORL              A,Rn        ;A和Rn中的值按位’或’，结果送入A中</strong></p>
+<p><strong>ORL              A,direct ;A和与间址寻址单元@Ri中的值按位’或’，结果送入A中</strong></p>
+<p><strong>ORL              A,#data ;A和立direct中的值按位’或’，结果送入A中</strong></p>
+<p><strong>ORL              A,@Ri ;A和即数data按位’或’，结果送入A中</strong></p>
+<p><strong>ORL              direct,A ;direct中值和A中的值按位’或’，结果送入direct中</strong></p>
+<p><strong>ORL              direct,#data ;direct中的值和立即数data按位’或’，结果送入direct中。</strong></p>
+<h3 id="1-4、逻辑异或指令"><a href="#1-4、逻辑异或指令" class="headerlink" title="1.4、逻辑异或指令"></a>1.4、逻辑异或指令</h3><p><strong>XRL              A,Rn        ;A和Rn中的值按位’异或’，结果送入A中</strong></p>
+<p><strong>XRL              A,direct ;A和direct中的值按位’异或’，结果送入A中</strong></p>
+<p><strong>XRL              A,@Ri ;A和间址寻址单元@Ri中的值按位’异或’，结果送入A中</strong></p>
+<p><strong>XRL              A,#data ;A和立即数data按位’异或’，结果送入A中</strong></p>
+<p><strong>XRL              direct,A ;direct中值和A中的值按位’异或’，结果送入direct中</strong></p>
+<p><strong>XRL              direct,#data ;direct中的值和立即数data按位’异或’，结果送入direct中。</strong></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%B1%87%E7%BC%96/" rel="tag"># 汇编</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/19/%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%88%E7%AE%97%E6%95%B0%E8%BF%90%E7%AE%97%E7%B1%BB%E6%8C%87%E4%BB%A4%EF%BC%89/" rel="next" title="汇编指令详解（算数运算类指令）">
+                <i class="fa fa-chevron-left"></i> 汇编指令详解（算数运算类指令）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/19/%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%88%E6%8E%A7%E5%88%B6%E8%BD%AC%E7%A7%BB%E7%B1%BB%E6%8C%87%E4%BB%A4%EF%BC%89/" rel="prev" title="汇编指令详解（控制转移类指令）">
+                汇编指令详解（控制转移类指令） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>   
+    </div> 
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.gif"
+                alt="一觉到天亮" />
+            
+              <p class="site-author-name" itemprop="name">一觉到天亮</p>
+              <p class="site-description motion-element" itemprop="description">Write sonething words!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/143034" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="1430349989@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、逻辑运算类指令"><span class="nav-number">1.</span> <span class="nav-text">一、逻辑运算类指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1、对累加器A的逻辑操作"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.1、对累加器A的逻辑操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2、逻辑与指令"><span class="nav-number">1.0.2.</span> <span class="nav-text">1.2、逻辑与指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3、逻辑或指令"><span class="nav-number">1.0.3.</span> <span class="nav-text">1.3、逻辑或指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4、逻辑异或指令"><span class="nav-number">1.0.4.</span> <span class="nav-text">1.4、逻辑异或指令</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-[object Object]"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">一觉到天亮</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>

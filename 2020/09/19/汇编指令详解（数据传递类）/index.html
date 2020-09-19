@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="汇编," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、数据传递类指令1.1、以累加器为目的操作数的指令MOV A，Rn MOV A，direct MOV A，@Ri MOV A，#data 第一条指令中，Rn代表的是R0-R7。第二条指令中，direct就是指的直接地址，而第三条指令中，就是我们刚才讲过的。第四条指令是将立即数data送到A中。 1.2、以寄存器Rn为目的操作的指令MOV Rn,A MOV Rn,direct MOV Rn,#da">
+<meta property="og:type" content="article">
+<meta property="og:title" content="汇编指令详解（数据传递类）">
+<meta property="og:url" content="http://yoursite.com/2020/09/19/%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%88%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%92%E7%B1%BB%EF%BC%89/index.html">
+<meta property="og:site_name" content="Arsenic">
+<meta property="og:description" content="一、数据传递类指令1.1、以累加器为目的操作数的指令MOV A，Rn MOV A，direct MOV A，@Ri MOV A，#data 第一条指令中，Rn代表的是R0-R7。第二条指令中，direct就是指的直接地址，而第三条指令中，就是我们刚才讲过的。第四条指令是将立即数data送到A中。 1.2、以寄存器Rn为目的操作的指令MOV Rn,A MOV Rn,direct MOV Rn,#da">
+<meta property="article:published_time" content="2020-09-19T02:44:49.000Z">
+<meta property="article:modified_time" content="2020-09-19T06:36:41.047Z">
+<meta property="article:author" content="一觉到天亮">
+<meta property="article:tag" content="汇编">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/09/19/汇编指令详解（数据传递类）/"/>
+
+
+
+
+
+  <title>汇编指令详解（数据传递类） | Arsenic</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arsenic</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/19/%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%88%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%92%E7%B1%BB%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="一觉到天亮">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arsenic">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">汇编指令详解（数据传递类）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-19T10:44:49+08:00">
+                2020-09-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/" itemprop="url" rel="index">
+                    <span itemprop="name">单片机</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%95%E7%89%87%E6%9C%BA/%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80/" itemprop="url" rel="index">
+                    <span itemprop="name">汇编语言</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、数据传递类指令"><a href="#一、数据传递类指令" class="headerlink" title="一、数据传递类指令"></a>一、数据传递类指令</h1><h3 id="1-1、以累加器为目的操作数的指令"><a href="#1-1、以累加器为目的操作数的指令" class="headerlink" title="1.1、以累加器为目的操作数的指令"></a>1.1、以累加器为目的操作数的指令</h3><p><strong>MOV A，Rn</strong></p>
+<p><strong>MOV A，direct</strong></p>
+<p><strong>MOV A，@Ri</strong></p>
+<p><strong>MOV A，#data</strong></p>
+<p>第一条指令中，Rn代表的是R0-R7。第二条指令中，direct就是指的直接地址，而第三条指令中，就是我们刚才讲过的。第四条指令是将立即数data送到A中。</p>
+<h3 id="1-2、以寄存器Rn为目的操作的指令"><a href="#1-2、以寄存器Rn为目的操作的指令" class="headerlink" title="1.2、以寄存器Rn为目的操作的指令"></a>1.2、以寄存器Rn为目的操作的指令</h3><p><strong>MOV Rn,A</strong></p>
+<p><strong>MOV Rn,direct</strong></p>
+<p><strong>MOV Rn,#data</strong></p>
+<p>这组指令功能是把源地址单元中的内容送入工作寄存器，源操作数不变。</p>
+<h3 id="1-3、以直接地址为目的操作数的指令"><a href="#1-3、以直接地址为目的操作数的指令" class="headerlink" title="1.3、以直接地址为目的操作数的指令"></a>1.3、以直接地址为目的操作数的指令</h3><p><strong>MOV direct,A 例： MOV 20H,A</strong></p>
+<p><strong>MOV direct,Rn MOV 20H,R1</strong></p>
+<p><strong>MOV direct1,direct2 MOV 20H,30H</strong></p>
+<p><strong>MOV direct,@Ri MOV 20H,@R1</strong></p>
+<p><strong>MOV direct,#data MOV 20H,#34H</strong></p>
+<p>、</p>
+<h3 id="1-4、以间接地址为目的操作数的指令"><a href="#1-4、以间接地址为目的操作数的指令" class="headerlink" title="1.4、以间接地址为目的操作数的指令"></a>1.4、以间接地址为目的操作数的指令</h3><p><strong>MOV @Ri,A 例：MOV @R0,A</strong></p>
+<p><strong>MOV @Ri,direct MOV @R1,20H</strong></p>
+<p><strong>MOV @Ri,#data MOV @R0,#34H</strong></p>
+<h3 id="1-5、十六位数的传递指令"><a href="#1-5、十六位数的传递指令" class="headerlink" title="1.5、十六位数的传递指令"></a>1.5、十六位数的传递指令</h3><p><strong>MOV DPTR，#data16</strong></p>
+<p>8051是一种8位机，这是唯一的一条16位立即数传递指令，其功能是<strong>将一个16位的立即数送入DPTR中去。其中高8位送入DPH（083H），低8位送入DPL(082H)</strong>。例：MOV DPTR，#1234H，则执行完了之后DPH中的值为12H，DPL中的值为34H。反之，如果我们分别向DPH，DPL送数，则结果也一样。如有下面两条指令：MOV DPH，#35H，MOV DPL，#12H。则就相当于执行了MOV DPTR，#3512H。</p>
+<h3 id="1-6、累加器A与片外RAM之间的数据传递类指令"><a href="#1-6、累加器A与片外RAM之间的数据传递类指令" class="headerlink" title="1.6、累加器A与片外RAM之间的数据传递类指令"></a>1.6、累加器A与片外RAM之间的数据传递类指令</h3><p><strong>MOVX A,@Ri</strong></p>
+<p><strong>MOVX @Ri,A</strong></p>
+<p><strong>MOVX #9; A,@DPTR</strong></p>
+<p><strong>MOVX @DPTR,A</strong></p>
+<p>1）在51中，<strong>与外部存储器RAM打交道的只可以是A累加器</strong>。所有需要送入外部RAM的数据必需要通过A送去，而所有要读入的外部RAM中的数据也必需通过A读入。在此我们可以看出内外部RAM的区别了，内部RAM间可以直接进行数据的传递，而外部则不行，比如，要将外部RAM中某一单元（设为0100H单元的数据）送入另一个单元（设为0200H单元），也必须先将0100H单元中的内容读入A，然后再送到0200H单元中去。</p>
+<p>2）要读或写外部的RAM，当然也必须要知道RAM的地址，在后两条指令中，地址是被直接放在DPTR中的。而前两条指令，由于Ri（即R0或R1）只是一个8位的寄存器，所以只提供低8位地址。因为有时扩展的外部RAM的数量比较少，少于或等于256个，就只需要提供8位地址就够了。</p>
+<p>3）使用时应当首先将要读或写的地址送入DPTR或Ri中，然后再用读写命令。</p>
+<h3 id="1-7、程序存储器向累加器A传送指令"><a href="#1-7、程序存储器向累加器A传送指令" class="headerlink" title="1.7、程序存储器向累加器A传送指令"></a>1.7、程序存储器向累加器A传送指令</h3><p><strong>MOVC A，@A+DPTR</strong></p>
+<p>本<strong>指令是将ROM中的数送入A中。本指令也被称为查表指令，常用此指令来查一个已做好在ROM中的表格（类似C语言中的指针）</strong></p>
+<p>说明：</p>
+<p>此条指令引出一个新的寻址方法：<strong>变址寻址</strong>。本指令是要在ROM的一个地址单元中找出数据，显然必须知道这个单元的地址，这个单元的地址是这样确定的：在执行本指令立脚点DPTR中有一个数，A中有一个数，执行指令时，<strong>将A和DPTR中的数加起为，就成为要查找的单元的地址。</strong></p>
+<p>1）查找到的结果被放在A中，因此，本条指令执行前后，A中的值不一定相同。</p>
+<p> 例：有一个数在R0中，要求用查表的方法确定它的平方值（此数的取值范围是0-5）</p>
+<p>MOV DPTR，#TABLE</p>
+<p>MOV A，R0</p>
+<p>MOVC A，@A+DPTR</p>
+<p>TABLE: DB 0,1,4,9,16,25</p>
+<p>设R0中的值为2，送入A中，而DPTR中的值则为TABLE，则最终确定的ROM单元的地址就是TABLE+2，也就是到这个单元中去取数，取到的是4，显然它正是2的平方。其它数据也可以类推。</p>
+<p>标号的真实含义：从这个地方也可以看到另一个问题，我们使用了标号来替代具体的单元地址。事实上，标号的真实含义就是地址数值。在这里它代表了，0，1，4，9，16，25这几个数据在ROM中存放的起点位置。而在以前我们学过的如LCALL DELAY指令中，DELAY 则代表了以DELAY为标号的那段程序在ROM中存放的起始地址。事实上，CPU正是通过这个地址才找到这段程序的。<br>可以通过以下的例子再来看一看标号的含义:</p>
+<p>MOV DPTR，#100H</p>
+<p>MOV A，R0<br>MOVC A，@A+DPTR </p>
+<p>ORG 0100H.</p>
+<p>DB 0,1,4,9,16,25</p>
+<p>如果R0中的值为2，则最终地址为100H+2为102H，到102H单元中找到的是4。这个可以看懂了吧？</p>
+<p>那为什么不这样写程序，要用标号呢？不是增加疑惑吗？</p>
+<p>答：如果这样写程序的话，在写程序时，我们就必须确定这张表格在ROM中的具体的位置，如果写完程序后，又想在这段程序前插入一段程序，那么这张表格的位置就又要变了，要改ORG 100H这句话了，我们是经常需要修改程序的，那多麻烦，所以就用标号来替代，只要一编译程序，位置就自动发生变化，我们把这个麻烦事交给计算机&#0;&#0;指PC机去做了。</p>
+<h3 id="1-8、堆栈操作"><a href="#1-8、堆栈操作" class="headerlink" title="1.8、堆栈操作"></a>1.8、堆栈操作</h3><p><strong>PUSH direct</strong></p>
+<p><strong>POP #9; direct</strong></p>
+<p>第一条指令称之为推入，就是将direct中的内容送入堆栈中，第二条指令称之为弹出，就是将堆栈中的内容送回到direct中。推入指令的执行过程是，首先将SP中的值加1，然后把SP中的值当作地址，将direct中的值送进以SP中的值为地址的RAM单元中。例：</p>
+<p>MOV SP，#5FH</p>
+<p>MOV A，#100</p>
+<p>MOV B，#20</p>
+<p>PUSH ACC</p>
+<p>PUSH B</p>
+<p>则执行第一条PUSH ACC指令是这样的：将SP中的值加1，即变为60H，然后将A中的值送到60H单元中，因此执行完本条指令后， 内存60H单元的值就是100，同样，执行PUSH B时，是将SP+1，即变为61H，然后将B中的值送入到61H单元中，即执行完本条指令后，61H单元中的值变为20。</p>
+<p>POP指令的执行是这样的，首先将SP中的值作为地址，并将此地址中的数送到POP指令后面的那个direct中，然后SP减1。</p>
+<p>接上例：</p>
+<p>POP B</p>
+<p>POP ACC</p>
+<p>则执行过程是：将SP中的值（现在是61H）作为地址，取61H单元中的数值（现在是20），送到B中，所以执行完本条指令后B中的值是20，然后将SP减1，因此本条指令执行完后，SP的值变为60H，然后执行POP ACC，将SP中的值（60H）作为地址，从该地址中取数（现在是100），并送到ACC中，所以执行完本条指令后，ACC中的值是100。</p>
+<p>这有什么意义呢？ACC中的值本来就是100，B中的值本来就是20，是的，在本例中，的确没有意义，但在实际工作中，则在PUSH B后往往要执行其他指令，而且这些指令会把A中的值，B中的值改掉，所以在程序的结束，如果我们要把A和B中的值恢复原值，那么这些指令就有意义了。</p>
+<p>还有一个问题，如果我不用堆栈，比如说在PUSH ACC指令处用MOV 60H，A，在PUSH B处用指令MOV 61H，B，然后用MOV A，60H，MOV B，61H来替代两条POP指令，不是也一样吗？是的，从结果上看是一样的，但是从过程看是不一样的，PUSH和POP指令都是单字节，单周期指令，而MOV指令则是双字节，双周期指令。更何况，堆栈的作用不止于此，所以一般的计算机上都设有堆栈，而我们在编写子程序，需要保存数据时，通常也不采用后面的方法，而是用堆栈的方法来实现。</p>
+<p>例：写出以下程序的运行结果</p>
+<p>MOV 30H，#12</p>
+<p>MOV 31H，#23</p>
+<p>PUSH 30H</p>
+<p>PUSH 31H</p>
+<p>POP 30H</p>
+<p>POP 31H</p>
+<p>结果是30H中的值变为23，而31H中的值则变为12。也就两者进行了数据交换。从这个例子可以看出：使用堆栈时，入栈的书写顺序和出栈的书写顺序必须相反，才能保证数据被送回原位，否则就要出错了。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%B1%87%E7%BC%96/" rel="tag"># 汇编</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/17/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/" rel="next" title="串口通信">
+                <i class="fa fa-chevron-left"></i> 串口通信
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/19/%E6%B1%87%E7%BC%96%E6%8C%87%E4%BB%A4%E8%AF%A6%E8%A7%A3%EF%BC%88%E7%AE%97%E6%95%B0%E8%BF%90%E7%AE%97%E7%B1%BB%E6%8C%87%E4%BB%A4%EF%BC%89/" rel="prev" title="汇编指令详解（算数运算类指令）">
+                汇编指令详解（算数运算类指令） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>   
+    </div> 
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.gif"
+                alt="一觉到天亮" />
+            
+              <p class="site-author-name" itemprop="name">一觉到天亮</p>
+              <p class="site-description motion-element" itemprop="description">Write sonething words!</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">58</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/143034" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="1430349989@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、数据传递类指令"><span class="nav-number">1.</span> <span class="nav-text">一、数据传递类指令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1、以累加器为目的操作数的指令"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.1、以累加器为目的操作数的指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2、以寄存器Rn为目的操作的指令"><span class="nav-number">1.0.2.</span> <span class="nav-text">1.2、以寄存器Rn为目的操作的指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3、以直接地址为目的操作数的指令"><span class="nav-number">1.0.3.</span> <span class="nav-text">1.3、以直接地址为目的操作数的指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4、以间接地址为目的操作数的指令"><span class="nav-number">1.0.4.</span> <span class="nav-text">1.4、以间接地址为目的操作数的指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5、十六位数的传递指令"><span class="nav-number">1.0.5.</span> <span class="nav-text">1.5、十六位数的传递指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6、累加器A与片外RAM之间的数据传递类指令"><span class="nav-number">1.0.6.</span> <span class="nav-text">1.6、累加器A与片外RAM之间的数据传递类指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7、程序存储器向累加器A传送指令"><span class="nav-number">1.0.7.</span> <span class="nav-text">1.7、程序存储器向累加器A传送指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-8、堆栈操作"><span class="nav-number">1.0.8.</span> <span class="nav-text">1.8、堆栈操作</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2019 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-[object Object]"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">一觉到天亮</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
