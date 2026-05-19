@@ -1675,13 +1675,20 @@ export const fetchLatestRelease = async () => {
   const url = process.env.NEXT_PUBLIC_GITHUB_LATEST_RELEASE_URL;
   if (!url) return null;
 
-  const res = await fetch(url);
-  if (!res.ok) return null;
-  const data = await res.json();
-  return {
-    tagName: data.tag_name,
-    body: data.body || ''
-  };
+  try {
+    const data = await withRetry(async () => {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      return res.json();
+    }, 2, 500);
+    return {
+      tagName: data.tag_name,
+      body: data.body || ''
+    };
+  } catch (err) {
+    console.error('fetchLatestRelease failed after retries:', err);
+    return null;
+  }
 };
 
 export const submitFeedback = async (formData) => {
