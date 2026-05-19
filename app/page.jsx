@@ -91,7 +91,7 @@ import {
   aggregatePortfolioDailyEarnings,
 } from './lib/dailyEarnings';
 import { loadHolidaysForYears, isTradingDay as isDateTradingDay } from './lib/tradingCalendar';
-import { asyncPool } from './lib/asyncHelper';
+import { asyncPool, withRetry } from './lib/asyncHelper';
 import { parseFundTextWithLLM, fetchFundData, fetchNetValueRangeFromTrend, fetchShanghaiIndexDate, fetchSmartFundNetValue, fetchSmartFundNetValueBackward, searchFunds, fetchFundPeriodReturns } from './api/fund';
 import PcFundTable from './components/PcFundTable';
 import MobileFundTable from './components/MobileFundTable';
@@ -5734,18 +5734,18 @@ export default function HomePage() {
     if (!userId) return;
     try {
       // 一次查询同时拿到 meta 与 data，方便两种模式复用
-      const { data: meta, error: metaError } = await supabase
+      const { data: meta, error: metaError } = await withRetry(() => supabase
         .from('user_configs')
         .select('id, data, updated_at')
         .eq('user_id', userId)
-        .maybeSingle();
+        .maybeSingle());
 
       if (metaError) throw metaError;
 
       if (!meta?.id) {
-        const { error: insertError } = await supabase
+        const { error: insertError } = await withRetry(() => supabase
           .from('user_configs')
-          .insert({ user_id: userId });
+          .insert({ user_id: userId }));
         if (insertError) throw insertError;
         setCloudConfigModal({ open: true, userId, type: 'empty' });
         return;
@@ -5808,11 +5808,11 @@ export default function HomePage() {
 
       if (isPartial) {
         // 增量更新：使用 RPC 调用
-        const { error: rpcError } = await supabase.rpc('update_user_config_partial', {
+        const { error: rpcError } = await withRetry(() => supabase.rpc('update_user_config_partial', {
           payload: dataToSync,
           p_last_device_id: deviceId,
           p_force_takeover: forceTakeover
-        });
+        }));
 
         if (rpcError) {
           if (rpcError.message?.includes('DEVICE_CONFLICT')) {
@@ -5830,11 +5830,11 @@ export default function HomePage() {
           console.error('增量同步失败，尝试全量同步', rpcError);
           // RPC 失败回退到全量更新
           const fullPayload = collectLocalPayload();
-          const { error: fullError } = await supabase.rpc('update_user_config_full', {
+          const { error: fullError } = await withRetry(() => supabase.rpc('update_user_config_full', {
             payload: fullPayload,
             p_last_device_id: deviceId,
             p_force_takeover: forceTakeover
-          });
+          }));
           if (fullError) {
             if (fullError.message?.includes('DEVICE_CONFLICT')) {
               setIsSyncing(false);
@@ -5853,11 +5853,11 @@ export default function HomePage() {
         }
       } else {
         // 全量更新
-        const { error } = await supabase.rpc('update_user_config_full', {
+        const { error } = await withRetry(() => supabase.rpc('update_user_config_full', {
           payload: dataToSync,
           p_last_device_id: deviceId,
           p_force_takeover: forceTakeover
-        });
+        }));
         if (error) {
           if (error.message?.includes('DEVICE_CONFLICT')) {
             setIsSyncing(false);

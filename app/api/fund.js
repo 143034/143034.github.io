@@ -3,6 +3,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { isString } from 'lodash';
 import { storageStore } from '../stores';
+import { withRetry } from '../lib/asyncHelper';
 import { getQueryClient } from '../lib/get-query-client';
 import * as qk from '../lib/query-keys';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
@@ -121,10 +122,10 @@ export const fetchRelatedSectorsBatch = async (codes, { cacheTime = ONE_DAY_MS, 
 
   // 2. 批量从 Supabase 查询
   try {
-    const { data, error } = await supabase
+    const { data, error } = await withRetry(() => supabase
       .from('fund_related')
       .select('fund_code, related_sector')
-      .in('fund_code', missingCodes);
+      .in('fund_code', missingCodes));
 
     if (error) throw error;
 
@@ -210,10 +211,10 @@ export const fetchFundSecidsBatch = async (labels, { cacheTime = ONE_DAY_MS } = 
   if (missingLabels.length === 0) return results;
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await withRetry(() => supabase
       .from('fund_secid')
       .select('related_sector, secid')
-      .in('related_sector', missingLabels);
+      .in('related_sector', missingLabels));
 
     if (error) throw error;
 
@@ -968,11 +969,11 @@ export const fetchQdiiValuationFromSupabase = async (code) => {
   if (!normalized) return null;
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await withRetry(() => supabase
       .from('gs_qdii')
       .select('gztime, gszzl, gzstatus')
       .eq('fund_code', normalized)
-      .maybeSingle();
+      .maybeSingle());
 
     if (error || !data) return null;
 
@@ -2006,9 +2007,9 @@ export const parseFundTextWithLLM = async (text) => {
   if (!supabase?.functions?.invoke) return null;
 
   try {
-    const { data, error } = await supabase.functions.invoke('analyze-fund', {
+    const { data, error } = await withRetry(() => supabase.functions.invoke('analyze-fund', {
       body: { text }
-    });
+    }));
 
     if (error) return null;
     if (!data || data.success !== true) return null;
