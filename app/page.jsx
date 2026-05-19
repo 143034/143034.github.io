@@ -1261,7 +1261,7 @@ export default function HomePage() {
     () => {
       let filtered = [...scopedFunds];
 
-      const q = (shouldShowGroupFundSearch ? (deferredGroupFundSearchTerm || '') : '').trim();
+      const q = String(shouldShowGroupFundSearch ? (deferredGroupFundSearchTerm ?? '') : '').trim();
       if (q) {
         const qLower = q.toLowerCase();
         filtered = filtered.filter((f) => {
@@ -1764,7 +1764,7 @@ export default function HomePage() {
   }, [currentTab]);
 
   // 鼠标拖拽滚动逻辑
-  const [isDragging, setIsDragging] = useState(false);
+  const dragStateRef = useRef({ isDragging: false, startX: 0, startY: 0, hasDragged: false });
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(false);
 
@@ -2241,15 +2241,20 @@ export default function HomePage() {
 
   const handleMouseDown = (e) => {
     if (!tabsRef.current) return;
-    setIsDragging(true);
+    dragStateRef.current = { isDragging: true, startX: e.clientX, startY: e.clientY, hasDragged: false };
   };
 
   const handleMouseLeaveOrUp = () => {
-    setIsDragging(false);
+    dragStateRef.current.isDragging = false;
   };
 
   const handleMouseMove = (e) => {
-    if (!isDragging || !tabsRef.current) return;
+    const ds = dragStateRef.current;
+    if (!ds.isDragging || !tabsRef.current) return;
+    const dx = e.clientX - ds.startX;
+    const dy = e.clientY - ds.startY;
+    if (!ds.hasDragged && Math.abs(dx) < 5 && Math.abs(dy) < 5) return;
+    ds.hasDragged = true;
     e.preventDefault();
     tabsRef.current.scrollLeft -= e.movementX;
   };
@@ -2258,6 +2263,11 @@ export default function HomePage() {
     if (!tabsRef.current) return;
     const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
     tabsRef.current.scrollLeft += delta;
+  };
+
+  const handleTabClick = (tabId) => {
+    if (dragStateRef.current.hasDragged) return;
+    startTransition(() => setCurrentTab(tabId));
   };
 
   const updateTabOverflow = () => {
@@ -3595,7 +3605,7 @@ export default function HomePage() {
   }, [refreshMs]);
 
   const performSearch = async (val) => {
-    if (!val.trim()) {
+    if (!String(val ?? '').trim()) {
       setSearchResults([]);
       return;
     }
@@ -6675,7 +6685,7 @@ export default function HomePage() {
             </form>
 
             <AnimatePresence>
-              {showDropdown && (searchTerm.trim() || searchResults.length > 0) && (
+              {showDropdown && (String(searchTerm ?? '').trim() || searchResults.length > 0) && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -6706,7 +6716,7 @@ export default function HomePage() {
                         );
                       })}
                     </div>
-                  ) : searchTerm.trim() && !isSearching ? (
+                  ) : String(searchTerm ?? '').trim() && !isSearching ? (
                     <div className="no-results muted">未找到相关基金</div>
                   ) : null}
                 </motion.div>
@@ -6808,7 +6818,7 @@ export default function HomePage() {
                         exit={{ opacity: 0, scale: 0.8 }}
                         key="portfolio-summary"
                         className={`tab ${currentTab === SUMMARY_TAB_ID ? 'active' : ''}`}
-                        onClick={() => startTransition(() => setCurrentTab(SUMMARY_TAB_ID))}
+                        onClick={() => handleTabClick(SUMMARY_TAB_ID)}
                         transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 1 }}
                       >
                         汇总
@@ -6821,7 +6831,7 @@ export default function HomePage() {
                       exit={{ opacity: 0, scale: 0.8 }}
                       key="all"
                       className={`tab ${currentTab === 'all' ? 'active' : ''}`}
-                      onClick={() => startTransition(() => setCurrentTab('all'))}
+                      onClick={() => handleTabClick('all')}
                       transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 1 }}
                     >
                       全部 ({funds.length})
@@ -6833,7 +6843,7 @@ export default function HomePage() {
                       exit={{ opacity: 0, scale: 0.8 }}
                       key="fav"
                       className={`tab ${currentTab === 'fav' ? 'active' : ''}`}
-                      onClick={() => startTransition(() => setCurrentTab('fav'))}
+                      onClick={() => handleTabClick('fav')}
                       transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 1 }}
                     >
                       自选 ({favorites.size})
@@ -6846,7 +6856,7 @@ export default function HomePage() {
                         exit={{ opacity: 0, scale: 0.8 }}
                         key={g.id}
                         className={`tab ${currentTab === g.id ? 'active' : ''}`}
-                        onClick={() => startTransition(() => setCurrentTab(g.id))}
+                        onClick={() => handleTabClick(g.id)}
                         transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 1 }}
                       >
                         {g.name} ({g.codes.length})
