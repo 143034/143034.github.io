@@ -79,7 +79,7 @@ export default function Announcement() {
             </div>
             <div style={{ color: 'var(--text)', lineHeight: '1.6', fontSize: '15px', overflowY: 'auto', minHeight: 0, flex: 1, paddingRight: '4px' }}>
               <p>v1.5.1 更新内容如下：</p>
-              <p>1. 新增全球 qdii 估值数据。</p>
+              <p>1. 新增全球 qdii 估值数据(需登录)。</p>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
