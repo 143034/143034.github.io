@@ -65,13 +65,14 @@ const NON_FROZEN_COLUMN_IDS = [
   'period6m',
   'period1y',
   'holdingAmount',
+  'holdingRatio',
   'holdingCost',
   'costNav',
   'estimateNav',
 ];
 
 /** 已保存列显示偏好时，新增列默认隐藏；未保存时随「全展示」 */
-const PC_COLUMNS_DEFAULT_HIDDEN_IF_PERSONALIZED = new Set(['tags', 'holdingCost', 'costNav', 'sinceAddedChangePercent']);
+const PC_COLUMNS_DEFAULT_HIDDEN_IF_PERSONALIZED = new Set(['tags', 'holdingCost', 'costNav', 'sinceAddedChangePercent', 'holdingRatio']);
 
 /** 非冻结列中右对齐的（标签列左对齐） */
 const isPcDataColumnRightAligned = (id) =>
@@ -91,6 +92,7 @@ const COLUMN_HEADERS = {
   sinceAddedChangePercent: '自添加来',
   totalChangePercent: '估算收益',
   holdingAmount: '持仓金额',
+  holdingRatio: '持仓占比',
   holdingCost: '持仓成本',
   costNav: '成本净值',
   holdingDays: '持有天数',
@@ -1604,6 +1606,29 @@ export default function PcFundTable({
         },
       },
       {
+        accessorKey: 'holdingRatio',
+        header: '持仓占比',
+        size: 100,
+        minSize: 80,
+        cell: (info) => {
+          const original = info.row.original || {};
+          const value = original.holdingRatioValue;
+          if (value == null) {
+            return <div className="muted" style={{ textAlign: 'right', fontSize: '12px' }}>—</div>;
+          }
+          const text = `${(value * 100).toFixed(2)}%`;
+          return (
+            <FitText style={{ fontWeight: 700, textAlign: 'right' }} maxFontSize={14} minFontSize={10}>
+              {masked ? <span className="mask-text">******</span> : text}
+            </FitText>
+          );
+        },
+        meta: {
+          align: 'right',
+          cellClassName: 'holding-ratio-cell',
+        },
+      },
+      {
         accessorKey: 'holdingCost',
         header: '持仓成本',
         size: 135,
@@ -1965,6 +1990,7 @@ export default function PcFundTable({
       estimateChangePercent: 'yield',
       totalChangePercent: 'estimateProfit',
       holdingAmount: 'holdingAmount',
+      holdingRatio: 'holdingRatio',
       todayProfit: 'todayProfit',
       yesterdayProfit: 'yesterdayProfit',
       holdingProfit: 'holding',
