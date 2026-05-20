@@ -1432,6 +1432,31 @@ export default function HomePage() {
           if (!hasB) return -1;
           return sortOrder === 'asc' ? valA - valB : valB - valA;
         }
+        if (sortBy === 'sinceAddedChangePercent') {
+          const getSinceAddedChangeValue = (f) => {
+            const addBaseNavRaw = f.addBaseNav != null && f.addBaseNav !== '' ? Number(f.addBaseNav) : null;
+            const addBaseNav = addBaseNavRaw != null && Number.isFinite(addBaseNavRaw) && addBaseNavRaw > 0 ? addBaseNavRaw : null;
+            const sinceAddedCurrentNav = (() => {
+              if (f.noValuation) {
+                const v = Number(f.dwjz);
+                return Number.isFinite(v) && v > 0 ? v : null;
+              }
+              const v = Number(f.gsz);
+              return Number.isFinite(v) && v > 0 ? v : null;
+            })();
+            return addBaseNav != null && sinceAddedCurrentNav != null
+              ? ((sinceAddedCurrentNav / addBaseNav) - 1) * 100
+              : null;
+          };
+          const valA = getSinceAddedChangeValue(a);
+          const valB = getSinceAddedChangeValue(b);
+          const hasA = valA != null && Number.isFinite(valA);
+          const hasB = valB != null && Number.isFinite(valB);
+          if (!hasA && !hasB) return 0;
+          if (!hasA) return 1;
+          if (!hasB) return -1;
+          return sortOrder === 'asc' ? valA - valB : valB - valA;
+        }
         if (['last1Week', 'last1Month', 'last3Months', 'last6Months', 'last1Year'].includes(sortBy)) {
           const keyMap = { last1Week: 'week', last1Month: 'month', last3Months: 'month3', last6Months: 'month6', last1Year: 'year1' };
           const key = keyMap[sortBy];

@@ -1996,6 +1996,7 @@ export default function PcFundTable({
       holdingProfit: 'holding',
       holdingDays: 'holdingDays',
       holdingCost: 'holdingCost',
+      sinceAddedChangePercent: 'sinceAddedChangePercent',
       period1w: 'last1Week',
       period1m: 'last1Month',
       period3m: 'last3Months',
