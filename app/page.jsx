@@ -2313,12 +2313,10 @@ export default function HomePage() {
   };
 
   const {
-    scanModalOpen, setScanModalOpen,
-    scanConfirmModalOpen, setScanConfirmModalOpen,
+    setScanConfirmModalOpen,
     scannedFunds, setScannedFunds,
     selectedScannedCodes, setSelectedScannedCodes,
     isScanning,
-    isScanImporting,
     scanImportProgress,
     scanProgress,
     isOcrScan, setIsOcrScan,
