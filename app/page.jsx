@@ -53,7 +53,7 @@ import {
 } from './lib/dailyEarnings';
 import { loadHolidaysForYears, isTradingDay as isDateTradingDay } from './lib/tradingCalendar';
 import { asyncPool, withRetry } from './lib/asyncHelper';
-import { fetchFundData, fetchNetValueRangeFromTrend, fetchSmartFundNetValue, fetchSmartFundNetValueBackward, searchFunds, fetchFundPeriodReturns } from './api/fund';
+import { fetchFundData, fetchNetValueRangeFromTrend, fetchSmartFundNetValue, fetchSmartFundNetValueBackward, fetchFundPeriodReturns } from './api/fund';
 import PcFundTable from './components/PcFundTable';
 import MobileFundTable from './components/MobileFundTable';
 import MobileBottomNav from './components/MobileBottomNav';
@@ -66,6 +66,7 @@ import { useScanImport } from './hooks/useScanImport';
 import { useRefreshManager } from './hooks/useRefreshManager';
 import { useSyncManager, normalizeFundDailyEarningsScoped } from './hooks/useSyncManager';
 import { useIsMobile } from './hooks/useIsMobile';
+import { useFundFuzzyMatcher } from './hooks/useFundFuzzyMatcher';
 import {useUserStore, clearAuthUser, setAuthUser, useStorageStore, storageStore, getFundCodesSignature, DEFAULT_SORT_RULES, SORT_DISPLAY_MODES, useModalStore, useIsAnyModalOpen} from './stores';
 import ModalsLayer from './components/ModalsLayer';
 
@@ -3393,27 +3394,38 @@ export default function HomePage() {
     }
   };
 
-  const performSearch = async (val) => {
-    if (!String(val ?? '').trim()) {
+  const { searchFundsLocal } = useFundFuzzyMatcher();
+
+  useEffect(() => {
+    const val = String(deferredSearchTerm ?? '').trim();
+    if (!val) {
       setSearchResults([]);
       return;
     }
-    setIsSearching(true);
-    try {
-      const fundsOnly = await searchFunds(val);
-      setSearchResults(fundsOnly);
-    } catch (e) {
-      console.error('搜索失败', e);
-    } finally {
-      setIsSearching(false);
+
+    // 纯数字且长度为6，通常是代码，直接显示结果或进行特定搜索
+    if (/^\d{6}$/.test(val)) {
+      setSearchResults([{ CODE: val, NAME: '指定基金代码', TYPE: '代码' }]);
+      return;
     }
-  };
+
+    if (val.length < 2) return;
+
+    setIsSearching(true);
+    searchFundsLocal(val)
+      .then(results => {
+        setSearchResults(results);
+      })
+      .catch(e => {
+        console.error('本地搜索失败', e);
+      })
+      .finally(() => {
+        setIsSearching(false);
+      });
+  }, [deferredSearchTerm, searchFundsLocal]);
 
   const handleSearchInput = (e) => {
-    const val = e.target.value;
-    setSearchTerm(val);
-    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
-    searchTimeoutRef.current = setTimeout(() => performSearch(val), 300);
+    setSearchTerm(e.target.value);
   };
 
   const toggleSelectFund = (fund) => {
