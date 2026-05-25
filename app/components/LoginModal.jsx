@@ -21,6 +21,7 @@ export default function LoginModal({onClose,
 
   const loginModalCardRef = useRef(null);
   const otpTouchWrapRef = useRef(null);
+  // iOS 代理 input：在用户手势中同步 focus，保持键盘弹起状态
   const proxyInputRef = useRef(null);
 
   const handleSendOtp = async (e) => {
@@ -42,14 +43,11 @@ export default function LoginModal({onClose,
       return;
     }
 
-    // 移动端：在用户手势（点击按钮）同步阶段立即聚焦隐藏代理 input，
-    // 建立「用户手势 → focus」链条，使键盘保持激活状态。
-    // 等异步请求完成、OTP 输入框渲染后，再将焦点从代理转移到真正的 OTP input。
+    setLoginLoading(true);
+    // 在用户手势同步上下文内 focus 代理 input，iOS 会弹起键盘
     if (isMobile && proxyInputRef.current) {
       proxyInputRef.current.focus();
     }
-
-    setLoginLoading(true);
     try {
       const { error } = await supabase.auth.signInWithOtp({
         email: loginEmail.trim(),
@@ -66,6 +64,10 @@ export default function LoginModal({onClose,
         setLoginError('网络错误，请检查网络连接');
       } else {
         setLoginError(err.message || '发送验证码失败，请稍后再试');
+      }
+      // 发送失败，收起键盘
+      if (isMobile && proxyInputRef.current) {
+        proxyInputRef.current.blur();
       }
     } finally {
       setLoginLoading(false);
@@ -157,6 +159,23 @@ export default function LoginModal({onClose,
   }, [loginSuccess, isMobile, focusOtpInput]);
 
   return (
+    <>
+    {/* iOS 代理 input：保持在用户手势链中，防止键盘收起 */}
+    <input
+      ref={proxyInputRef}
+      aria-hidden="true"
+      tabIndex={-1}
+      inputMode="numeric"
+      style={{
+        position: 'fixed',
+        opacity: 0,
+        width: 0,
+        height: 0,
+        top: '-9999px',
+        left: '-9999px',
+        pointerEvents: 'none',
+      }}
+    />
     <div
       className="modal-overlay"
       role="dialog"
@@ -164,23 +183,6 @@ export default function LoginModal({onClose,
       aria-label="登录"
       onClick={onClose}
     >
-      {/* 隐藏代理 input：在用户点击「发送验证码」时立即获得焦点，
-          保持 iOS 键盘激活链条，等 OTP input 渲染后再转移焦点 */}
-      <input
-        ref={proxyInputRef}
-        aria-hidden="true"
-        tabIndex={-1}
-        inputMode="numeric"
-        style={{
-          position: 'fixed',
-          left: '-9999px',
-          top: '-9999px',
-          width: 0,
-          height: 0,
-          opacity: 0,
-          pointerEvents: 'none',
-        }}
-      />
       <div
         ref={loginModalCardRef}
         className="glass card modal login-modal"
@@ -319,5 +321,6 @@ export default function LoginModal({onClose,
         )}
       </div>
     </div>
+    </>
   );
 }
