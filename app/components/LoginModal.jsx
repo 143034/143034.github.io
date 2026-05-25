@@ -21,6 +21,7 @@ export default function LoginModal({onClose,
 
   const loginModalCardRef = useRef(null);
   const otpTouchWrapRef = useRef(null);
+  const proxyInputRef = useRef(null);
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
@@ -39,6 +40,13 @@ export default function LoginModal({onClose,
     if (!emailRegex.test(loginEmail.trim())) {
       setLoginError('请输入有效的邮箱地址');
       return;
+    }
+
+    // 移动端：在用户手势（点击按钮）同步阶段立即聚焦隐藏代理 input，
+    // 建立「用户手势 → focus」链条，使键盘保持激活状态。
+    // 等异步请求完成、OTP 输入框渲染后，再将焦点从代理转移到真正的 OTP input。
+    if (isMobile && proxyInputRef.current) {
+      proxyInputRef.current.focus();
     }
 
     setLoginLoading(true);
@@ -132,16 +140,19 @@ export default function LoginModal({onClose,
     }
   }, []);
 
-  // 发送成功后尝试自动聚焦；若系统仍不弹键盘，用户轻点验证码区会由 onPointerDownCapture 再 focus
+  // 发送成功后将焦点从代理 input 转移到真正的 OTP input，键盘会保持弹出状态
   useLayoutEffect(() => {
     if (!loginSuccess || !isMobile) return;
     const run = () => focusOtpInput();
+    // 立即执行一次 + rAF + setTimeout 多重尝试，确保 OTP input 已渲染
     run();
     const t = requestAnimationFrame(run);
     const t2 = window.setTimeout(run, 50);
+    const t3 = window.setTimeout(run, 150);
     return () => {
       cancelAnimationFrame(t);
       window.clearTimeout(t2);
+      window.clearTimeout(t3);
     };
   }, [loginSuccess, isMobile, focusOtpInput]);
 
@@ -153,6 +164,23 @@ export default function LoginModal({onClose,
       aria-label="登录"
       onClick={onClose}
     >
+      {/* 隐藏代理 input：在用户点击「发送验证码」时立即获得焦点，
+          保持 iOS 键盘激活链条，等 OTP input 渲染后再转移焦点 */}
+      <input
+        ref={proxyInputRef}
+        aria-hidden="true"
+        tabIndex={-1}
+        inputMode="numeric"
+        style={{
+          position: 'fixed',
+          left: '-9999px',
+          top: '-9999px',
+          width: 0,
+          height: 0,
+          opacity: 0,
+          pointerEvents: 'none',
+        }}
+      />
       <div
         ref={loginModalCardRef}
         className="glass card modal login-modal"
