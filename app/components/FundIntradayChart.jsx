@@ -16,6 +16,8 @@ import { SwitchIcon } from './Icons';
 import { useQuery } from '@tanstack/react-query';
 import { ocrFundChart } from '@/app/lib/query-keys';
 import { useStorageStore } from '../stores';
+import { PhotoProvider, PhotoView } from 'react-photo-view';
+import 'react-photo-view/dist/react-photo-view.css';
 
 ChartJS.register(
   CategoryScale,
@@ -76,7 +78,7 @@ export default function FundIntradayChart({ series = [], referenceNav, theme = '
       try {
         const { getOcrWorker } = await import('@/app/lib/ocr');
         const worker = await getOcrWorker('chi_sim+eng');
-        const proxyUrl = `https://images.weserv.nl/?url=j4.dfcfw.com/charts/pic6/${fundCode}.png`;
+        const proxyUrl = `https://images.weserv.nl/?url=${encodeURIComponent(`j4.dfcfw.com/charts/pic6/${fundCode}.png?v=${Date.now()}`)}`;
         const res = await worker.recognize(proxyUrl);
 
         const text = res?.data?.text || '';
@@ -95,8 +97,8 @@ export default function FundIntradayChart({ series = [], referenceNav, theme = '
       }
     },
     enabled: !!isFundgzToday,
-    staleTime: 12 * 60 * 60 * 1000,
-    gcTime: 12 * 60 * 60 * 1000,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 5 * 60 * 1000,
   });
 
   const actuallyShowImageChart = showImageChartPreference && isFundgzToday && ocrVerified;
@@ -335,14 +337,46 @@ export default function FundIntradayChart({ series = [], referenceNav, theme = '
       </div>
       <div style={{ position: 'relative', height: actuallyShowImageChart ? 200 : 100, width: '100%', touchAction: 'pan-y', transition: 'height 0.2s ease-in-out' }}>
         {actuallyShowImageChart ? (
-          <img
-            src={`https://j4.dfcfw.com/charts/pic6/${fundCode}.png${gztime ? '?v=' + encodeURIComponent(gztime) : ''}`}
-            alt="净值估算图"
-            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-            onError={(e) => {
-              e.target.style.display = 'none';
+          <PhotoProvider
+            onVisibleChange={(visible) => {
+              if (visible) {
+                document.body.setAttribute('data-photo-viewer-open', 'true');
+              } else {
+                setTimeout(() => {
+                  document.body.removeAttribute('data-photo-viewer-open');
+                }, 300);
+              }
             }}
-          />
+            overlayRender={() => (
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: 'env(safe-area-inset-bottom, 24px)',
+                  left: 0,
+                  width: '100%',
+                  textAlign: 'center',
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  fontSize: 14,
+                  pointerEvents: 'none',
+                  zIndex: 2000,
+                  paddingBottom: 24
+                }}
+              >
+                按住图片下滑退出图片查看器
+              </div>
+            )}
+          >
+            <PhotoView src={`https://j4.dfcfw.com/charts/pic6/${fundCode}.png${gztime ? '?v=' + encodeURIComponent(gztime) : ''}`}>
+              <img
+                src={`https://j4.dfcfw.com/charts/pic6/${fundCode}.png${gztime ? '?v=' + encodeURIComponent(gztime) : ''}`}
+                alt="净值估算图"
+                style={{ width: '100%', height: '100%', objectFit: 'contain', cursor: 'pointer' }}
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
+            </PhotoView>
+          </PhotoProvider>
         ) : (
           <Line ref={chartRef} data={chartData} options={options} plugins={plugins} />
         )}
