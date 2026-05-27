@@ -2041,3 +2041,52 @@ export const parseFundTextWithLLM = async (text) => {
     return null;
   }
 };
+
+/**
+ * 抓取天天基金估值排行 (JSONP)
+ * @param {string|number} sort 排序字段 (3:估值涨幅等)
+ * @param {string} order 排序方向 (desc | asc)
+ * @param {number} page 页码
+ * @param {number} pageSize 每页条数
+ */
+export const fetchFundValuationRanking = (sort = 3, order = 'desc', page = 1, pageSize = 20) => {
+  return new Promise((resolve, reject) => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return reject(new Error('无浏览器环境'));
+    }
+
+    const callbackName = `jsonp_gz_${Date.now()}_${Math.floor(Math.random() * 100000)}`;
+    const script = document.createElement('script');
+    script.src = `https://api.fund.eastmoney.com/FundGuZhi/GetFundGZList?type=1&sort=${sort}&orderType=${order}&canbuy=0&pageIndex=${page}&pageSize=${pageSize}&callback=${callbackName}`;
+    script.async = true;
+
+    let done = false;
+    const cleanup = () => {
+      done = true;
+      delete window[callbackName];
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+
+    window[callbackName] = (data) => {
+      if (done) return;
+      cleanup();
+      resolve(data);
+    };
+
+    script.onerror = () => {
+      if (done) return;
+      cleanup();
+      reject(new Error('加载估值排行失败'));
+    };
+
+    document.body.appendChild(script);
+
+    setTimeout(() => {
+      if (done) return;
+      cleanup();
+      reject(new Error('请求估值排行超时'));
+    }, 10000);
+  });
+};

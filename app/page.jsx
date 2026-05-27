@@ -58,6 +58,8 @@ import PcFundTable from './components/PcFundTable';
 import MobileFundTable from './components/MobileFundTable';
 import MobileBottomNav from './components/MobileBottomNav';
 import MineTab from './components/MineTab';
+import MarketTab from './components/MarketTab';
+import PcSideNav from './components/PcSideNav';
 import SearchFund from './components/SearchFund';
 import { useTheme } from './hooks/useTheme';
 import { useTradingDay } from './hooks/useTradingDay';
@@ -340,7 +342,7 @@ export default function HomePage() {
     }
   }, [isMobile, dynamicStyleMobile, dynamicStylePc]);
 
-  const [mobileMainTab, setMobileMainTab] = useState('home');
+  const [mainTab, setMainTab] = useState('home');
   const [mobileBottomNavHidden, setMobileBottomNavHidden] = useState(false);
   const lastScrollYRef = useRef(0);
 
@@ -359,7 +361,7 @@ export default function HomePage() {
     setMobileTableSettingModalOpen(Boolean(open));
   }, []);
 
-  const shouldShowMarketIndex = isMobile ? showMarketIndexMobile : showMarketIndexPc;
+  const shouldShowMarketIndex = (isMobile ? showMarketIndexMobile : showMarketIndexPc) || mainTab === 'market';
   const shouldShowGroupFundSearch = isMobile ? showGroupFundSearchMobile : showGroupFundSearchPc;
 
 
@@ -4645,7 +4647,7 @@ export default function HomePage() {
   }, [isAnyModalOpen]);
 
   useEffect(() => {
-    if (!isMobile || mobileMainTab !== 'home') return;
+    if (!isMobile || mainTab !== 'home') return;
 
     let ticking = false;
     const handleScroll = () => {
@@ -4675,13 +4677,13 @@ export default function HomePage() {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isMobile, mobileMainTab]); // isAnyModalOpen 已移至 ref，不再触发重注册
+  }, [isMobile, mainTab]); // isAnyModalOpen 已移至 ref，不再触发重注册
 
   useEffect(() => {
-    if (!isMobile || mobileMainTab !== 'home') {
+    if (!isMobile || mainTab !== 'home') {
       setMobileBottomNavHidden(false);
     }
-  }, [isMobile, mobileMainTab]);
+  }, [isMobile, mainTab]);
 
   const settingsOpenRef = useRef(false);
   useEffect(() => {
@@ -4702,14 +4704,14 @@ export default function HomePage() {
 
   const containerClassName = [
     'container',
-    isMobile && mobileMainTab === 'mine' ? 'mine-mobile-root' : 'content',
-    isMobile && mobileMainTab === 'home' ? 'content-with-mobile-tabbar' : '',
+    isMobile && mainTab === 'mine' ? 'mine-mobile-root' : 'content',
+    isMobile && mainTab === 'home' ? 'content-with-mobile-tabbar' : '',
   ]
     .filter(Boolean)
     .join(' ');
 
   /** 移动端底部 Tab 切换时保留首页 DOM，用显隐代替卸载 */
-  const mobileHomeTabVisible = !isMobile || mobileMainTab === 'home';
+  const mobileHomeTabVisible = mainTab === 'home' || mainTab === 'market';
 
   /** PC / 移动端行、FundCard 共用：统一 name / fundName 后走单删逻辑 */
   const handleRemoveFundEntry = useCallback((rowOrFund) => {
@@ -5001,7 +5003,9 @@ export default function HomePage() {
   };
 
   return (
-    <div ref={containerRef} className={containerClassName} style={{ width: isMobile ? '100%' : containerWidth }}>
+    <>
+      <PcSideNav value={mainTab} onChange={setMainTab} />
+      <div ref={containerRef} className={containerClassName} style={{ width: isMobile ? '100%' : containerWidth }}>
       <AnimatePresence>
         {showThemeTransition && (
           <motion.div
@@ -5253,8 +5257,9 @@ export default function HomePage() {
           refreshing={refreshing}
         />
       )}
-      <div className="grid">
-        <div className="col-12">
+      <div style={{ display: mainTab === 'home' ? 'contents' : 'none' }}>
+        <div className="grid">
+          <div className="col-12">
           <div ref={filterBarRef} className="filter-bar" style={{ top: `calc(${navbarHeight}px + var(--market-index-height, 0px))`, marginTop: 0, marginBottom: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
             <div className="tabs-container">
               <div
@@ -5836,11 +5841,15 @@ export default function HomePage() {
             </>
           )}
         </div>
+      </div>
+      <div style={{ display: mainTab === 'market' ? 'contents' : 'none' }}>
+        <MarketTab />
+      </div>
       </>
       </div>
       {isMobile && (
         <MineTab
-          visible={mobileMainTab === 'mine'}
+          visible={mainTab === 'mine'}
           user={user}
           userAvatar={userAvatar}
           lastSyncDisplay={lastSyncTime ? dayjs(lastSyncTime).format('MM-DD HH:mm') : null}
@@ -5866,7 +5875,7 @@ export default function HomePage() {
         />
       )}
       {isMobile && (
-        <MobileBottomNav value={mobileMainTab} onChange={setMobileMainTab} hidden={mobileBottomNavHidden && mobileMainTab === 'home'} />
+        <MobileBottomNav value={mainTab} onChange={setMainTab} hidden={mobileBottomNavHidden && mainTab === 'home'} />
       )}
 
       {/* 弹框渲染层 - 独立组件，订阅 useModalStore，不触发 page.jsx 重渲染 */}
@@ -5875,5 +5884,6 @@ export default function HomePage() {
       {/* 全局轻提示 Toast */}
       <GlobalToast toast={toast} />
     </div>
+    </>
   );
 }
