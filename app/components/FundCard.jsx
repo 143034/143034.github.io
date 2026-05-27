@@ -647,11 +647,13 @@ export default function FundCard({
               <span
                 className={`value ${
                   profit.profitToday != null
-                    ? profit.profitToday > 0
-                      ? 'up'
-                      : profit.profitToday < 0
-                        ? 'down'
-                        : ''
+                    ? masked
+                      ? ''
+                      : profit.profitToday > 0
+                        ? 'up'
+                        : profit.profitToday < 0
+                          ? 'down'
+                          : ''
                     : 'muted'
                 }`}
               >
@@ -690,7 +692,7 @@ export default function FundCard({
                 </span>
                 <span
                   className={`value ${
-                    profit.profitTotal > 0 ? 'up' : profit.profitTotal < 0 ? 'down' : ''
+                    masked ? '' : profit.profitTotal > 0 ? 'up' : profit.profitTotal < 0 ? 'down' : ''
                   }`}
                 >
                   {masked
