@@ -160,7 +160,6 @@ export default function FundDailyEarningsDetailModal({
           style={{
             border: '1px solid var(--border)',
             borderRadius: 'var(--radius)',
-            overflow: 'hidden',
             background: 'var(--card)',
           }}
         >
@@ -183,7 +182,7 @@ export default function FundDailyEarningsDetailModal({
                     boxShadow: '0 1px 0 0 var(--border)',
                   }}
                 >
-                  {hg.headers.map((h) => (
+                  {hg.headers.map((h, index) => (
                     <th
                       key={h.id}
                       style={{
@@ -195,6 +194,8 @@ export default function FundDailyEarningsDetailModal({
                         position: 'sticky',
                         top: 0,
                         zIndex: 1,
+                        borderTopLeftRadius: index === 0 ? 'var(--radius)' : undefined,
+                        borderTopRightRadius: index === hg.headers.length - 1 ? 'var(--radius)' : undefined,
                       }}
                     >
                       {flexRender(h.column.columnDef.header, h.getContext())}

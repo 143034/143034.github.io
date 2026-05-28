@@ -40,6 +40,10 @@ export const useModalStore = create((set, get) => ({
   mobileFundDrawerOpen: false,
   portfolioEarningsOpen: false,
   sortSettingOpen: false,
+  allSectorsModalOpen: false,
+  allSectorsFilter: 'industry',
+  allSectorsSort: 'change_pct',
+  allSectorsSortOrder: 'desc',
 
   // ---- Group modals ----
   groupModalOpen: false,
@@ -162,6 +166,7 @@ const selectIsAnyModalOpen = (s) =>
   s.mobileFundDrawerOpen ||
   s.portfolioEarningsOpen ||
   s.sortSettingOpen ||
+  s.allSectorsModalOpen ||
   s.groupModalOpen ||
   s.groupManageOpen ||
   s.addFundToGroupOpen ||

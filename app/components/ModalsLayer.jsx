@@ -21,6 +21,7 @@ const ScanImportProgressModal = dynamic(() => import('./ScanImportProgressModal'
 const ScanPickModal = dynamic(() => import('./ScanPickModal'), { ssr: false });
 const ScanProgressModal = dynamic(() => import('./ScanProgressModal'), { ssr: false });
 const AddHistoryModal = dynamic(() => import('./AddHistoryModal'), { ssr: false });
+const AllSectorsModal = dynamic(() => import('./AllSectorsModal'), { ssr: false });
 
 // 高频组件：同步加载
 import ConfirmModal from './ConfirmModal';
@@ -73,6 +74,7 @@ export default function ModalsLayer({ callbacksRef }) {
   const mobileFundDrawerOpen = useModalStore((s) => s.mobileFundDrawerOpen);
   const mobileTableSettingModalOpen = useModalStore((s) => s.mobileTableSettingModalOpen);
   const sortSettingOpen = useModalStore((s) => s.sortSettingOpen);
+  const allSectorsModalOpen = useModalStore((s) => s.allSectorsModalOpen);
   const groupModalOpen = useModalStore((s) => s.groupModalOpen);
   const groupManageOpen = useModalStore((s) => s.groupManageOpen);
   const addFundToGroupOpen = useModalStore((s) => s.addFundToGroupOpen);
@@ -119,6 +121,7 @@ export default function ModalsLayer({ callbacksRef }) {
   const setTutorialDrawerOpen = (v) => _ms({ tutorialDrawerOpen: typeof v === 'function' ? v(_gs().tutorialDrawerOpen) : v });
   const setUpdateLogOpen = (v) => _ms({ updateLogOpen: typeof v === 'function' ? v(_gs().updateLogOpen) : v });
   const setSortSettingOpen = (v) => _ms({ sortSettingOpen: typeof v === 'function' ? v(_gs().sortSettingOpen) : v });
+  const setAllSectorsModalOpen = (v) => _ms({ allSectorsModalOpen: typeof v === 'function' ? v(_gs().allSectorsModalOpen) : v });
   const setGroupModalOpen = (v) => _ms({ groupModalOpen: typeof v === 'function' ? v(_gs().groupModalOpen) : v });
   const setGroupManageOpen = (v) => _ms({ groupManageOpen: typeof v === 'function' ? v(_gs().groupManageOpen) : v });
   const setAddFundToGroupOpen = (v) => _ms({ addFundToGroupOpen: typeof v === 'function' ? v(_gs().addFundToGroupOpen) : v });
@@ -278,6 +281,13 @@ export default function ModalsLayer({ callbacksRef }) {
       <AnimatePresence>
         {updateLogOpen && (
           <UpdateLogModal open onOpenChange={setUpdateLogOpen} />
+        )}
+      </AnimatePresence>
+
+      {/* ===== Modal: 全部板块 ===== */}
+      <AnimatePresence>
+        {allSectorsModalOpen && (
+          <AllSectorsModal onClose={() => setAllSectorsModalOpen(false)} />
         )}
       </AnimatePresence>
 

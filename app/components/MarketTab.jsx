@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Filter, ChevronDown, ChevronRight, LogIn, Lock, TrendingUp, BarChart3, Activity, ArrowDown, ArrowUp } from 'lucide-react';
+import { Star, Filter, ChevronDown, ChevronRight, LogIn, Lock, TrendingUp, BarChart3, Activity } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchFundValuationRanking } from '../api/fund';
 import { cn } from '@/lib/utils';
@@ -187,22 +187,54 @@ export default function MarketTab() {
                     className="h-6 px-2 text-[10px] flex items-center gap-0.5 rounded-sm border-0 bg-transparent text-muted-foreground hover:bg-transparent hover:text-foreground data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm transition-all cursor-pointer"
                   >
                     按涨幅
-                    {sectorSort === 'change_pct' && (
-                      sectorSortOrder === 'desc' ? <ArrowDown className="w-1 h-1 shrink-0" strokeWidth={1.5} /> : <ArrowUp className="w-1 h-1 shrink-0" strokeWidth={1.5} />
-                    )}
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        flexDirection: 'column',
+                        lineHeight: 1,
+                        fontSize: '8px',
+                        transform: 'scale(0.8)',
+                        transformOrigin: 'center',
+                        opacity: sectorSort === 'change_pct' ? 1 : 0.3
+                      }}
+                    >
+                      <span style={{ opacity: sectorSort === 'change_pct' && sectorSortOrder === 'asc' ? 1 : 0.3 }}>▲</span>
+                      <span style={{ opacity: sectorSort === 'change_pct' && sectorSortOrder === 'desc' ? 1 : 0.3 }}>▼</span>
+                    </span>
                   </ToggleGroupItem>
                   <ToggleGroupItem 
                     value="net_inflow" 
                     className="h-6 px-2 text-[10px] flex items-center gap-0.5 rounded-sm border-0 bg-transparent text-muted-foreground hover:bg-transparent hover:text-foreground data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm transition-all cursor-pointer"
                   >
                     按资金流入
-                    {sectorSort === 'net_inflow' && (
-                      sectorSortOrder === 'desc' ? <ArrowDown className="w-1 h-1 shrink-0" strokeWidth={1.5} /> : <ArrowUp className="w-1 h-1 shrink-0" strokeWidth={1.5} />
-                    )}
+                    <span
+                      style={{
+                        display: 'inline-flex',
+                        flexDirection: 'column',
+                        lineHeight: 1,
+                        fontSize: '8px',
+                        transform: 'scale(0.8)',
+                        transformOrigin: 'center',
+                        opacity: sectorSort === 'net_inflow' ? 1 : 0.3
+                      }}
+                    >
+                      <span style={{ opacity: sectorSort === 'net_inflow' && sectorSortOrder === 'asc' ? 1 : 0.3 }}>▲</span>
+                      <span style={{ opacity: sectorSort === 'net_inflow' && sectorSortOrder === 'desc' ? 1 : 0.3 }}>▼</span>
+                    </span>
                   </ToggleGroupItem>
                 </ToggleGroup>
               </div>
-              <button className="market-section-more">全部 <ChevronRight size={14} /></button>
+              <button 
+                className="market-section-more"
+                onClick={() => useModalStore.setState({ 
+                  allSectorsModalOpen: true,
+                  allSectorsFilter: sectorFilter,
+                  allSectorsSort: sectorSort,
+                  allSectorsSortOrder: sectorSortOrder
+                })}
+              >
+                全部 <ChevronRight size={14} />
+              </button>
             </div>
             
             <div className="market-sector-grid">
