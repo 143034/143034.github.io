@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { cn } from '@/lib/utils';
@@ -14,6 +14,7 @@ import { useModalStore } from '../stores';
 
 export default function AllSectorsModal({ onClose }) {
   const isMobile = useIsMobile();
+  const scrollRef = useRef(null);
   
   const initialFilter = useModalStore((s) => s.allSectorsFilter) || 'industry';
   const initialSort = useModalStore((s) => s.allSectorsSort) || 'change_pct';
@@ -149,7 +150,7 @@ export default function AllSectorsModal({ onClose }) {
         </div>
       </div>
       
-      <div className="flex-1 overflow-y-auto px-4 pb-4 pt-0 no-scrollbar">
+      <div className="flex-1 overflow-y-auto px-4 pb-4 pt-0 no-scrollbar" ref={scrollRef}>
         {filteredAndSortedSectors.length === 0 ? (
           <div className="py-8 text-center text-muted-foreground">暂无数据</div>
         ) : (
@@ -203,6 +204,7 @@ export default function AllSectorsModal({ onClose }) {
                         setSectorSort('change_pct');
                         setSectorSortOrder('desc');
                       }
+                      scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                     style={{
                       padding: '8px 12px',
@@ -240,6 +242,7 @@ export default function AllSectorsModal({ onClose }) {
                         setSectorSort('net_inflow');
                         setSectorSortOrder('desc');
                       }
+                      scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                     style={{
                       padding: '8px 12px',
