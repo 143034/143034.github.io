@@ -111,18 +111,18 @@ export default function MarketTab() {
           const fund = info.row.original;
           const isFav = favorites?.has?.(fund.bzdm);
           return (
-            <div className="truncate-content w-full">
-              <div className="flex items-center gap-1.5 mb-1">
+            <div className="w-full">
+              <div className="flex items-start gap-1.5 mb-1">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleFavorite && toggleFavorite(fund.bzdm);
                   }}
-                  className={cn("focus:outline-none flex-shrink-0", isFav ? "text-yellow-500" : "text-gray-400 opacity-50")}
+                  className={cn("focus:outline-none flex-shrink-0 mt-[2px]", isFav ? "text-yellow-500" : "text-gray-400 opacity-50")}
                 >
                   <Star size={16} fill={isFav ? "currentColor" : "none"} />
                 </button>
-                <span className="font-medium text-sm truncate">{fund.jjjc}</span>
+                <span className="font-medium text-sm whitespace-normal break-all leading-snug">{fund.jjjc}</span>
               </div>
               <div className="flex items-center gap-2 pl-5">
                 <span className="text-xs opacity-50">#{fund.bzdm}</span>
