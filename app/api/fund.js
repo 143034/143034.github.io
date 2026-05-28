@@ -103,7 +103,7 @@ const processRelatedSectorsQueue = async () => {
       for (const code of missingCodes) {
         const value = foundMap.get(code) || '';
         qc.setQueryData(qk.relatedSectors(code, seg), value, { staleTime: ONE_DAY_MS });
-        
+
         const key = `${code}|${seg}`;
         const resolver = relatedSectorsInflight.get(key);
         if (resolver) {

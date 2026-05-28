@@ -343,6 +343,14 @@ export default function HomePage() {
   }, [isMobile, dynamicStyleMobile, dynamicStylePc]);
 
   const [mainTab, setMainTab] = useState('home');
+  const [hasVisitedMarketTab, setHasVisitedMarketTab] = useState(false);
+
+  useEffect(() => {
+    if (mainTab === 'market' && !hasVisitedMarketTab) {
+      setHasVisitedMarketTab(true);
+    }
+  }, [mainTab, hasVisitedMarketTab]);
+
   const [mobileBottomNavHidden, setMobileBottomNavHidden] = useState(false);
   const lastScrollYRef = useRef(0);
 
@@ -5842,9 +5850,11 @@ export default function HomePage() {
           )}
         </div>
       </div>
-      <div style={{ display: mainTab === 'market' ? 'contents' : 'none' }}>
-        <MarketTab />
-      </div>
+      {hasVisitedMarketTab && (
+        <div style={{ display: mainTab === 'market' ? 'contents' : 'none' }}>
+          <MarketTab />
+        </div>
+      )}
       </>
       </div>
       {isMobile && (

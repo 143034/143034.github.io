@@ -1531,7 +1531,6 @@ html::-webkit-scrollbar-thumb:active,
   align-items: center;
   gap: 12px;
   padding: 12px 14px !important;
-  border-bottom: 1px solid var(--border);
 }
 
 .table-row:hover {

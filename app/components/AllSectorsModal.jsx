@@ -58,7 +58,8 @@ export default function AllSectorsModal({ onClose }) {
   }, [sectorEstimates, sectorFilter, sectorSort, sectorSortOrder]);
 
   const formatPercent = (val) => {
-    const num = Number(val);
+    if (val === undefined || val === null || val === '---' || val === '') return '--';
+    const num = parseFloat(val);
     if (!Number.isFinite(num)) return '0.00%';
     return `${num > 0 ? '+' : ''}${num.toFixed(2)}%`;
   };
