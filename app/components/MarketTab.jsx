@@ -77,10 +77,8 @@ export default function MarketTab() {
       } else if (activeTab === 'actual') {
         sort = 5;
         order = 'desc';
-      } else if (activeTab === 'deviation') {
-        sort = 6;
-        order = 'desc';
       }
+
 
       const res = await fetchFundValuationRanking(sort, order, 1, 20);
       return res?.Data?.list || [];
@@ -170,23 +168,7 @@ export default function MarketTab() {
       }
     });
 
-    if (activeTab === 'deviation') {
-      columns.push({
-        accessorKey: 'gspc',
-        header: '估算偏差',
-        meta: { align: 'text-right', flex: 1 },
-        cell: (info) => {
-          const fund = info.row.original;
-          return (
-            <div className="flex flex-col items-end justify-center w-full">
-              <span className={cn("text-sm font-bold", getColorClass(fund.gspc))}>
-                {formatPercent(fund.gspc)}
-              </span>
-            </div>
-          );
-        }
-      });
-    }
+
 
     return columns;
   }, [favorites, toggleFavorite, activeTab]);
@@ -431,18 +413,7 @@ export default function MarketTab() {
                       >
                         实际涨幅
                       </motion.button>
-                      <motion.button
-                        layout
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        key="deviation"
-                        className={cn("tab", activeTab === 'deviation' && "active")}
-                        onClick={() => setActiveTab('deviation')}
-                        transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 1 }}
-                      >
-                        估算偏差
-                      </motion.button>
+
                     </AnimatePresence>
                   </div>
                 </div>
