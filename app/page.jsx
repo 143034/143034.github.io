@@ -99,7 +99,6 @@ import {
   migrateDcaPlansToScoped
 } from './lib/fundHelpers';
 
-import GlobalToast from './components/GlobalToast';
 import { dedupeByCode, normalizeCode, cleanCodeArray, normalizeNumber } from './lib/normalize';
 
 export default function HomePage() {
@@ -2261,15 +2260,14 @@ export default function HomePage() {
   // 成功提示弹窗
   const successModal = useModalStore((s) => s.successModal);
   // 轻提示 (Toast)
-  const [toast, setToast] = useState({ show: false, message: '', type: 'info' }); // type: 'info' | 'success' | 'error'
-  const toastTimeoutRef = useRef(null);
-
   const showToast = (message, type = 'info') => {
-    if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
-    setToast({ show: true, message, type });
-    toastTimeoutRef.current = setTimeout(() => {
-      setToast((prev) => ({ ...prev, show: false }));
-    }, 3000);
+    if (type === 'success') {
+      sonnerToast.success(message);
+    } else if (type === 'error') {
+      sonnerToast.error(message);
+    } else {
+      sonnerToast.info(message);
+    }
   };
 
   // 定投计划自动生成买入队列的逻辑会在 storageHelper 定义之后实现
@@ -5926,8 +5924,6 @@ export default function HomePage() {
       {/* 弹框渲染层 - 独立组件，订阅 useModalStore，不触发 page.jsx 重渲染 */}
       <ModalsLayer callbacksRef={modalCbRef} />
 
-      {/* 全局轻提示 Toast */}
-      <GlobalToast toast={toast} />
     </div>
     </>
   );
