@@ -4834,6 +4834,16 @@ export default function HomePage() {
       }
       return next;
     });
+
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = JSON.parse(localStorage.getItem('rtf_unadded_ds') || '{}');
+        saved[fundCode] = sourceId;
+        localStorage.setItem('rtf_unadded_ds', JSON.stringify(saved));
+      } catch (e) {}
+      window.dispatchEvent(new CustomEvent('rtf_unadded_datasource_change', { detail: { fundCode, sourceId } }));
+    }
+
     // Immediately fetch new data for this fund so the UI updates
     refreshAll([fundCode]);
     showToast('切换数据源成功', 'success');

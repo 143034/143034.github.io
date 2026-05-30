@@ -10,10 +10,15 @@ import { isNumber, isString } from 'lodash';
 import { PlusCircle } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty';
-import { Stat, ConsecutiveTrendBadge } from './Common';
-import FundTrendChart from './FundTrendChart';
-import FundIntradayChart from './FundIntradayChart';
-import FundDailyEarnings from './FundDailyEarnings';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
+import { useStorageStore } from "@/app/stores";
+import { fetchFundHoldings, fetchFundData } from '@/app/api/fund';
+import { useIsMobile } from '@/app/hooks/useIsMobile';
+import { Stat, ConsecutiveTrendBadge } from '../Common';
+import FundTrendChart from '../FundTrendChart';
+import FundIntradayChart from '../FundIntradayChart';
+import FundDailyEarnings from '../FundDailyEarnings';
 import {
   ChevronIcon,
   SettingsIcon,
@@ -21,13 +26,8 @@ import {
   SwitchIcon,
   TrashIcon,
   LinkIcon,
-} from './Icons';
-import { Badge } from '@/components/ui/badge';
-import { getTagThemeBadgeProps } from './AddTagDialog';
-import { cn } from '@/lib/utils';
-import { useStorageStore } from "@/app/stores";
-import { fetchFundHoldings } from '@/app/api/fund';
-import { useIsMobile } from '@/app/hooks/useIsMobile';
+} from '../Icons';
+import { getTagThemeBadgeProps } from '../AddTagDialog';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -208,7 +208,7 @@ function MoreSection({ holding, profit, hasHoldingAmount, fundExtraData, masked,
   );
 }
 
-export default function FundCard({
+export default function Index({
   fundCode,
   isHoldingLinked = false,
   todayStr,
@@ -250,15 +250,79 @@ export default function FundCard({
     funds,
     refreshMs,
   } = useStorageStore();
+
+  const [fetchedValuation, setFetchedValuation] = useState(null);
+
   const f = useMemo(() => {
     const found = funds?.find((item) => item.code === fundCode);
     if (found) return found;
-    return fallbackFund;
-  }, [funds, fundCode, fallbackFund]);
+
+    let ds = fallbackFund?.dataSource || 1;
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = JSON.parse(localStorage.getItem('rtf_unadded_ds') || '{}');
+        if (saved[fundCode]) {
+          ds = saved[fundCode];
+        }
+      } catch (e) {}
+    }
+
+    if (fetchedValuation) return { ...fallbackFund, dataSource: ds, ...fetchedValuation };
+    return { ...fallbackFund, dataSource: ds };
+  }, [funds, fundCode, fallbackFund, fetchedValuation]);
 
   const isAdded = useMemo(() => funds?.some((item) => item.code === f?.code), [funds, f?.code]);
 
   const [topHoldings, setTopHoldings] = useState({ holdings: [], holdingsReportDate: null, holdingsIsLastQuarter: false });
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.detail?.fundCode === fundCode) {
+        const sourceId = e.detail.sourceId;
+        setFetchedValuation(prev => ({
+          ...(prev || {}),
+          dataSource: sourceId,
+          gsz: null,
+          gszzl: null,
+          gztime: null,
+          valuationSource: null,
+          noValuation: false
+        }));
+        
+        // Fetch immediately using the new data source
+        fetchFundData(fundCode, sourceId).then(res => {
+          if (res) {
+            setFetchedValuation(prev => ({ ...prev, ...res, dataSource: sourceId }));
+          }
+        }).catch(err => {
+          console.error('fetchFundData error on ds change', err);
+        });
+      }
+    };
+    window.addEventListener('rtf_unadded_datasource_change', handler);
+    return () => window.removeEventListener('rtf_unadded_datasource_change', handler);
+  }, [fundCode]);
+
+  useEffect(() => {
+    if (!isAdded) {
+      let cancelled = false;
+      const fetchValuation = async () => {
+        try {
+          const res = await fetchFundData(fundCode, f?.dataSource);
+          if (!cancelled && res) {
+            setFetchedValuation(prev => ({ ...prev, ...res, dataSource: f?.dataSource || 1 }));
+          }
+        } catch (e) {
+          console.error('fetchFundData error', e);
+        }
+      };
+      fetchValuation();
+      return () => {
+        cancelled = true;
+      };
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdded, fundCode]);
 
   useEffect(() => {
     let timer;
@@ -760,8 +824,9 @@ export default function FundCard({
       />
 
       {(() => {
+        const currentSeries = f.fundValuationTimeseries?.[f.code] || valuationSeries?.[f.code];
         const showIntraday =
-          !f.noValuation && Array.isArray(valuationSeries?.[f.code]) && valuationSeries[f.code].length >= 1;
+          !f.noValuation && Array.isArray(currentSeries) && currentSeries.length >= 1;
         if (!showIntraday) return null;
 
         if (
@@ -784,7 +849,7 @@ export default function FundCard({
         return (
           <FundIntradayChart
             key={`${f.code}-intraday-${theme}`}
-            series={valuationSeries[f.code]}
+            series={currentSeries}
             referenceNav={dwjz != null && Number.isFinite(dwjz) ? dwjz : undefined}
             theme={theme}
             fundCode={f.code}

@@ -1152,7 +1152,7 @@ export async function fetchFundValuationBySource(code, dataSource = 1) {
   });
 }
 
-export const fetchFundData = async (c) => {
+export const fetchFundData = async (c, overrideDataSource) => {
   if (typeof window === 'undefined' || typeof document === 'undefined') {
     throw new Error('无浏览器环境');
   }
@@ -1160,14 +1160,16 @@ export const fetchFundData = async (c) => {
   const code = c != null ? String(c).trim() : '';
   if (!code) return fetchFundDataFallback(c);
 
-  let dataSource = 1;
-  try {
-    const arr = storageStore.getItem('funds', []);
-    if (Array.isArray(arr)) {
-      const f = arr.find(x => x.code === code);
-      if (f && f.dataSource) dataSource = f.dataSource;
-    }
-  } catch (e) {}
+  let dataSource = overrideDataSource || 1;
+  if (!overrideDataSource) {
+    try {
+      const arr = storageStore.getItem('funds', []);
+      if (Array.isArray(arr)) {
+        const f = arr.find(x => x.code === code);
+        if (f && f.dataSource) dataSource = f.dataSource;
+      }
+    } catch (e) {}
+  }
 
   // 1. 发起并发的历史净值和重仓请求
   const lsjzPromise = new Promise((resolveT) => {

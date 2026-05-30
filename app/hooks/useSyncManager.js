@@ -1114,7 +1114,12 @@ export function useSyncManager({ showToast, refreshAllRef, setTempSeconds, setFu
 
       if (nextFunds.length) {
         const codes = Array.from(new Set(nextFunds.map((f) => f.code)));
-        if (codes.length && typeof refreshAllRef.current === 'function') await refreshAllRef.current(codes);
+        const localCodesSet = new Set(localFundsForMerge.map((f) => f?.code).filter(Boolean));
+        const hasNewFunds = codes.some((code) => !localCodesSet.has(code));
+
+        if (hasNewFunds && typeof refreshAllRef.current === 'function') {
+          await refreshAllRef.current(codes);
+        }
         const currentUser = useUserStore.getState().user;
         const currentUserId = userIdRef.current || currentUser?.id;
         if (currentUserId) {
