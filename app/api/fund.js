@@ -1161,12 +1161,16 @@ export const fetchFundData = async (c, overrideDataSource) => {
   if (!code) return fetchFundDataFallback(c);
 
   let dataSource = overrideDataSource || 1;
+  let storedName = null;
   if (!overrideDataSource) {
     try {
       const arr = storageStore.getItem('funds', []);
       if (Array.isArray(arr)) {
         const f = arr.find(x => x.code === code);
-        if (f && f.dataSource) dataSource = f.dataSource;
+        if (f) {
+          if (f.dataSource) dataSource = f.dataSource;
+          if (f.name) storedName = f.name;
+        }
       }
     } catch (e) {}
   }
@@ -1247,11 +1251,16 @@ export const fetchFundData = async (c, overrideDataSource) => {
     }
 
     if (!baseData.name) {
-      try {
-        const results = await searchFunds(code);
-        const found = results.find((item) => item.CODE === code);
-        if (found) baseData.name = found.NAME || found.SHORTNAME;
-      } catch (e) {}
+      // 优先使用 localStorage 中已存储的基金名称，避免不必要的 searchFunds 网络请求
+      if (storedName) {
+        baseData.name = storedName;
+      } else {
+        try {
+          const results = await searchFunds(code);
+          const found = results.find((item) => item.CODE === code);
+          if (found) baseData.name = found.NAME || found.SHORTNAME;
+        } catch (e) {}
+      }
     }
 
     resolve({
