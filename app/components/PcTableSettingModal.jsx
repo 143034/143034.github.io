@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { AnimatePresence, motion, Reorder } from 'framer-motion';
 import { createPortal } from 'react-dom';
 import ConfirmModal from './ConfirmModal';
@@ -49,6 +49,7 @@ export default function PcTableSettingModal({
   const [resetOrderConfirmOpen, setResetOrderConfirmOpen] = useState(false);
   const [syncModalOpen, setSyncModalOpen] = useState(false);
   const [syncSuccessOpen, setSyncSuccessOpen] = useState(false);
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     if (!open) {
@@ -116,7 +117,11 @@ export default function PcTableSettingModal({
           className="icon-button"
           onClick={(e) => {
             e.stopPropagation();
+            const isCurrentlyPinned = pinnedColumns.includes(item.id);
             onTogglePinColumn(item.id);
+            if (!isCurrentlyPinned && scrollRef.current) {
+              scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+            }
           }}
           title={pinnedColumns.includes(item.id) ? '取消固定' : '固定在左侧'}
           style={{
@@ -237,7 +242,7 @@ export default function PcTableSettingModal({
               </button>
             </div>
 
-            <div className="pc-table-setting-body">
+            <div className="pc-table-setting-body" ref={scrollRef}>
               {onToggleShowFullFundName && (
                 <div
                   style={{
