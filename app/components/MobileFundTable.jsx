@@ -37,6 +37,7 @@ import { fetchFundPeriodReturns, fetchRelatedSectorsBatch, fetchFundSecidsBatch,
 import { storageStore } from '../stores';
 import { asyncPool } from '@/app/lib/asyncHelper';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { getTagThemeBadgeProps } from '@/app/components/AddTagDialog';
 import { cn } from '@/lib/utils';
 
@@ -1245,21 +1246,26 @@ export default function MobileFundTable({
               title={isUpdated ? '今日净值已更新' : undefined}
             >
               {holdingLocked ? (
-                <span
-                  title="持仓来自自定义分组汇总"
-                  aria-label="已关联持仓"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    marginRight: 6,
-                    color: 'var(--primary)',
-                    verticalAlign: 'middle',
-                    marginBottom: 2,
-                    position: 'relative',
-                  }}
-                >
-                  <LinkIcon width="14" height="14" />
-                </span>
+                <Tooltip delayDuration={150}>
+                  <TooltipTrigger asChild>
+                    <span
+                      aria-label="已关联持仓"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        marginRight: 6,
+                        color: 'var(--primary)',
+                        verticalAlign: 'middle',
+                        marginBottom: 2,
+                        position: 'relative',
+                        cursor: 'default',
+                      }}
+                    >
+                      <LinkIcon width="14" height="14" />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>持仓来自自定义分组汇总</TooltipContent>
+                </Tooltip>
               ) : null}
               <ConsecutiveTrendBadge trend={fundExtraDataByCode?.[code]?.consecutiveTrend} />
               {info.getValue() ?? '—'}
@@ -1342,21 +1348,26 @@ export default function MobileFundTable({
             }}
           >
             {holdingLocked ? (
-              <span
-                title="持仓来自自定义分组汇总"
-                aria-label="已关联持仓"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  marginRight: 6,
-                  color: 'var(--primary)',
-                  verticalAlign: 'middle',
-                  bottom: 2,
-                  position: 'relative',
-                }}
-              >
-                <LinkIcon width="14" height="14" />
-              </span>
+              <Tooltip delayDuration={150}>
+                <TooltipTrigger asChild>
+                  <span
+                    aria-label="已关联持仓"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      marginRight: 6,
+                      color: 'var(--primary)',
+                      verticalAlign: 'middle',
+                      bottom: 2,
+                      position: 'relative',
+                      cursor: 'default',
+                    }}
+                  >
+                    <LinkIcon width="14" height="14" />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>持仓来自自定义分组汇总</TooltipContent>
+              </Tooltip>
             ) : null}
             <ConsecutiveTrendBadge trend={fundExtraDataByCode?.[code]?.consecutiveTrend} />
             {info.getValue() ?? '—'}

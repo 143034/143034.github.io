@@ -11,6 +11,7 @@ import { PlusCircle } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { useStorageStore } from "@/app/stores";
 import { fetchFundHoldings, fetchFundData } from '@/app/api/fund';
@@ -449,21 +450,25 @@ export default function Index({
               title={f.jzrq === todayStr ? '今日净值已更新' : ''}
             >
               {isHoldingLinked ? (
-                <span
-                  title="持仓来自自定义分组汇总"
-                  aria-label="已关联持仓"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    marginRight: 6,
-                    color: 'var(--primary)',
-                    verticalAlign: 'middle',
-                    position: 'relative',
-                    bottom: 2,
-                  }}
-                >
-                  <LinkIcon width="14" height="14" />
-                </span>
+                <Tooltip delayDuration={150}>
+                  <TooltipTrigger asChild>
+                    <span
+                      aria-label="已关联持仓"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        marginRight: 6,
+                        color: 'var(--primary)',
+                        verticalAlign: 'middle',
+                        position: 'relative',
+                        bottom: 2,
+                      }}
+                    >
+                      <LinkIcon width="14" height="14" />
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>持仓来自自定义分组汇总</TooltipContent>
+                </Tooltip>
               ) : null}
               <ConsecutiveTrendBadge trend={fundExtraData?.consecutiveTrend} />
               {f.name}

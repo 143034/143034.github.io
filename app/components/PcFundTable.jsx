@@ -36,6 +36,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { DragIcon, SettingsIcon, StarIcon, TrashIcon, ResetIcon, FolderPlusIcon, LinkIcon } from './Icons';
 import { ConsecutiveTrendBadge } from './Common';
 import { fetchFundPeriodReturns, fetchRelatedSectorsBatch, fetchFundSecidsBatch, fetchEastmoneySectorQuotesBatch } from '@/app/api/fund';
@@ -1068,21 +1069,26 @@ export default function PcFundTable({
             title={info.getValue() ?? undefined}
           >
             {holdingLocked ? (
-              <span
-                title="持仓来自自定义分组汇总"
-                aria-label="已关联持仓"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  marginRight: 6,
-                  color: 'var(--primary)',
-                  verticalAlign: 'middle',
-                  position: 'relative',
-                  bottom: 2,
-                }}
-              >
-                <LinkIcon width="14" height="14" />
-              </span>
+              <Tooltip delayDuration={150}>
+                <TooltipTrigger asChild>
+                  <span
+                    aria-label="已关联持仓"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      marginRight: 6,
+                      color: 'var(--primary)',
+                      verticalAlign: 'middle',
+                      position: 'relative',
+                      bottom: 2,
+                      cursor: 'default',
+                    }}
+                  >
+                    <LinkIcon width="14" height="14" />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>持仓来自自定义分组汇总</TooltipContent>
+              </Tooltip>
             ) : null}
             <ConsecutiveTrendBadge trend={fundExtraDataByCode?.[code]?.consecutiveTrend} />
             {info.getValue() ?? '—'}
