@@ -808,6 +808,7 @@ export default function ModalsLayer({ callbacksRef }) {
             onClose={() => setScanConfirmModalOpen(false)}
             onToggle={cb.current.toggleScannedCode}
             onConfirm={cb.current.confirmScanImport}
+            onRetryOcr={cb.current.handleRetryOcr}
             refreshing={cb.current.refreshing}
             groups={cb.current.groups}
             existingAllCodes={(cb.current.funds || []).map((f) => f?.code).filter(Boolean)}

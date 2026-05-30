@@ -386,9 +386,7 @@ body::before {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="light"] .search-item:hover:not(.added) {
-  background: rgba(0, 0, 0, 0.05);
-}
+
 
 [data-theme="light"] .search-item.selected {
   background: rgba(8, 145, 178, 0.12);
@@ -3677,9 +3675,7 @@ html::-webkit-scrollbar-thumb:active,
   transition: all 0.2s ease;
 }
 
-.search-item:hover:not(.added) {
-  background: rgba(255, 255, 255, 0.08);
-}
+
 
 .search-item.selected {
   background: rgba(34, 211, 238, 0.1);
