@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import ReactDOM from 'react-dom';
+import { toast as sonnerToast } from 'sonner';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useModalStore } from '../stores';
 import {
@@ -151,7 +152,15 @@ function EditDragHandleCell({ disabled }) {
         justifyContent: 'center',
         opacity: disabled ? 0.45 : 1,
       }}
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+      onPointerDown={(e) => {
+        if (disabled) {
+          e.stopPropagation();
+          sonnerToast.info('拖拽基金顺序需要在默认排序下操作');
+        }
+      }}
       {...(disabled ? {} : rowSortable.activatorProps)}
       {...(disabled ? {} : rowSortable.listeners)}
     >
@@ -741,9 +750,9 @@ export default function MobileFundTable({
     onMobileSettingModalOpenChange?.(settingModalOpen);
   }, [settingModalOpen, onMobileSettingModalOpenChange]);
 
-  useEffect(() => {
-    if (sortBy !== 'default') exitEditMode();
-  }, [sortBy, exitEditMode]);
+  // useEffect(() => {
+  //   if (sortBy !== 'default') exitEditMode();
+  // }, [sortBy, exitEditMode]);
 
   const [cardSheetRow, setCardSheetRow] = useState(null);
 
@@ -1479,7 +1488,7 @@ export default function MobileFundTable({
               >
                 <SettingsIcon width="18" height="18" />
               </button>
-              {sortBy === 'default' && (
+              {true && (
                 <button
                   type="button"
                   className="icon-button"
@@ -1533,7 +1542,7 @@ export default function MobileFundTable({
               <button
                 type="button"
                 className="link-button"
-                disabled={!canMove}
+                disabled={idx <= 0}
                 title={idx <= 0 ? '已在最前' : '移到最前'}
                 aria-label={idx <= 0 ? '已在最前' : '移到最前'}
                 style={{
@@ -1550,7 +1559,11 @@ export default function MobileFundTable({
                 }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  if (!canMove) return;
+                  if (sortBy !== 'default') {
+                    sonnerToast.info('拖拽基金顺序需要在默认排序下操作');
+                    return;
+                  }
+                  if (idx <= 0 || !onReorder) return;
                   onReorder(idx, 0);
                 }}
               >
@@ -2366,7 +2379,7 @@ export default function MobileFundTable({
       onContextMenu={(e) => e.preventDefault()}
       onDragStart={(e) => e.preventDefault()}
       onPointerDown={(e) => {
-        if (sortBy !== 'default' || isEditMode) return;
+        if (isEditMode) return;
         if (e.button !== 0 && e.pointerType === 'mouse') return;
         const c = row.original?.code;
         if (!c) return;

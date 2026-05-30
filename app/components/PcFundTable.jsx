@@ -330,7 +330,7 @@ export default function PcFundTable({
 
   const isGroupTab = currentTab && currentTab !== 'all' && currentTab !== 'fav';
   // 批量删除：之前仅自定义分组支持，这里扩展到「全部 / 自选 / 自定义分组」
-  const batchRemoveEnabled = sortBy === 'default' && (currentTab === 'all' || currentTab === 'fav' || isGroupTab);
+  const batchRemoveEnabled = currentTab === 'all' || currentTab === 'fav' || isGroupTab;
   const selectableCodes = useMemo(
     () => (Array.isArray(data) ? data.map((d) => d?.code).filter(Boolean) : []),
     [data],
@@ -1029,7 +1029,7 @@ export default function PcFundTable({
             />
           </label>
         )}
-        {sortBy === 'default' && (
+        {sortBy === 'default' ? (
           <button
             type="button"
             className="icon-button drag-handle"
@@ -1042,6 +1042,20 @@ export default function PcFundTable({
           >
             <DragIcon width="16" height="16" />
           </button>
+        ) : (
+          <Tooltip delayDuration={150}>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                className="icon-button drag-handle"
+                style={{ cursor: 'not-allowed', opacity: 0.45, width: 20, height: 20, padding: 2, margin: '0', flexShrink: 0, color: 'var(--muted)', background: 'transparent', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', touchAction: 'none' }}
+                onClick={(e) => e.stopPropagation?.()}
+              >
+                <DragIcon width="16" height="16" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>拖拽基金顺序需要在默认排序下操作</TooltipContent>
+          </Tooltip>
         )}
         {showFavoriteButton ? (
           <button
