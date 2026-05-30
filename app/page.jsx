@@ -1366,6 +1366,16 @@ export default function HomePage() {
           if (!hasB) return -1;
           return sortOrder === 'asc' ? valA - valB : valB - valA;
         }
+        if (sortBy === 'consecutiveTrend') {
+          const getTrendValue = (code) => {
+            const trend = fundExtraDataByCode[code]?.consecutiveTrend;
+            if (!trend || !Number.isFinite(trend.days)) return 0;
+            return trend.type === 'up' ? trend.days : -trend.days;
+          };
+          const valA = getTrendValue(a.code);
+          const valB = getTrendValue(b.code);
+          return sortOrder === 'asc' ? valA - valB : valB - valA;
+        }
         if (['last1Week', 'last1Month', 'last3Months', 'last6Months', 'last1Year'].includes(sortBy)) {
           const keyMap = { last1Week: 'week', last1Month: 'month', last3Months: 'month3', last6Months: 'month6', last1Year: 'year1' };
           const key = keyMap[sortBy];
