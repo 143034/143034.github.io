@@ -523,6 +523,21 @@ export default function ModalsLayer({ callbacksRef }) {
               };
               ensureHolding(payload.inFundCode);
 
+              // 方案一：确保转换到的新基金如果不在当前分组的显示列表 (codes) 中，将其主动追加进去
+              if (tradeGid) {
+                const groupsList = cb.current.groups || [];
+                const targetGroup = groupsList.find((g) => g.id === tradeGid);
+                if (targetGroup && !(targetGroup.codes || []).includes(payload.inFundCode)) {
+                  const nextGroups = groupsList.map((g) => {
+                    if (g.id === tradeGid) {
+                      return { ...g, codes: [...(g.codes || []), payload.inFundCode] };
+                    }
+                    return g;
+                  });
+                  cb.current.handleUpdateGroups?.(nextGroups);
+                }
+              }
+
               setConvertModal({ open: false, fund: null });
               cb.current.showToast?.('已加入待处理队列（转换）', 'info');
             }}
