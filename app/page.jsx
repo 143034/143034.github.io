@@ -123,6 +123,7 @@ export default function HomePage() {
     initPendingTrades, initTransactions,
     initDcaPlans, initCustomSettings,
     initFundDailyEarnings,
+    initFundDividends,
     sortBy, setSortBy,
     sortOrder, setSortOrder,
     pcSortDisplayMode, setPcSortDisplayMode,
@@ -306,6 +307,7 @@ export default function HomePage() {
   const setActionModal = (v) => _ms({ actionModal: typeof v === 'function' ? v(_gs().actionModal) : v });
   const setTradeModal = (v) => _ms({ tradeModal: typeof v === 'function' ? v(_gs().tradeModal) : v });
   const setConvertModal = (v) => _ms({ convertModal: typeof v === 'function' ? v(_gs().convertModal) : v });
+  const setDividendMethodModal = (v) => _ms({ dividendMethodModal: typeof v === 'function' ? v(_gs().dividendMethodModal) : v });
   const setSelectFundSingleModal = (v) => _ms({ selectFundSingleModal: typeof v === 'function' ? v(_gs().selectFundSingleModal) : v });
   const setSelectHoldingGroupModal = (v) => _ms({ selectHoldingGroupModal: typeof v === 'function' ? v(_gs().selectHoldingGroupModal) : v });
   const setDataSourceModal = (v) => _ms({ dataSourceModal: typeof v === 'function' ? v(_gs().dataSourceModal) : v });
@@ -394,19 +396,80 @@ export default function HomePage() {
     const hasTodayValuation = isString(fund.gztime) && fund.gztime.startsWith(todayStr);
     const canCalcTodayProfit = hasTodayData || hasTodayValuation;
 
+    // 分红计算逻辑
+    let dividendCash = 0;
+    let extraShares = 0;
+    let effectiveShare = holding.share;
+    const currentStore = useStorageStore.getState();
+    const cachedDivs = currentStore.fundDividends?.[fund.code]?.list;
+    const txs = currentStore.transactions?.[fund.code] || [];
+    
+    if (cachedDivs && Array.isArray(cachedDivs)) {
+      let earliestDate = holding.firstPurchaseDate;
+      if (!earliestDate) {
+         for (const tx of txs) {
+           if (tx.type !== 'buy' || !tx.date) continue;
+           const gid = tx.groupId || null;
+           if (txScope !== undefined ? (txScope ? gid !== txScope : gid) : (activeGroupId ? gid !== activeGroupId : gid)) continue;
+           if (!earliestDate || tx.date < earliestDate) earliestDate = tx.date;
+         }
+      }
+
+      if (earliestDate) {
+        const getShareAtDate = (date) => {
+          let s = 0;
+          let hasTx = false;
+          for (const tx of txs) {
+            const gid = tx.groupId || null;
+            if (txScope !== undefined ? (txScope ? gid !== txScope : gid) : (activeGroupId ? gid !== activeGroupId : gid)) continue;
+            if (tx.isHistoryOnly) continue;
+            if (tx.date <= date) {
+               hasTx = true;
+               if (tx.type === 'buy') s += Number(tx.share) || 0;
+               if (tx.type === 'sell') s -= Number(tx.share) || 0;
+            }
+          }
+          if (hasTx) return Math.max(0, s);
+          if (date >= earliestDate) return holding.share;
+          return 0;
+        };
+
+        const sortedDivs = [...cachedDivs].sort((a,b) => a.date.localeCompare(b.date));
+        for (const div of sortedDivs) {
+           if (div.date < earliestDate) continue;
+           if (div.date > todayStr) continue;
+           const baseShare = getShareAtDate(div.date);
+           if (baseShare > 0) {
+              const actualShare = baseShare + extraShares;
+              if (!holding.dividendMethod || holding.dividendMethod === 'reinvest') {
+                 if (div.nav > 0) {
+                    extraShares += (actualShare * div.dividend) / div.nav;
+                 }
+              } else { // 现金分红 (cash)
+                 dividendCash += actualShare * div.dividend;
+              }
+           }
+        }
+      }
+    }
+
+    if (!holding.dividendMethod || holding.dividendMethod === 'reinvest') {
+       effectiveShare += extraShares;
+    }
+
     // 如果是交易日且9点以后，且今日净值未出，则强制使用估值（隐藏涨跌幅列模式）
     const useValuation = isTradingDay && !hasTodayData;
 
     let currentNav;
     let profitToday;
-    let shareForTodayProfit = holding.share;
+    let shareForTodayProfit = effectiveShare; // 基于有效份额计算当日收益
 
     if (canCalcTodayProfit) {
       // 当日收益口径：按“昨日收盘时持有份额”计算，避免把当日买入份额算进当日收益。
       // 份额基数 = 当前份额 - 当日买入份额 + 当日卖出份额（卖出份额在开盘前仍持有，应计入当日涨跌）
       let buyToday = 0;
       let sellToday = 0;
-      const list = transactions && fund?.code ? (transactions[fund.code] || []) : [];
+      const list = txs;
       for (const tx of list) {
         if (!tx || tx.date !== todayStr) continue;
         const gid = tx.groupId || null;
@@ -421,7 +484,7 @@ export default function HomePage() {
         if (tx.type === 'buy') buyToday += s;
         else if (tx.type === 'sell') sellToday += s;
       }
-      shareForTodayProfit = Math.max(0, holding.share - buyToday + sellToday);
+      shareForTodayProfit = Math.max(0, effectiveShare - buyToday + sellToday);
     }
 
     if (!useValuation) {
@@ -476,11 +539,11 @@ export default function HomePage() {
 
     // 持仓金额强制使用确权净值
     const exactNav = Number(fund.dwjz) || currentNav;
-    const amount = holding.share * exactNav;
+    const amount = effectiveShare * exactNav;
 
-    // 总收益 = (确权净值 - 成本价) * 份额
+    // 总收益 = (确权净值 * 当前有效份额) - 成本总额 + 现金分红
     const profitTotal = isNumber(holding.cost)
-      ? (exactNav - holding.cost) * holding.share
+      ? (exactNav * effectiveShare) - (holding.cost * holding.share) + dividendCash
       : null;
 
     return {
@@ -1778,6 +1841,8 @@ export default function HomePage() {
       setDcaModal({ open: true, fund, groupId });
     } else if (type === 'convert') {
       setConvertModal({ open: true, fund, groupId });
+    } else if (type === 'dividend') {
+      setDividendMethodModal({ open: true, fund, groupId });
     }
   };
 
@@ -3149,6 +3214,8 @@ export default function HomePage() {
       initDcaPlans();
       initCustomSettings();
       initFundDailyEarnings();
+      initFundDividends();
+      initSort();
       try {        // 已登录用户：不在此处调用 refreshAll，等 fetchCloudConfig 完成后由 applyCloudConfig 统一刷新
         let shouldRefreshFromLocal = true;
         if (isSupabaseConfigured) {

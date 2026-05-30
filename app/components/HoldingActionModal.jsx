@@ -134,6 +134,18 @@ export default function HoldingActionModal({ fund, onClose, onAction, hasHistory
           >
             转换
           </button>
+          <button
+            className="button col-12"
+            onClick={() => onAction('dividend')}
+            style={{
+              background: 'rgba(245, 158, 11, 0.12)',
+              border: '1px solid rgba(245, 158, 11, 0.75)',
+              color: 'rgba(245, 158, 11, 0.85)',
+              fontSize: 14,
+            }}
+          >
+            分红方式
+          </button>
           <button className="button col-12" onClick={() => onAction('edit')} style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--text)' }}>
             编辑持仓
           </button>

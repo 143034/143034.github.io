@@ -22,6 +22,7 @@ const ScanPickModal = dynamic(() => import('./ScanPickModal'), { ssr: false });
 const ScanProgressModal = dynamic(() => import('./ScanProgressModal'), { ssr: false });
 const AddHistoryModal = dynamic(() => import('./AddHistoryModal'), { ssr: false });
 const AllSectorsModal = dynamic(() => import('./AllSectorsModal'), { ssr: false });
+const DividendMethodModal = dynamic(() => import('./DividendMethodModal'), { ssr: false });
 
 // 高频组件：同步加载
 import ConfirmModal from './ConfirmModal';
@@ -87,6 +88,7 @@ export default function ModalsLayer({ callbacksRef }) {
   const actionModal = useModalStore((s) => s.actionModal);
   const tradeModal = useModalStore((s) => s.tradeModal);
   const convertModal = useModalStore((s) => s.convertModal);
+  const dividendMethodModal = useModalStore((s) => s.dividendMethodModal);
   const selectFundSingleModal = useModalStore((s) => s.selectFundSingleModal);
   const selectHoldingGroupModal = useModalStore((s) => s.selectHoldingGroupModal);
   const dataSourceModal = useModalStore((s) => s.dataSourceModal);
@@ -135,6 +137,7 @@ export default function ModalsLayer({ callbacksRef }) {
   const setActionModal = (v) => _ms({ actionModal: typeof v === 'function' ? v(_gs().actionModal) : v });
   const setTradeModal = (v) => _ms({ tradeModal: typeof v === 'function' ? v(_gs().tradeModal) : v });
   const setConvertModal = (v) => _ms({ convertModal: typeof v === 'function' ? v(_gs().convertModal) : v });
+  const setDividendMethodModal = (v) => _ms({ dividendMethodModal: typeof v === 'function' ? v(_gs().dividendMethodModal) : v });
   const setSelectFundSingleModal = (v) => _ms({ selectFundSingleModal: typeof v === 'function' ? v(_gs().selectFundSingleModal) : v });
   const setSelectHoldingGroupModal = (v) => _ms({ selectHoldingGroupModal: typeof v === 'function' ? v(_gs().selectHoldingGroupModal) : v });
   const setDataSourceModal = (v) => _ms({ dataSourceModal: typeof v === 'function' ? v(_gs().dataSourceModal) : v });
@@ -541,6 +544,18 @@ export default function ModalsLayer({ callbacksRef }) {
               setConvertModal({ open: false, fund: null });
               cb.current.showToast?.('已加入待处理队列（转换）', 'info');
             }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* ===== Modal: 分红方式 ===== */}
+      <AnimatePresence>
+        {dividendMethodModal.open && (
+          <DividendMethodModal
+            fund={dividendMethodModal.fund}
+            groupId={dividendMethodModal.groupId}
+            onClose={() => setDividendMethodModal({ open: false, fund: null })}
+            showToast={cb.current.showToast}
           />
         )}
       </AnimatePresence>

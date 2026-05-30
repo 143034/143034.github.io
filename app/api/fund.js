@@ -561,7 +561,15 @@ const parseNetValuesFromLsjzContent = (content) => {
         break;
       }
     }
-    results.push({ date: dateStr, nav, growth });
+
+    let dividend = null;
+    const divText = getText(cells[6] || '');
+    const divMatch = divText.match(/派现金(\d+(?:\.\d+)?)/);
+    if (divMatch) {
+      dividend = parseFloat(divMatch[1]);
+    }
+
+    results.push({ date: dateStr, nav, growth, dividend });
   }
   // 返回按日期升序排列的结果（API返回的是倒序，需要反转）
   return results.reverse();
@@ -603,6 +611,22 @@ export const fetchFundNetValueRange = async (code, sdate, edate) => {
     }
   }
   return Array.from(merged.values()).sort((a, b) => a.date.localeCompare(b.date));
+};
+
+/**
+ * 拉取基金历史分红数据。
+ * @param {string} code 基金代码
+ * @param {string} sdate 开始 YYYY-MM-DD
+ * @returns {Promise<Array<{ date: string, dividend: number, nav: number }>>} 按日期升序
+ */
+export const fetchFundDividends = async (code, sdate) => {
+  const edate = dayjs().format('YYYY-MM-DD');
+  const rows = await fetchFundNetValueRange(code, sdate, edate);
+  return rows.filter(r => r.dividend !== undefined && r.dividend !== null).map(r => ({
+    date: r.date,
+    dividend: r.dividend,
+    nav: r.nav
+  }));
 };
 
 /**

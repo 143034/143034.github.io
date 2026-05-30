@@ -53,7 +53,7 @@ const SYNC_KEYS = new Set([
   'funds', 'tags', 'favorites', 'groups', 
   'collapsedCodes', 'collapsedTrends', 'collapsedEarnings', 
   'refreshMs', 'holdings', 'groupHoldings', 'pendingTrades', 
-  'transactions', 'dcaPlans', 'customSettings', 'fundDailyEarnings'
+  'transactions', 'dcaPlans', 'customSettings', 'fundDailyEarnings', 'fundDividends'
 ]);
 
 /** 排序展示模式的合法值集合 */
@@ -107,6 +107,7 @@ export const useStorageStore = create((set, get) => ({
   dcaPlans: {},
   customSettings: {},
   fundDailyEarnings: {},
+  fundDividends: {},
 
   // 估值分时序列（每次调用估值接口记录，用于分时图，不持久化）
   valuationSeries: {},
@@ -194,6 +195,12 @@ export const useStorageStore = create((set, get) => ({
         }
       }
       set({ fundDailyEarnings: parsed });
+    }
+  },
+
+  initFundDividends: () => {
+    if (typeof window !== 'undefined') {
+      set({ fundDividends: get().getItem('fundDividends', {}) });
     }
   },
 
@@ -411,6 +418,12 @@ export const useStorageStore = create((set, get) => ({
     get().setItem('fundDailyEarnings', JSON.stringify(next));
   },
 
+  setFundDividends: (nextFundDividends) => {
+    const next = typeof nextFundDividends === 'function' ? nextFundDividends(get().fundDividends) : nextFundDividends;
+    set({ fundDividends: next });
+    get().setItem('fundDividends', JSON.stringify(next));
+  },
+
   setValuationSeries: (nextValuationSeries) => {
     const next = typeof nextValuationSeries === 'function' ? nextValuationSeries(get().valuationSeries) : nextValuationSeries;
     set({ valuationSeries: next });
@@ -458,6 +471,7 @@ export const useStorageStore = create((set, get) => ({
       else if (key === 'dcaPlans') set({ dcaPlans: parsed });
       else if (key === 'customSettings') set({ customSettings: parsed });
       else if (key === 'fundDailyEarnings') set({ fundDailyEarnings: parsed });
+      else if (key === 'fundDividends') set({ fundDividends: parsed });
       else if (key === 'localSortBy') set({ sortBy: parsed });
       else if (key === 'localSortOrder') set({ sortOrder: parsed });
     } catch (e) {
