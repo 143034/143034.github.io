@@ -47,6 +47,8 @@ import {
   DCA_SCOPE_GLOBAL,
   migrateDcaPlansToScoped
 } from '../lib/fundHelpers';
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+
 
 /**
  * ModalsLayer — 将所有弹框渲染从 page.jsx 抽离到独立组件。
@@ -157,8 +159,10 @@ export default function ModalsLayer({ callbacksRef }) {
       {/* ===== Modal: 删除确认 ===== */}
       <AnimatePresence>
         {fundDeleteConfirm && (
-          <ConfirmModal
-            title="删除确认"
+          <Tooltip>
+<TooltipTrigger asChild>
+<ConfirmModal
+            
             message={
               fundDeleteConfirm.scope === 'group'
                 ? `确定从当前分组中移除「${fundDeleteConfirm.name}」吗？将清除该分组内的持仓、待定交易、定投计划与分组内交易记录；不会在「全部」中删除该基金。`
@@ -190,14 +194,21 @@ export default function ModalsLayer({ callbacksRef }) {
             }}
             onCancel={() => setFundDeleteConfirm(null)}
           />
+</TooltipTrigger>
+<TooltipContent>
+<p>删除确认</p>
+</TooltipContent>
+</Tooltip>
         )}
       </AnimatePresence>
 
       {/* ===== Modal: 批量删除确认 ===== */}
       <AnimatePresence>
         {fundDeleteBulkConfirm && (
-          <ConfirmModal
-            title="批量删除确认"
+          <Tooltip>
+<TooltipTrigger asChild>
+<ConfirmModal
+            
             message={
               fundDeleteBulkConfirm.scope === 'global'
                 ? (fundDeleteBulkConfirm.fundsWithOtherGroups && fundDeleteBulkConfirm.fundsWithOtherGroups.length > 0
@@ -240,6 +251,11 @@ export default function ModalsLayer({ callbacksRef }) {
             }}
             onCancel={() => setFundDeleteBulkConfirm(null)}
           />
+</TooltipTrigger>
+<TooltipContent>
+<p>批量删除确认</p>
+</TooltipContent>
+</Tooltip>
         )}
       </AnimatePresence>
 
@@ -563,8 +579,10 @@ export default function ModalsLayer({ callbacksRef }) {
       {/* ===== Modal: 单选选基 ===== */}
       <AnimatePresence>
         {selectFundSingleModal.open && (
-          <SelectFundSingleModal
-            title="选择转入基金"
+          <Tooltip>
+<TooltipTrigger asChild>
+<SelectFundSingleModal
+            
             allFunds={(cb.current.funds || []).filter((f) => f?.code && f.code !== convertModal.fund?.code)}
             excludeCodes={selectFundSingleModal.excludeCodes}
             initialSelectedCode={selectFundSingleModal.initialSelectedCode}
@@ -581,6 +599,11 @@ export default function ModalsLayer({ callbacksRef }) {
               setSelectFundSingleModal({ open: false, excludeCodes: [], initialSelectedCode: '' });
             }}
           />
+</TooltipTrigger>
+<TooltipContent>
+<p>选择转入基金</p>
+</TooltipContent>
+</Tooltip>
         )}
       </AnimatePresence>
 
@@ -626,13 +649,20 @@ export default function ModalsLayer({ callbacksRef }) {
       {/* ===== Modal: 清空持仓 ===== */}
       <AnimatePresence>
         {clearConfirm && (
-          <ConfirmModal
-            title="清空持仓"
+          <Tooltip>
+<TooltipTrigger asChild>
+<ConfirmModal
+            
             message={`确定要清空"${clearConfirm.fund?.name}"的所有持仓记录吗？此操作不可恢复。`}
             onConfirm={cb.current.handleClearConfirm}
             onCancel={() => setClearConfirm(null)}
             confirmText="确认清空"
           />
+</TooltipTrigger>
+<TooltipContent>
+<p>清空持仓</p>
+</TooltipContent>
+</Tooltip>
         )}
       </AnimatePresence>
 
@@ -684,8 +714,10 @@ export default function ModalsLayer({ callbacksRef }) {
       {/* ===== Modal: 持仓迁移 ===== */}
       <AnimatePresence>
         {holdingMigrateDialog.open && (
-          <ConfirmModal
-            title="提示"
+          <Tooltip>
+<TooltipTrigger asChild>
+<ConfirmModal
+            
             messageContent={
               <div>
                 {holdingMigrateDialog.name || holdingMigrateDialog.code || '该基金'}
@@ -719,6 +751,11 @@ export default function ModalsLayer({ callbacksRef }) {
               }
             }}
           />
+</TooltipTrigger>
+<TooltipContent>
+<p>提示</p>
+</TooltipContent>
+</Tooltip>
         )}
       </AnimatePresence>
 
@@ -763,7 +800,9 @@ export default function ModalsLayer({ callbacksRef }) {
       {/* ===== Modal: 设备冲突 ===== */}
       <AnimatePresence>
         {deviceConflictModal.open && (
-          <ConfirmModal
+          <Tooltip>
+<TooltipTrigger asChild>
+<ConfirmModal
             onCancel={() => {
               setDeviceConflictModal({ ...deviceConflictModal, open: false });
               if (cb.current.skipSyncRef) cb.current.skipSyncRef.current = false;
@@ -775,11 +814,16 @@ export default function ModalsLayer({ callbacksRef }) {
               if (cb.current.refreshCycleStartRef) cb.current.refreshCycleStartRef.current = Date.now();
               await cb.current.fetchCloudConfig?.(userId, false, { forceTakeover: true });
             }}
-            title="其它设备登录提示"
+            
             message={deviceConflictModal.message}
             confirmText="确认接管"
             icon={<RefreshCw width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
           />
+</TooltipTrigger>
+<TooltipContent>
+<p>其它设备登录提示</p>
+</TooltipContent>
+</Tooltip>
         )}
       </AnimatePresence>
 

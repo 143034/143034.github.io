@@ -999,8 +999,10 @@ export default function PcFundTable({
     return (
       <div className="name-cell-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 8 }}>
                 {batchRemoveEnabled && (
-          <label
-            title={holdingLocked ? '关联持仓不可批量选择' : '选择用于批量删除'}
+          <Tooltip>
+<TooltipTrigger asChild>
+<label
+
             onClick={(e) => e.stopPropagation?.()}
             style={{
               display: 'inline-flex',
@@ -1028,20 +1030,32 @@ export default function PcFundTable({
               aria-label="选择基金"
             />
           </label>
+</TooltipTrigger>
+<TooltipContent>
+<p>{holdingLocked ? '关联持仓不可批量选择' : '选择用于移动分组/批量删除'}</p>
+</TooltipContent>
+</Tooltip>
         )}
         {sortBy === 'default' ? (
-          <button
+          <Tooltip>
+<TooltipTrigger asChild>
+<button
             type="button"
             className="icon-button drag-handle"
             ref={rowContext?.setActivatorNodeRef}
             {...rowContext?.activatorProps}
             {...rowContext?.listeners}
             style={{ cursor: 'grab', width: 20, height: 20, padding: 2, margin: '0', flexShrink: 0, color: 'var(--muted)', background: 'transparent', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', touchAction: 'none' }}
-            title="拖拽排序"
+
             onClick={(e) => e.stopPropagation?.()}
           >
             <DragIcon width="16" height="16" />
           </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>拖拽排序</p>
+</TooltipContent>
+</Tooltip>
         ) : (
           <Tooltip delayDuration={150}>
             <TooltipTrigger asChild>
@@ -1058,29 +1072,36 @@ export default function PcFundTable({
           </Tooltip>
         )}
         {showFavoriteButton ? (
-          <button
+          <Tooltip>
+<TooltipTrigger asChild>
+<button
             className={`icon-button fav-button ${isFavorites ? 'active' : ''}`}
             onClick={(e) => {
               e.stopPropagation?.();
               onToggleFavoriteRef.current?.(original);
             }}
-            title={isFavorites ? '取消自选' : '添加自选'}
+
           >
             <StarIcon width="18" height="18" filled={isFavorites} />
           </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>{isFavorites ? '取消自选' : '添加自选'}</p>
+</TooltipContent>
+</Tooltip>
         ) : null}
-        <div
+        <Tooltip>
+<TooltipTrigger asChild>
+<div
           className="title-text"
           role={onOpenCardDialog ? 'button' : undefined}
           tabIndex={onOpenCardDialog ? 0 : undefined}
           onClick={onOpenCardDialog ? (e) => { e.stopPropagation?.(); onOpenCardDialog(original); } : undefined}
           onKeyDown={onOpenCardDialog ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpenCardDialog(original); } } : undefined}
           style={onOpenCardDialog ? { cursor: 'pointer' } : undefined}
-          title={onOpenCardDialog ? '查看基金详情' : (original.isUpdated ? '今日净值已更新' : undefined)}
         >
           <span
             className={`name-text ${showFullFundName ? 'show-full' : ''}`}
-            title={info.getValue() ?? undefined}
           >
             {holdingLocked ? (
               <Tooltip delayDuration={150}>
@@ -1113,6 +1134,11 @@ export default function PcFundTable({
             {isUpdated && <span className="updated-indicator">✓</span>}
           </span> : null}
         </div>
+</TooltipTrigger>
+<TooltipContent>
+<p>{onOpenCardDialog ? '查看基金详情' : (original.isUpdated ? '今日净值已更新' : undefined)}</p>
+</TooltipContent>
+</Tooltip>
       </div>
     );
   };
@@ -1173,7 +1199,9 @@ export default function PcFundTable({
           const list = Array.isArray(original.fundTags) ? original.fundTags : [];
           const hasTags = list.length > 0;
           return (
-            <button
+            <Tooltip>
+<TooltipTrigger asChild>
+<button
               type="button"
               onClick={(e) => {
                 e.stopPropagation?.();
@@ -1189,7 +1217,7 @@ export default function PcFundTable({
                 textAlign: 'left',
               }}
               disabled={!onFundTagsClick}
-              title={onFundTagsClick ? '编辑标签' : undefined}
+
             >
               {hasTags ? (
                 <div
@@ -1221,6 +1249,11 @@ export default function PcFundTable({
                 <div className="muted" style={{ textAlign: 'right', fontSize: '12px' }}>—</div>
         )}
             </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>{onFundTagsClick ? '编辑标签' : undefined}</p>
+</TooltipContent>
+</Tooltip>
           );
         },
         meta: {
@@ -1267,8 +1300,10 @@ export default function PcFundTable({
                   {pctText}
                 </FitText>
               ) : null}
-              <span
-                title={firstLine !== '—' ? firstLine : undefined}
+              <Tooltip>
+<TooltipTrigger asChild>
+<span
+
                 style={{
                   display: 'block',
                   width: '100%',
@@ -1282,6 +1317,11 @@ export default function PcFundTable({
               >
                 {firstLine}
               </span>
+</TooltipTrigger>
+<TooltipContent>
+<p>{firstLine !== '—' ? firstLine : undefined}</p>
+</TooltipContent>
+</Tooltip>
             </div>
           );
         },
@@ -1537,9 +1577,16 @@ export default function PcFundTable({
                 {text ?? '—'}
               </FitText>
               {hasText && displayDate ? (
-                <span className="muted" title={rawDate && rawDate !== displayDate ? rawDate : undefined} style={{ fontSize: '11px' }}>
+                <Tooltip>
+<TooltipTrigger asChild>
+<span className="muted"  style={{ fontSize: '11px' }}>
                   {displayDate}
                 </span>
+</TooltipTrigger>
+<TooltipContent>
+<p>{rawDate && rawDate !== displayDate ? rawDate : undefined}</p>
+</TooltipContent>
+</Tooltip>
               ) : null}
             </div>
           );
@@ -1595,11 +1642,13 @@ export default function PcFundTable({
           const holdingLinkedTitle = '持仓来自自定义分组汇总，点击选择分组后操作';
           if (original.holdingAmountValue == null) {
             return (
-              <div
+              <Tooltip>
+<TooltipTrigger asChild>
+<div
                 role="button"
                 tabIndex={0}
                 className="muted"
-                title={holdingLocked ? holdingLinkedTitle : '设置持仓'}
+
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -1620,11 +1669,18 @@ export default function PcFundTable({
               >
                 未设置 <SettingsIcon width="12" height="12" />
               </div>
+</TooltipTrigger>
+<TooltipContent>
+<p>{holdingLocked ? holdingLinkedTitle : '编辑持仓'}</p>
+</TooltipContent>
+</Tooltip>
             );
           }
           return (
-            <div
-              title={holdingLocked ? holdingLinkedTitle : '点击设置持仓'}
+            <Tooltip>
+<TooltipTrigger asChild>
+<div
+
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -1648,7 +1704,6 @@ export default function PcFundTable({
                   e.stopPropagation?.();
                   onHoldingAmountClickRef.current?.(original, { hasHolding: true });
                 }}
-                title={holdingLocked ? holdingLinkedTitle : '编辑持仓'}
                 style={{
                   border: 'none',
                   width: '28px',
@@ -1663,6 +1718,11 @@ export default function PcFundTable({
                 <SettingsIcon width="14" height="14" />
               </button>
             </div>
+</TooltipTrigger>
+<TooltipContent>
+<p>{holdingLocked ? holdingLinkedTitle : '编辑持仓'}</p>
+</TooltipContent>
+</Tooltip>
           );
         },
         meta: {
@@ -1865,17 +1925,24 @@ export default function PcFundTable({
         header: () => (
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
             <span>操作</span>
-            <button
+            <Tooltip>
+<TooltipTrigger asChild>
+<button
               className="icon-button"
               onClick={(e) => {
                 e.stopPropagation?.();
                 setSettingModalOpen(true);
               }}
-              title="个性化设置"
+
               style={{ border: 'none', width: '24px', height: '24px', backgroundColor: 'transparent', color: 'var(--text)' }}
             >
               <SettingsIcon width="14" height="14" />
             </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>个性化设置</p>
+</TooltipContent>
+</Tooltip>
           </div>
         ),
         size: 80,
@@ -1898,10 +1965,12 @@ export default function PcFundTable({
 
           return (
             <div className="row" style={{ justifyContent: 'center', gap: 4, padding: '8px 0' }}>
-              <button
+              <Tooltip>
+<TooltipTrigger asChild>
+<button
                 className="icon-button danger"
                 onClick={handleClick}
-                title="删除"
+
                 style={{
                   width: '28px',
                   height: '28px',
@@ -1911,6 +1980,11 @@ export default function PcFundTable({
               >
                 <TrashIcon width="14" height="14" />
               </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>删除</p>
+</TooltipContent>
+</Tooltip>
             </div>
           );
         },
@@ -2468,8 +2542,10 @@ export default function PcFundTable({
           </div>
         )}
         {resetConfirmOpen && (
-          <ConfirmModal
-            title="重置列宽"
+          <Tooltip>
+<TooltipTrigger asChild>
+<ConfirmModal
+
             message="是否重置表格列宽为默认值？"
             icon={<ResetIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
             confirmVariant="primary"
@@ -2477,6 +2553,11 @@ export default function PcFundTable({
             onCancel={() => setResetConfirmOpen(false)}
             confirmText="重置"
           />
+</TooltipTrigger>
+<TooltipContent>
+<p>重置列宽</p>
+</TooltipContent>
+</Tooltip>
         )}
         {showPortalHeader && ReactDOM.createPortal(
           <div
@@ -2667,8 +2748,10 @@ function BatchRemoveHeader({
   return (
     <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, width: '100%', justifyContent: 'space-between' }}>
       <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-        <label
-          title={checked ? '取消全选' : '全选'}
+        <Tooltip>
+<TooltipTrigger asChild>
+<label
+
           onClick={(e) => e.stopPropagation?.()}
           style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}
         >
@@ -2685,6 +2768,11 @@ function BatchRemoveHeader({
             已选 {selectedCount}/{totalCount}
           </span>
         </label>
+</TooltipTrigger>
+<TooltipContent>
+<p>{checked ? '取消全选' : '全选'}</p>
+</TooltipContent>
+</Tooltip>
         {selectedCount > 0 && (
           <button
             className="link-button"
@@ -2701,7 +2789,6 @@ function BatchRemoveHeader({
         <button
           className="icon-button"
           onClick={(e) => { e.stopPropagation?.(); onMove?.(); }}
-          title="移动分组"
           disabled={!!disabled}
           type="button"
           style={{
@@ -2724,7 +2811,6 @@ function BatchRemoveHeader({
         <button
           className="icon-button"
           onClick={(e) => { e.stopPropagation?.(); onRemove?.(); }}
-          title="批量删除"
           disabled={!!disabled}
           type="button"
           style={{

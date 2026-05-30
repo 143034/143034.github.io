@@ -7,6 +7,8 @@ import ConfirmModal from './ConfirmModal';
 import SuccessModal from './SuccessModal';
 import SyncPersonalSettingsModal from './SyncPersonalSettingsModal';
 import { CloseIcon, DragIcon, RefreshIcon, ResetIcon, SettingsIcon, PinIcon } from './Icons';
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+
 
 /**
  * PC 表格个性化设置侧弹框
@@ -112,7 +114,9 @@ export default function PcTableSettingModal({
         <DragIcon width="18" height="18" />
       </div>
       {onTogglePinColumn && (
-        <button
+        <Tooltip>
+<TooltipTrigger asChild>
+<button
           type="button"
           className="icon-button"
           onClick={(e) => {
@@ -123,7 +127,7 @@ export default function PcTableSettingModal({
               scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
             }
           }}
-          title={pinnedColumns.includes(item.id) ? '取消固定' : '固定在左侧'}
+          
           style={{
             border: 'none',
             background: 'transparent',
@@ -136,6 +140,11 @@ export default function PcTableSettingModal({
         >
           <PinIcon width="16" height="16" />
         </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>{pinnedColumns.includes(item.id) ? '取消固定' : '固定在左侧'}</p>
+</TooltipContent>
+</Tooltip>
       )}
       <div style={{ flex: 1, fontSize: '14px', display: 'flex', flexDirection: 'column', gap: 2 }}>
         <span>{item.header}</span>
@@ -151,14 +160,16 @@ export default function PcTableSettingModal({
         )}
       </div>
       {onToggleColumnVisibility && (
-        <button
+        <Tooltip>
+<TooltipTrigger asChild>
+<button
           type="button"
           className="icon-button pc-table-column-switch"
           onClick={(e) => {
             e.stopPropagation();
             onToggleColumnVisibility(item.id, columnVisibility?.[item.id] === false);
           }}
-          title={columnVisibility?.[item.id] === false ? '显示' : '隐藏'}
+          
           style={{
             border: 'none',
             padding: '0 4px',
@@ -176,6 +187,11 @@ export default function PcTableSettingModal({
             />
           </span>
         </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>{columnVisibility?.[item.id] === false ? '显示' : '隐藏'}</p>
+</TooltipContent>
+</Tooltip>
       )}
     </Reorder.Item>
   );
@@ -232,14 +248,21 @@ export default function PcTableSettingModal({
                   </button>
                 )}
               </div>
-              <button
+              <Tooltip>
+<TooltipTrigger asChild>
+<button
                 className="icon-button"
                 onClick={onClose}
-                title="关闭"
+                
                 style={{ border: 'none', background: 'transparent' }}
               >
                 <CloseIcon width="20" height="20" />
               </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>关闭</p>
+</TooltipContent>
+</Tooltip>
             </div>
 
             <div className="pc-table-setting-body" ref={scrollRef}>
@@ -255,14 +278,16 @@ export default function PcTableSettingModal({
                   }}
                 >
                   <span style={{ fontSize: '14px' }}>展示完整基金名称</span>
-                  <button
+                  <Tooltip>
+<TooltipTrigger asChild>
+<button
                     type="button"
                     className="icon-button pc-table-column-switch"
                     onClick={(e) => {
                       e.stopPropagation();
                       onToggleShowFullFundName(!showFullFundName);
                     }}
-                    title={showFullFundName ? '关闭' : '开启'}
+                    
                     style={{
                       border: 'none',
                       padding: '0 4px',
@@ -280,6 +305,11 @@ export default function PcTableSettingModal({
                       />
                     </span>
                   </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>{showFullFundName ? '关闭' : '开启'}</p>
+</TooltipContent>
+</Tooltip>
                 </div>
               )}
               <h3 className="pc-table-setting-subtitle">表头设置</h3>
@@ -296,10 +326,12 @@ export default function PcTableSettingModal({
                   拖拽调整列顺序
                 </p>
                 {onResetColumnOrder && (
-                  <button
+                  <Tooltip>
+<TooltipTrigger asChild>
+<button
                     className="icon-button"
                     onClick={() => setResetOrderConfirmOpen(true)}
-                    title="重置列顺序"
+                    
                     style={{
                       border: 'none',
                       width: '28px',
@@ -311,6 +343,11 @@ export default function PcTableSettingModal({
                   >
                     <ResetIcon width="16" height="16" />
                   </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>重置列顺序</p>
+</TooltipContent>
+</Tooltip>
                 )}
               </div>
               {columns.length === 0 ? (
@@ -375,9 +412,11 @@ export default function PcTableSettingModal({
         </motion.div>
       )}
       {resetOrderConfirmOpen && (
-        <ConfirmModal
+        <Tooltip>
+<TooltipTrigger asChild>
+<ConfirmModal
           key="reset-order-confirm"
-          title="重置表头设置"
+          
           message="是否重置表头顺序和显示/隐藏为默认值？"
           icon={<ResetIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
           confirmVariant="primary"
@@ -389,6 +428,11 @@ export default function PcTableSettingModal({
           onCancel={() => setResetOrderConfirmOpen(false)}
           confirmText="重置"
         />
+</TooltipTrigger>
+<TooltipContent>
+<p>重置表头设置</p>
+</TooltipContent>
+</Tooltip>
       )}
       {syncModalOpen && (
         <SyncPersonalSettingsModal

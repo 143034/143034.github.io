@@ -16,6 +16,8 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer';
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+
 
 function buildTableRows(series) {
   if (!Array.isArray(series) || series.length === 0) return [];
@@ -254,9 +256,11 @@ export default function FundDailyEarningsDetailModal({
             <DrawerTitle className="flex items-center gap-2.5 text-left">
               <span>{title}</span>
             </DrawerTitle>
-            <DrawerClose
+            <Tooltip>
+<TooltipTrigger asChild>
+<DrawerClose
               className="icon-button border-none bg-transparent p-1"
-              title="关闭"
+              
               style={{
                 borderColor: 'transparent',
                 backgroundColor: 'transparent',
@@ -264,6 +268,11 @@ export default function FundDailyEarningsDetailModal({
             >
               <CloseIcon width="20" height="20" />
             </DrawerClose>
+</TooltipTrigger>
+<TooltipContent>
+<p>关闭</p>
+</TooltipContent>
+</Tooltip>
           </DrawerHeader>
           <div className="flex-1 px-4 pb-4">
             {body}

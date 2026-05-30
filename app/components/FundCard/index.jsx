@@ -289,7 +289,7 @@ export default function Index({
           valuationSource: null,
           noValuation: false
         }));
-        
+
         // Fetch immediately using the new data source
         fetchFundData(fundCode, sourceId).then(res => {
           if (res) {
@@ -419,35 +419,51 @@ export default function Index({
       <div className="row" style={{ marginBottom: 10, alignItems: 'center', flexWrap: 'nowrap', alignContent: 'center' }}>
         <div className="title" style={{ flex: '1 1 auto', minWidth: 0 }}>
           {!isAdded ? (
-            <button
+            <Tooltip>
+<TooltipTrigger asChild>
+<button
               className="icon-button fav-button"
               onClick={(e) => {
                 e.stopPropagation();
                 onAddFund?.({ code: f.code, name: f.name });
               }}
-              title="添加到主页"
+              
               style={{ color: 'var(--muted-foreground)', opacity: 0.5, transition: 'all 0.2s' }}
               onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.color = 'var(--primary)'; }}
               onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.5'; e.currentTarget.style.color = 'var(--muted-foreground)'; }}
             >
               <PlusCircle size={18} />
             </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>添加到主页</p>
+</TooltipContent>
+</Tooltip>
           ) : showFavoriteButton ? (
-            <button
+            <Tooltip>
+<TooltipTrigger asChild>
+<button
               className={`icon-button fav-button ${favorites?.has(f.code) ? 'active' : ''}`}
               onClick={(e) => {
                 e.stopPropagation();
                 onToggleFavorite?.(f.code);
               }}
-              title={favorites?.has(f.code) ? '取消自选' : '添加自选'}
+              
             >
               <StarIcon width="18" height="18" filled={favorites?.has(f.code)} />
             </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>{favorites?.has(f.code) ? '取消自选' : '添加自选'}</p>
+</TooltipContent>
+</Tooltip>
           ) : null}
           <div className="title-text" style={{ minWidth: 0 }}>
-            <span
+            <Tooltip>
+<TooltipTrigger asChild>
+<span
               className="name-text"
-              title={f.jzrq === todayStr ? '今日净值已更新' : ''}
+              
             >
               {isHoldingLinked ? (
                 <Tooltip delayDuration={150}>
@@ -473,6 +489,11 @@ export default function Index({
               <ConsecutiveTrendBadge trend={fundExtraData?.consecutiveTrend} />
               {f.name}
             </span>
+</TooltipTrigger>
+<TooltipContent>
+<p>{f.jzrq === todayStr ? '今日净值已更新' : ''}</p>
+</TooltipContent>
+</Tooltip>
             <span className="muted">
               #{f.code}
               {dcaPlans?.[f.code]?.enabled === true && <span className="dca-indicator">定</span>}
@@ -521,15 +542,22 @@ export default function Index({
         </div>
 
         <div className="actions" style={{ flex: '0 0 auto', flexWrap: 'nowrap', alignSelf: 'center', marginLeft: 'auto' }}>
-          <div
+          <Tooltip>
+<TooltipTrigger asChild>
+<div
             className="badge-v"
             style={{ cursor: 'pointer', background: 'var(--primary-light, rgba(34, 211, 238, 0.1))', color: 'var(--primary)' }}
             onClick={() => onDataSourceClick?.(f)}
-            title="点击切换估值数据源"
+            
           >
             <span>数据源</span>
             <strong>{f.dataSource || 1}</strong>
           </div>
+</TooltipTrigger>
+<TooltipContent>
+<p>点击切换估值数据源</p>
+</TooltipContent>
+</Tooltip>
           <div className="badge-v">
             <span>{f.noValuation ? '净值日期' : '估值时间'}</span>
             <strong>
@@ -539,10 +567,12 @@ export default function Index({
             </strong>
           </div>
           <div className="row" style={{ gap: 4 }}>
-            <button
+            <Tooltip>
+<TooltipTrigger asChild>
+<button
               className="icon-button danger"
               onClick={() => onRemoveFund?.(f)}
-              title="删除"
+              
               style={{
                 width: '28px',
                 height: '28px',
@@ -552,6 +582,11 @@ export default function Index({
             >
               <TrashIcon width="14" height="14" />
             </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>删除</p>
+</TooltipContent>
+</Tooltip>
           </div>
         </div>
       </div>
@@ -610,7 +645,7 @@ export default function Index({
               );
             })()}
             <Stat
-              label="估值净值"
+              label="估算净值"
               value={
                 f.gsz != null && !isNaN(Number(f.gsz))
                   ? Number(f.gsz).toFixed(4)
@@ -635,9 +670,11 @@ export default function Index({
           {relatedSectorDisplay ? (
             <div className="stat" style={{ flexDirection: 'column', gap: 4, minWidth: 0 }}>
               <span className="label">关联板块</span>
-              <span
+              <Tooltip>
+<TooltipTrigger asChild>
+<span
                 className="value"
-                title={relatedSectorDisplay}
+                
                 style={{
                   fontSize: '15px',
                   lineHeight: 1.2,
@@ -649,6 +686,11 @@ export default function Index({
               >
                 {relatedSectorDisplay}
               </span>
+</TooltipTrigger>
+<TooltipContent>
+<p>{relatedSectorDisplay}</p>
+</TooltipContent>
+</Tooltip>
             </div>
           ) : null}
           {hasRelatedSectorPct ? (
@@ -669,7 +711,9 @@ export default function Index({
             style={{ flexDirection: 'column', gap: 4 }}
           >
             <span className="label">持仓金额</span>
-            <div
+            <Tooltip>
+<TooltipTrigger asChild>
+<div
               className="value muted"
               style={{
                 fontSize: '14px',
@@ -678,24 +722,31 @@ export default function Index({
                 gap: 4,
                 cursor: 'pointer',
               }}
-              title={holdingLocked ? holdingLinkedTitle : '设置持仓'}
+              
               onClick={() => {
                 onHoldingClick?.(f);
               }}
             >
               未设置 <SettingsIcon width="12" height="12" />
             </div>
+</TooltipTrigger>
+<TooltipContent>
+<p>{holdingLocked ? holdingLinkedTitle : '编辑持仓'}</p>
+</TooltipContent>
+</Tooltip>
           </div>
         ) : (
           <>
-            <div
+            <Tooltip>
+<TooltipTrigger asChild>
+<div
               className="stat"
               style={{
                 cursor: 'pointer',
                 flexDirection: 'column',
                 gap: 4,
               }}
-              title={holdingLocked ? holdingLinkedTitle : '点击设置持仓'}
+              
               onClick={() => {
                 onActionClick?.(f);
               }}
@@ -710,6 +761,11 @@ export default function Index({
                 {masked ? '******' : `${Number(profit.amount).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
               </span>
             </div>
+</TooltipTrigger>
+<TooltipContent>
+<p>{holdingLocked ? holdingLinkedTitle : '编辑持仓'}</p>
+</TooltipContent>
+</Tooltip>
             {holding?.firstPurchaseDate && !masked && (() => {
               const today = dayjs.tz(todayStr, TZ);
               const purchaseDate = dayjs.tz(holding.firstPurchaseDate, TZ);
@@ -737,7 +793,6 @@ export default function Index({
                 flexDirection: 'column',
                 gap: 4,
               }}
-              title={profit.profitToday != null ? '点击切换金额/百分比' : ''}
             >
               <span
                 className="label"
@@ -746,21 +801,22 @@ export default function Index({
                 当日收益{todayPercentModes?.[f.code] ? '(%)' : ''}
                 {profit.profitToday != null && <SwitchIcon />}
               </span>
-              <span
-                className={`value ${
-                  profit.profitToday != null
-                    ? masked
+              {profit.profitToday != null ? (
+                <Tooltip>
+<TooltipTrigger asChild>
+<span
+                  className={`value ${
+                    masked
                       ? ''
                       : profit.profitToday > 0
                         ? 'up'
                         : profit.profitToday < 0
                           ? 'down'
                           : ''
-                    : 'muted'
-                }`}
-              >
-                {profit.profitToday != null
-                  ? masked
+                  }`}
+                  style={{ display: 'inline-block' }}
+                >
+                  {masked
                     ? '******'
                     : <>
                         {profit.profitToday > 0 ? '+' : profit.profitToday < 0 ? '-' : ''}
@@ -771,9 +827,18 @@ export default function Index({
                                 : 0,
                             ).toFixed(2)}%`
                           : `${Math.abs(profit.profitToday).toFixed(2)}`}
-                      </>
-                  : '--'}
-              </span>
+                      </>}
+                </span>
+</TooltipTrigger>
+<TooltipContent>
+<p>点击切换金额/百分比</p>
+</TooltipContent>
+</Tooltip>
+              ) : (
+                <span className="value muted" style={{ display: 'inline-block' }}>
+                  --
+                </span>
+              )}
             </div>
             {profit.profitTotal !== null && (
               <div
@@ -783,7 +848,6 @@ export default function Index({
                   onPercentModeToggle?.(f.code);
                 }}
                 style={{ cursor: 'pointer', flexDirection: 'column', gap: 4, alignItems: 'flex-end' }}
-                title="点击切换金额/百分比"
               >
                 <span
                   className="label"
@@ -792,10 +856,13 @@ export default function Index({
                   持有收益{percentModes?.[f.code] ? '(%)' : ''}
                   <SwitchIcon />
                 </span>
-                <span
+                <Tooltip>
+<TooltipTrigger asChild>
+<span
                   className={`value ${
                     masked ? '' : profit.profitTotal > 0 ? 'up' : profit.profitTotal < 0 ? 'down' : ''
                   }`}
+                  style={{ display: 'inline-block' }}
                 >
                   {masked
                     ? '******'
@@ -810,6 +877,11 @@ export default function Index({
                           : `${Math.abs(profit.profitTotal).toFixed(2)}`}
                       </>}
                 </span>
+</TooltipTrigger>
+<TooltipContent>
+<p>点击切换金额/百分比</p>
+</TooltipContent>
+</Tooltip>
               </div>
             )}
           </>

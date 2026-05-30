@@ -100,6 +100,8 @@ import {
 } from './lib/fundHelpers';
 
 import { dedupeByCode, normalizeCode, cleanCodeArray, normalizeNumber } from './lib/normalize';
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+
 
 export default function HomePage() {
   const {
@@ -5144,7 +5146,9 @@ export default function HomePage() {
       <div className="navbar glass" ref={navbarRef}>
         {refreshing && <div className="loading-bar"></div>}
         <div className={`brand ${(isSearchFocused || selectedFunds.length > 0) ? 'search-focused-sibling' : ''}`}>
-          <div
+          <Tooltip>
+<TooltipTrigger asChild>
+<div
             style={{
               width: 24,
               height: 24,
@@ -5155,7 +5159,7 @@ export default function HomePage() {
               justifyContent: 'center',
               overflow: 'hidden',
             }}
-            title={isSyncing ? '正在同步到云端...' : undefined}
+            
           >
             {/* 同步中图标 */}
             <svg
@@ -5199,6 +5203,11 @@ export default function HomePage() {
               <path d="M5 14c2-4 7-6 14-5" stroke="var(--primary)" strokeWidth="2" />
             </svg>
           </div>
+</TooltipTrigger>
+<TooltipContent>
+<p>{isSyncing ? '正在同步到云端...' : undefined}</p>
+</TooltipContent>
+</Tooltip>
           <span>基估宝</span>
         </div>
         <div className={`glass add-fund-section navbar-add-fund ${(isSearchFocused || selectedFunds.length > 0) ? 'search-focused' : ''}`} role="region" aria-label="添加基金">
@@ -5310,17 +5319,24 @@ export default function HomePage() {
             <Image unoptimized alt="项目Github地址" src={githubImg} style={{ width: '30px', height: '30px', cursor: 'pointer' }} onClick={() => window.open("https://github.com/hzm0321/real-time-fund")} />
           </span>
           {isMobile && (
-            <button
+            <Tooltip>
+<TooltipTrigger asChild>
+<button
               className="icon-button mobile-search-btn"
               aria-label="筛选基金"
               onClick={handleMobileSearchClick}
-              title="筛选"
+              
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                 <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
                 <path d="M16.5 16.5L21 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               </svg>
             </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>筛选</p>
+</TooltipContent>
+</Tooltip>
           )}
           <RefreshButton
             refreshMs={refreshMs}
@@ -5329,14 +5345,21 @@ export default function HomePage() {
             fundsLength={funds.length}
             refreshCycleStartRef={refreshCycleStartRef}
           />
-          <button
+          <Tooltip>
+<TooltipTrigger asChild>
+<button
             className="icon-button"
             aria-label={theme === 'dark' ? '切换到亮色主题' : '切换到暗色主题'}
             onClick={handleThemeToggle}
-            title={theme === 'dark' ? '亮色' : '暗色'}
+            
           >
             {theme === 'dark' ? <SunIcon width="18" height="18" /> : <MoonIcon width="18" height="18" />}
           </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>{theme === 'dark' ? '亮色' : '暗色'}</p>
+</TooltipContent>
+</Tooltip>
           <UserMenu
             user={user}
             userAvatar={userAvatar}
@@ -5444,21 +5467,35 @@ export default function HomePage() {
                 </div>
               </div>
               {groups.length > 0 && (
-                <button
+                <Tooltip>
+<TooltipTrigger asChild>
+<button
                   className="icon-button manage-groups-btn"
                   onClick={() => setGroupManageOpen(true)}
-                  title="管理分组"
+                  
                 >
                   <SortIcon width="16" height="16" />
                 </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>管理分组</p>
+</TooltipContent>
+</Tooltip>
               )}
-              <button
+              <Tooltip>
+<TooltipTrigger asChild>
+<button
                 className="icon-button add-group-btn"
                 onClick={() => setGroupModalOpen(true)}
-                title="新增分组"
+                
               >
                 <PlusIcon width="16" height="16" />
               </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>新增分组</p>
+</TooltipContent>
+</Tooltip>
             </div>
 
             <div
@@ -5470,28 +5507,44 @@ export default function HomePage() {
               }}
             >
               <div className="view-toggle" style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', padding: '2px' }}>
-                <button
+                <Tooltip>
+<TooltipTrigger asChild>
+<button
                   className={`icon-button ${viewMode === 'card' ? 'active' : ''}`}
                   onClick={() => { applyViewMode('card'); }}
                   style={{ border: 'none', width: '32px', height: '32px', background: viewMode === 'card' ? 'var(--primary)' : 'transparent', color: viewMode === 'card' ? '#05263b' : 'var(--muted)' }}
-                  title="卡片视图"
+                  
                 >
                   <GridIcon width="16" height="16" />
                 </button>
-                <button
+</TooltipTrigger>
+<TooltipContent>
+<p>卡片视图</p>
+</TooltipContent>
+</Tooltip>
+                <Tooltip>
+<TooltipTrigger asChild>
+<button
                   className={`icon-button ${viewMode === 'list' ? 'active' : ''}`}
                   onClick={() => { applyViewMode('list'); }}
                   style={{ border: 'none', width: '32px', height: '32px', background: viewMode === 'list' ? 'var(--primary)' : 'transparent', color: viewMode === 'list' ? '#05263b' : 'var(--muted)' }}
-                  title="表格视图"
+                  
                 >
                   <ListIcon width="16" height="16" />
                 </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>表格视图</p>
+</TooltipContent>
+</Tooltip>
               </div>
 
               <div className="divider" style={{ width: '1px', height: '20px', background: 'var(--border)' }} />
 
               <div className="sort-items" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <button
+                <Tooltip>
+<TooltipTrigger asChild>
+<button
                   type="button"
                   className="icon-button"
                   onClick={() => setSortSettingOpen(true)}
@@ -5507,11 +5560,16 @@ export default function HomePage() {
                     cursor: 'pointer',
                     width: '50px',
                   }}
-                  title="排序个性化设置"
+                  
                 >
                   <span className="muted">排序</span>
                   <SettingsIcon width="14" height="14" />
                 </button>
+</TooltipTrigger>
+<TooltipContent>
+<p>排序个性化设置</p>
+</TooltipContent>
+</Tooltip>
                 { (isMobile ? mobileSortDisplayMode : pcSortDisplayMode) === 'dropdown' ? (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <Select
