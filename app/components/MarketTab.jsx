@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Filter, ChevronDown, ChevronRight, LogIn, Lock, TrendingUp, BarChart3, Activity } from 'lucide-react';
+import { Star, Filter, ChevronDown, ChevronRight, LogIn, Lock, TrendingUp, BarChart3, Activity, CheckCircle, PlusCircle } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
-import { fetchFundValuationRanking } from '../api/fund';
+import { fetchFundValuationRanking, fetchFundPeriodReturns } from '../api/fund';
 import { cn } from '@/lib/utils';
 import { useStorageStore, useUserStore, useModalStore } from '../stores';
 import { supabase } from '../lib/supabase';
@@ -13,9 +13,52 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Empty, EmptyTitle, EmptyDescription, EmptyContent, EmptyMedia } from '@/components/ui/empty';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import MobileFundCardDrawer from './MobileFundCardDrawer';
+import FundCard from './FundCard';
 import { Spinner } from '@/components/ui/spinner';
 
-export default function MarketTab() {
+function FundDetailDialog({ cardDialogRow, getFundCardProps, setCardDialogRow}) {
+  return (
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open) setCardDialogRow(null);
+      }}
+    >
+      <DialogContent
+        className="sm:max-w-2xl max-h-[88vh] flex flex-col p-0 overflow-hidden"
+      >
+        <DialogHeader className="flex-shrink-0 flex flex-row items-center justify-between gap-2 space-y-0 px-6 pb-4 pt-6 text-left border-b border-[var(--border)]">
+          <DialogTitle className="text-base font-semibold text-[var(--text)]">
+            基金详情
+          </DialogTitle>
+        </DialogHeader>
+        <div
+          className="flex-1 min-h-0 overflow-y-auto px-6 py-4 scrollbar-y-styled"
+        >
+          {cardDialogRow && getFundCardProps ? (
+            <FundCard {...getFundCardProps(cardDialogRow)} layoutMode="drawer" />
+          ) : null}
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+export default function MarketTab({ onAddFund, getFundCardProps }) {
+  const [detailFund, setDetailFund] = useState(null);
+  const [detailFundExtra, setDetailFundExtra] = useState(null);
+
+  useEffect(() => {
+    if (detailFund) {
+      setDetailFundExtra(null);
+      fetchFundPeriodReturns(detailFund.bzdm).then(data => {
+        setDetailFundExtra(data);
+      }).catch(() => {});
+    }
+  }, [detailFund]);
+
   const [activeTab, setActiveTab] = useState('increase'); // increase, decrease, hot
   const [sectorFilter, setSectorFilter] = useState('industry'); // industry, concept
   const [sectorSort, setSectorSort] = useState('change_pct'); // change_pct, net_inflow
@@ -23,9 +66,10 @@ export default function MarketTab() {
   const user = useUserStore((s) => s.user);
   const isMobile = useIsMobile();
 
-  // Storage for favorites
+  // Storage for favorites and funds
   const favorites = useStorageStore((s) => s.favorites);
   const toggleFavorite = useStorageStore((s) => s.toggleFavorite);
+  const funds = useStorageStore((s) => s.funds);
 
   // Queries for Hot Sectors (Supabase)
   const { data: sectorEstimates } = useQuery({
@@ -107,20 +151,31 @@ export default function MarketTab() {
         meta: { align: 'text-left', flex: 2 },
         cell: (info) => {
           const fund = info.row.original;
-          const isFav = favorites?.has?.(fund.bzdm);
+          const isAdded = funds?.some?.((f) => f.code === fund.bzdm);
           return (
             <div className="w-full">
               <div className="flex items-start gap-1.5 mb-1">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    toggleFavorite && toggleFavorite(fund.bzdm);
+                    if (!isAdded && onAddFund) {
+                      onAddFund({ code: fund.bzdm, name: fund.jjjc });
+                    }
                   }}
-                  className={cn("focus:outline-none flex-shrink-0 mt-[2px]", isFav ? "text-yellow-500" : "text-gray-400 opacity-50")}
+                  className={cn(
+                    "focus:outline-none flex-shrink-0 mt-[2px]", 
+                    isAdded ? "text-[var(--success)] cursor-default" : "text-muted-foreground opacity-50 hover:opacity-100 hover:text-primary transition-colors cursor-pointer"
+                  )}
+                  disabled={isAdded}
                 >
-                  <Star size={16} fill={isFav ? "currentColor" : "none"} />
+                  {isAdded ? <CheckCircle size={16} /> : <PlusCircle size={16} />}
                 </button>
-                <span className="font-medium text-sm whitespace-normal break-all leading-snug">{fund.jjjc}</span>
+                <span 
+                  className="font-medium text-sm whitespace-normal break-all leading-snug cursor-pointer hover:text-primary transition-colors"
+                  onClick={() => setDetailFund(fund)}
+                >
+                  {fund.jjjc}
+                </span>
               </div>
               <div className="flex items-center gap-2 pl-5">
                 <span className="text-xs opacity-50">#{fund.bzdm}</span>
@@ -171,7 +226,7 @@ export default function MarketTab() {
 
 
     return columns;
-  }, [favorites, toggleFavorite, activeTab]);
+  }, [funds, activeTab, onAddFund]);
 
   const rankingTable = useReactTable({
     data: rankingData || [],
@@ -514,6 +569,39 @@ export default function MarketTab() {
           </div>
         </>
       )}
+      {/* 基金详情弹框 */}
+      {(() => {
+        const mappedFund = detailFund ? {
+          code: detailFund.bzdm,
+          name: detailFund.jjjc,
+          dwjz: detailFund.dwjz === '---' || !detailFund.dwjz ? null : detailFund.dwjz,
+          gsz: detailFund.gsz === '---' || !detailFund.gsz ? null : detailFund.gsz,
+          gszzl: !isNaN(parseFloat(detailFund.gszzl)) ? parseFloat(detailFund.gszzl) : null,
+          gztime: detailFund.gztime || null,
+          jzrq: detailFund.gxrq || detailFund.jzrq || null,
+          zzl: !isNaN(parseFloat(detailFund.jzzzl)) ? parseFloat(detailFund.jzzzl) : null,
+          fundExtraData: detailFundExtra,
+        } : null;
+
+        const detailCardProps = mappedFund && getFundCardProps ? getFundCardProps({ rawFund: mappedFund }) : null;
+
+        return detailFund && detailCardProps && (
+          isMobile ? (
+            <MobileFundCardDrawer
+              open={!!detailFund}
+              onOpenChange={(open) => !open && setDetailFund(null)}
+              getFundCardProps={() => detailCardProps}
+              cardSheetRow={mappedFund}
+            />
+          ) : (
+            <FundDetailDialog
+              cardDialogRow={mappedFund}
+              getFundCardProps={() => detailCardProps}
+              setCardDialogRow={(row) => setDetailFund(row)}
+            />
+          )
+        );
+      })()}
     </div>
   );
 }

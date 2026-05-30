@@ -3882,6 +3882,19 @@ export default function HomePage() {
     return { conflicts: [] };
   };
 
+  const handleMarketTabAddFund = (fundInfo) => {
+    const { code, name } = fundInfo;
+    const fundsToConfirm = [{
+      code,
+      name,
+      status: 'pending'
+    }];
+    setScannedFunds(fundsToConfirm);
+    setSelectedScannedCodes(new Set([code]));
+    setIsOcrScan(false);
+    setScanConfirmModalOpen(true);
+  };
+
   const addFund = async (e) => {
     e?.preventDefault?.();
     setError('');
@@ -4846,6 +4859,7 @@ export default function HomePage() {
     if (!fund) return {};
     return {
       fundCode: fund.code,
+      fallbackFund: fund,
       todayStr,
       currentTab,
       favorites,
@@ -4863,6 +4877,7 @@ export default function HomePage() {
       isTradingDay,
       getHoldingProfit: getHoldingProfitForTab,
       onToggleFavorite: toggleFavorite,
+      onAddFund: handleMarketTabAddFund,
       onRemoveFund: handleRemoveFundEntry,
       onHoldingClick: openHoldingModal,
       onActionClick: openActionModal,
@@ -4877,7 +4892,7 @@ export default function HomePage() {
       isHoldingLinked: !!row?.isHoldingLinked,
       fundTags: row?.fundTags || [],
       onFundTagsClick: openFundTagsEdit,
-      fundExtraData: fundExtraDataByCode[fund.code],
+      fundExtraData: fundExtraDataByCode[fund.code] || fund.fundExtraData,
       groupTotalHoldingAmount,
     };
   }, [
@@ -5852,7 +5867,7 @@ export default function HomePage() {
       </div>
       {hasVisitedMarketTab && (
         <div style={{ display: mainTab === 'market' ? 'contents' : 'none' }}>
-          <MarketTab />
+          <MarketTab onAddFund={handleMarketTabAddFund} getFundCardProps={getFundCardPropsForRow} />
         </div>
       )}
       </>

@@ -7,6 +7,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { isNumber, isString } from 'lodash';
+import { PlusCircle } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty';
 import { Stat, ConsecutiveTrendBadge } from './Common';
@@ -63,7 +64,7 @@ const fmtPeriodReturn = (val) => {
   return `${val > 0 ? '+' : ''}${val.toFixed(2)}%`;
 };
 
-function MoreSection({ holding, profit, hasHoldingAmount, fundExtraData, masked, groupTotalHoldingAmount }) {
+function MoreSection({ holding, profit, hasHoldingAmount, fundExtraData, masked, groupTotalHoldingAmount, isAdded = true }) {
   const [expanded, setExpanded] = useState(false);
   const isMobile = useIsMobile();
 
@@ -97,6 +98,66 @@ function MoreSection({ holding, profit, hasHoldingAmount, fundExtraData, masked,
     holdingRatioValue != null
       ? `${(holdingRatioValue * 100).toFixed(2)}%`
       : '—';
+
+  const content = (
+    <>
+      {hasHoldingAmount && (
+        <div className="row" style={{ marginBottom: 10 }}>
+          <Stat
+            label="成本净值"
+            value={masked ? '******' : costNav}
+          />
+          <Stat
+            label="持仓成本"
+            value={masked ? '******' : holdingCost}
+          />
+          <Stat
+            label="持仓占比"
+            value={masked ? '******' : holdingRatio}
+          />
+        </div>
+      )}
+      {hasPeriodData && (
+        <div className="row" style={{ marginBottom: 10 }}>
+          <Stat
+            label="近1周"
+            value={fmtPeriodReturn(fundExtraData.week)}
+            delta={fundExtraData.week}
+          />
+          <Stat
+            label="近1月"
+            value={fmtPeriodReturn(fundExtraData.month)}
+            delta={fundExtraData.month}
+          />
+          <Stat
+            label="近3月"
+            value={fmtPeriodReturn(fundExtraData.month3)}
+            delta={fundExtraData.month3}
+          />
+          <Stat
+            label="近6月"
+            value={fmtPeriodReturn(fundExtraData.month6)}
+            delta={fundExtraData.month6}
+          />
+          {!isMobile && (
+            <Stat
+              label="近1年"
+              value={fmtPeriodReturn(fundExtraData.year1)}
+              delta={fundExtraData.year1}
+            />
+          )}
+        </div>
+      )}
+    </>
+  );
+
+  if (!isAdded) {
+    return (
+      <div style={{ marginTop: 12 }}>
+        {content}
+      </div>
+    );
+  }
 
   return (
     <>
@@ -139,53 +200,7 @@ function MoreSection({ holding, profit, hasHoldingAmount, fundExtraData, masked,
             transition={{ duration: 0.25, ease: 'easeInOut' }}
             style={{ overflow: 'hidden' }}
           >
-            {hasHoldingAmount && (
-              <div className="row" style={{ marginBottom: 10 }}>
-                <Stat
-                  label="成本净值"
-                  value={masked ? '******' : costNav}
-                />
-                <Stat
-                  label="持仓成本"
-                  value={masked ? '******' : holdingCost}
-                />
-                <Stat
-                  label="持仓占比"
-                  value={masked ? '******' : holdingRatio}
-                />
-              </div>
-            )}
-            {hasPeriodData && (
-              <div className="row" style={{ marginBottom: 10 }}>
-                <Stat
-                  label="近1周"
-                  value={fmtPeriodReturn(fundExtraData.week)}
-                  delta={fundExtraData.week}
-                />
-                <Stat
-                  label="近1月"
-                  value={fmtPeriodReturn(fundExtraData.month)}
-                  delta={fundExtraData.month}
-                />
-                <Stat
-                  label="近3月"
-                  value={fmtPeriodReturn(fundExtraData.month3)}
-                  delta={fundExtraData.month3}
-                />
-                <Stat
-                  label="近6月"
-                  value={fmtPeriodReturn(fundExtraData.month6)}
-                  delta={fundExtraData.month6}
-                />
-                {!isMobile && (
-                  <Stat
-                    label="近1年"
-                    value={fmtPeriodReturn(fundExtraData.year1)}
-                    delta={fundExtraData.year1}
-                  />
-                )}
-              </div>
-            )}
+            {content}
           </motion.div>
         )}
       </AnimatePresence>
@@ -228,12 +243,20 @@ export default function FundCard({
   fundExtraData,
   onDataSourceClick,
   groupTotalHoldingAmount = 0,
+  fallbackFund,
+  onAddFund,
 }) {
   const {
     funds,
     refreshMs,
   } = useStorageStore();
-  const f = useMemo(() => funds?.find((item) => item.code === fundCode), [funds, fundCode]);
+  const f = useMemo(() => {
+    const found = funds?.find((item) => item.code === fundCode);
+    if (found) return found;
+    return fallbackFund;
+  }, [funds, fundCode, fallbackFund]);
+
+  const isAdded = useMemo(() => funds?.some((item) => item.code === f?.code), [funds, f?.code]);
 
   const [topHoldings, setTopHoldings] = useState({ holdings: [], holdingsReportDate: null, holdingsIsLastQuarter: false });
 
@@ -330,7 +353,21 @@ export default function FundCard({
     >
       <div className="row" style={{ marginBottom: 10, alignItems: 'center', flexWrap: 'nowrap', alignContent: 'center' }}>
         <div className="title" style={{ flex: '1 1 auto', minWidth: 0 }}>
-          {showFavoriteButton ? (
+          {!isAdded ? (
+            <button
+              className="icon-button fav-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onAddFund?.({ code: f.code, name: f.name });
+              }}
+              title="添加到主页"
+              style={{ color: 'var(--muted-foreground)', opacity: 0.5, transition: 'all 0.2s' }}
+              onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.color = 'var(--primary)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.5'; e.currentTarget.style.color = 'var(--muted-foreground)'; }}
+            >
+              <PlusCircle size={18} />
+            </button>
+          ) : showFavoriteButton ? (
             <button
               className={`icon-button fav-button ${favorites?.has(f.code) ? 'active' : ''}`}
               onClick={(e) => {
@@ -555,8 +592,9 @@ export default function FundCard({
         </div>
       )}
 
-      <div className="row" style={{ marginBottom: 12 }}>
-        {!profit ? (
+      {isAdded && (
+        <div className="row" style={{ marginBottom: 12 }}>
+          {!profit ? (
           <div
             className="stat"
             style={{ flexDirection: 'column', gap: 4 }}
@@ -708,6 +746,7 @@ export default function FundCard({
           </>
         )}
       </div>
+      )}
 
       {/* ── 更多信息展开区 ── */}
       <MoreSection
@@ -717,6 +756,7 @@ export default function FundCard({
         fundExtraData={fundExtraData}
         masked={masked}
         groupTotalHoldingAmount={groupTotalHoldingAmount}
+        isAdded={isAdded}
       />
 
       {(() => {
