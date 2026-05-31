@@ -1300,10 +1300,7 @@ export default function PcFundTable({
                   {pctText}
                 </FitText>
               ) : null}
-              <Tooltip>
-<TooltipTrigger asChild>
-<span
-
+              <span
                 style={{
                   display: 'block',
                   width: '100%',
@@ -1317,11 +1314,6 @@ export default function PcFundTable({
               >
                 {firstLine}
               </span>
-</TooltipTrigger>
-<TooltipContent>
-<p>{firstLine !== '—' ? firstLine : undefined}</p>
-</TooltipContent>
-</Tooltip>
             </div>
           );
         },

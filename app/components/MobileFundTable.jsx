@@ -1771,10 +1771,7 @@ export default function MobileFundTable({
                   {pctText}
                 </FitText>
               ) : null}
-              <Tooltip>
-<TooltipTrigger asChild>
-<span
-                
+              <span
                 style={{
                   display: 'block',
                   width: '100%',
@@ -1788,11 +1785,6 @@ export default function MobileFundTable({
               >
                 {firstLine}
               </span>
-</TooltipTrigger>
-<TooltipContent>
-<p>{firstLine !== '—' ? firstLine : undefined}</p>
-</TooltipContent>
-</Tooltip>
             </div>
           );
         },
