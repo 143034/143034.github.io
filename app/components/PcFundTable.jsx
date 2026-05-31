@@ -201,7 +201,7 @@ const MemoizedTableRow = memo(
   }) => {
     return (
       <SortableRow row={row} disabled={sortBy !== 'default'} enableAnimation={enableAnimation}>
-        <div className={`table-row table-row-scroll ${index % 2 === 1 ? 'row-even' : ''}`}>
+        <div className={`table-row table-row-scroll ${index % 2 === 1 ? 'row-even' : ''}`} data-masked={masked}>
           {row.getVisibleCells().map((cell) => {
             const columnId = cell.column.id || cell.column.columnDef?.accessorKey;
             const isNameColumn = columnId === 'fundName';
@@ -212,6 +212,7 @@ const MemoizedTableRow = memo(
             return (
               <div
                 key={cell.id}
+                data-masked={masked}
                 className={`table-cell ${align} ${cellClassName} ${isPinned ? 'pinned-cell' : ''}`}
                 style={style}
               >

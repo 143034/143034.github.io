@@ -389,6 +389,7 @@ const MemoizedMobileTableRow = memo(
         {() => (
           <div
             className="table-row"
+            data-masked={masked}
             style={{
               background: index % 2 === 0 ? 'var(--bg)' : 'var(--table-row-alt-bg)',
               position: 'relative',
@@ -448,7 +449,12 @@ const MemoizedMobileTableRow = memo(
                 }
               }
               return (
-                <div key={cell.id} className={`table-cell ${alignClass} ${cellClassName} ${pinClass}`} style={style}>
+                <div
+                  key={cell.id}
+                  data-masked={masked}
+                  className={`table-cell ${alignClass} ${cellClassName} ${pinClass}`}
+                  style={style}
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </div>
               );
