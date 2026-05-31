@@ -845,8 +845,8 @@ export default function MobileFundTable({
 
       const tableEl = tableContainerRef.current;
       const tableRect = tableEl?.getBoundingClientRect();
-      if (!tableRect) {
-        setShowPortalHeader(window.scrollY >= nextStickyTop);
+      if (!tableRect || (tableRect.width === 0 && tableRect.height === 0)) {
+        setShowPortalHeader(false);
         return;
       }
 
@@ -863,9 +863,17 @@ export default function MobileFundTable({
     updateVerticalState();
     window.addEventListener('scroll', throttledVerticalUpdate, { passive: true });
     window.addEventListener('resize', throttledVerticalUpdate, { passive: true });
+
+    let ro = null;
+    if (tableContainerRef.current) {
+      ro = new ResizeObserver(() => throttledVerticalUpdate());
+      ro.observe(tableContainerRef.current);
+    }
+
     return () => {
       window.removeEventListener('scroll', throttledVerticalUpdate);
       window.removeEventListener('resize', throttledVerticalUpdate);
+      if (ro) ro.disconnect();
       throttledVerticalUpdate.cancel();
     };
   }, [stickyTop]);

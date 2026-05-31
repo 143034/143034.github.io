@@ -708,8 +708,8 @@ export default function PcFundTable({
       const targetEl = scrollEl || tableEl;
       const rect = targetEl?.getBoundingClientRect();
 
-      if (!rect) {
-        setShowPortalHeader(window.scrollY >= nextStickyTop);
+      if (!rect || (rect.width === 0 && rect.height === 0)) {
+        setShowPortalHeader(false);
         return;
       }
 
@@ -735,9 +735,17 @@ export default function PcFundTable({
     updateVerticalState();
     window.addEventListener('scroll', throttledVerticalUpdate, { passive: true });
     window.addEventListener('resize', throttledVerticalUpdate, { passive: true });
+
+    let ro = null;
+    if (tableContainerRef.current) {
+      ro = new ResizeObserver(() => throttledVerticalUpdate());
+      ro.observe(tableContainerRef.current);
+    }
+
     return () => {
       window.removeEventListener('scroll', throttledVerticalUpdate);
       window.removeEventListener('resize', throttledVerticalUpdate);
+      if (ro) ro.disconnect();
       throttledVerticalUpdate.cancel();
     };
   }, [stickyTop]);
