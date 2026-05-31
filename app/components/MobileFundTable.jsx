@@ -1,6 +1,16 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  memo
+} from 'react';
 
 import ReactDOM from 'react-dom';
 import { toast as sonnerToast } from 'sonner';
@@ -349,6 +359,126 @@ function SortableRow({ row, children, disabled }) {
     </motion.div>
   );
 }
+
+const MemoizedMobileTableRow = memo(
+  ({
+    row,
+    index,
+    sortBy,
+    isEditMode,
+    mobileGridLayout,
+    isFavorites,
+    isSelected,
+    masked,
+    periodReturns,
+    relatedSector,
+    sectorQuote,
+    fundExtraData,
+    tableColumnOrder,
+    tableColumnVisibility,
+    getPinClass,
+    getAlignClass,
+    LAST_COLUMN_EXTRA,
+    editLongPressRef,
+    clearEditLongPressTimer,
+    setIsEditMode,
+    setEditSelectedCodes
+  }) => {
+    return (
+      <SortableRow row={row} disabled={sortBy !== 'default' || !isEditMode}>
+        {() => (
+          <div
+            className="table-row"
+            style={{
+              background: index % 2 === 0 ? 'var(--bg)' : 'var(--table-row-alt-bg)',
+              position: 'relative',
+              zIndex: 1,
+              WebkitUserSelect: 'none',
+              userSelect: 'none',
+              WebkitTouchCallout: 'none',
+              touchAction: isEditMode ? 'auto' : 'pan-x pan-y',
+              ...(mobileGridLayout.gridTemplateColumns
+                ? { gridTemplateColumns: mobileGridLayout.gridTemplateColumns }
+                : {})
+            }}
+            onContextMenu={(e) => e.preventDefault()}
+            onDragStart={(e) => e.preventDefault()}
+            onPointerDown={(e) => {
+              if (isEditMode) return;
+              if (e.button !== 0 && e.pointerType === 'mouse') return;
+              const c = row.original?.code;
+              if (!c) return;
+              editLongPressRef.current.startX = e.clientX;
+              editLongPressRef.current.startY = e.clientY;
+              clearEditLongPressTimer();
+              editLongPressRef.current.timer = setTimeout(() => {
+                editLongPressRef.current.timer = null;
+                try {
+                  const sel = typeof window !== 'undefined' && window.getSelection?.();
+                  if (sel?.removeAllRanges) sel.removeAllRanges();
+                } catch {
+                  /* empty */
+                }
+                setIsEditMode(true);
+                const linked = !!row.original?.isHoldingLinked;
+                setEditSelectedCodes(linked ? new Set() : new Set([c]));
+              }, 550);
+            }}
+            onPointerMove={(e) => {
+              if (!editLongPressRef.current.timer) return;
+              const dx = Math.abs(e.clientX - editLongPressRef.current.startX);
+              const dy = Math.abs(e.clientY - editLongPressRef.current.startY);
+              if (dx > 12 || dy > 12) clearEditLongPressTimer();
+            }}
+            onPointerUp={clearEditLongPressTimer}
+            onPointerCancel={clearEditLongPressTimer}
+          >
+            {row.getVisibleCells().map((cell, cellIndex) => {
+              const columnId = cell.column.id;
+              const pinClass = getPinClass(columnId, false);
+              const alignClass = getAlignClass(columnId);
+              const cellClassName = cell.column.columnDef.meta?.cellClassName || '';
+              const isLastColumn = cellIndex === row.getVisibleCells().length - 1;
+              const style = isLastColumn ? { paddingRight: LAST_COLUMN_EXTRA } : {};
+              if (cellIndex === 0) {
+                if (index % 2 !== 0) {
+                  style.background = 'var(--table-row-alt-bg)';
+                } else {
+                  style.background = 'var(--bg)';
+                }
+              }
+              return (
+                <div key={cell.id} className={`table-cell ${alignClass} ${cellClassName} ${pinClass}`} style={style}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </SortableRow>
+    );
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.index === nextProps.index &&
+      prevProps.sortBy === nextProps.sortBy &&
+      prevProps.isEditMode === nextProps.isEditMode &&
+      prevProps.mobileGridLayout === nextProps.mobileGridLayout &&
+      prevProps.isFavorites === nextProps.isFavorites &&
+      prevProps.isSelected === nextProps.isSelected &&
+      prevProps.masked === nextProps.masked &&
+      prevProps.periodReturns === nextProps.periodReturns &&
+      prevProps.relatedSector === nextProps.relatedSector &&
+      prevProps.sectorQuote === nextProps.sectorQuote &&
+      prevProps.fundExtraData === nextProps.fundExtraData &&
+      prevProps.tableColumnOrder === nextProps.tableColumnOrder &&
+      prevProps.tableColumnVisibility === nextProps.tableColumnVisibility &&
+      prevProps.row.original === nextProps.row.original
+    );
+  }
+);
+
+MemoizedMobileTableRow.displayName = 'MemoizedMobileTableRow';
 
 /**
  * 移动端基金列表表格组件（基于 @tanstack/react-table，与 PcFundTable 相同数据结构）
@@ -762,6 +892,9 @@ export default function MobileFundTable({
   // }, [sortBy, exitEditMode]);
 
   const [cardSheetRow, setCardSheetRow] = useState(null);
+  const handleOpenCardSheet = useCallback((row) => {
+    setCardSheetRow(row);
+  }, []);
 
   const fundCardDrawerOpen = !!(cardSheetRow && getFundCardProps);
   useEffect(() => {
@@ -1543,7 +1676,7 @@ export default function MobileFundTable({
           <MobileFundNameCell
             info={info}
             showFullFundName={showFullFundName}
-            onOpenCardSheet={getFundCardProps ? (row) => setCardSheetRow(row) : undefined}
+            onOpenCardSheet={getFundCardProps ? handleOpenCardSheet : undefined}
           />
         ),
         meta: { align: 'left', cellClassName: 'name-cell', width: columnWidthMap.fundName }
@@ -2349,6 +2482,7 @@ export default function MobileFundTable({
       columnWidthMap,
       showFullFundName,
       getFundCardProps,
+      handleOpenCardSheet,
       sortBy,
       relatedSectorByCode,
       sectorQuoteByLabel,
@@ -2489,16 +2623,19 @@ export default function MobileFundTable({
     };
   }, [headerGroup?.headers, columnWidthMap]);
 
-  const getPinClass = (columnId, isHeader) => {
-    if (columnId === 'fundName') {
-      const baseClass = isHeader ? 'table-header-cell-pin-left' : 'table-cell-pin-left';
-      const scrolledClass = isScrolled ? 'is-scrolled' : '';
-      return `${baseClass} ${scrolledClass}`.trim();
-    }
-    return '';
-  };
+  const getPinClass = useCallback(
+    (columnId, isHeader) => {
+      if (columnId === 'fundName') {
+        const baseClass = isHeader ? 'table-header-cell-pin-left' : 'table-cell-pin-left';
+        const scrolledClass = isScrolled ? 'is-scrolled' : '';
+        return `${baseClass} ${scrolledClass}`.trim();
+      }
+      return '';
+    },
+    [isScrolled]
+  );
 
-  const getAlignClass = (columnId) => {
+  const getAlignClass = useCallback((columnId) => {
     if (columnId === 'fundName') return '';
     if (columnId === EDIT_MOVE_TO_FRONT_COL || columnId === EDIT_DRAG_COL) return 'text-center';
     if (
@@ -2525,7 +2662,7 @@ export default function MobileFundTable({
     )
       return 'text-right';
     return 'text-right';
-  };
+  }, []);
 
   const renderTableHeader = () => {
     if (!headerGroup) return null;
@@ -2732,13 +2869,34 @@ export default function MobileFundTable({
               <SortableContext items={data.map((item) => item.code)} strategy={verticalListSortingStrategy}>
                 <AnimatePresence>
                   {tableRows.map((row, index) => (
-                    <SortableRow
+                    <MemoizedMobileTableRow
                       key={row.original.code || row.id}
                       row={row}
-                      disabled={sortBy !== 'default' || !isEditMode}
-                    >
-                      {() => renderMobileRow(row, index)}
-                    </SortableRow>
+                      index={index}
+                      sortBy={sortBy}
+                      isEditMode={isEditMode}
+                      mobileGridLayout={mobileGridLayout}
+                      isFavorites={favorites?.has?.(row.original.code)}
+                      isSelected={editSelectedCodes?.has?.(row.original.code)}
+                      masked={masked}
+                      periodReturns={periodReturnsByCode[row.original.code]}
+                      relatedSector={relatedSectorByCode[row.original.code]}
+                      sectorQuote={
+                        relatedSectorByCode[row.original.code]
+                          ? sectorQuoteByLabel[String(relatedSectorByCode[row.original.code]).trim()]
+                          : null
+                      }
+                      fundExtraData={fundExtraDataByCode[row.original.code]}
+                      tableColumnOrder={tableColumnOrder}
+                      tableColumnVisibility={tableColumnVisibility}
+                      getPinClass={getPinClass}
+                      getAlignClass={getAlignClass}
+                      LAST_COLUMN_EXTRA={LAST_COLUMN_EXTRA}
+                      editLongPressRef={editLongPressRef}
+                      clearEditLongPressTimer={clearEditLongPressTimer}
+                      setIsEditMode={setIsEditMode}
+                      setEditSelectedCodes={setEditSelectedCodes}
+                    />
                   ))}
                 </AnimatePresence>
               </SortableContext>

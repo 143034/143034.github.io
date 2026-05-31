@@ -1,7 +1,17 @@
 'use client';
 
 import ReactDOM from 'react-dom';
-import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  memo
+} from 'react';
 import { throttle } from 'lodash';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useModalStore } from '../stores';
@@ -171,6 +181,70 @@ function SortableRow({ row, children, disabled, enableAnimation = true }) {
   );
 }
 
+const MemoizedTableRow = memo(
+  ({
+    row,
+    index,
+    sortBy,
+    enableAnimation,
+    getCommonPinningStyles,
+    isFavorites,
+    isSelected,
+    masked,
+    periodReturns,
+    relatedSector,
+    sectorQuote,
+    fundExtraData,
+    columnOrder,
+    columnVisibility,
+    columnSizing
+  }) => {
+    return (
+      <SortableRow row={row} disabled={sortBy !== 'default'} enableAnimation={enableAnimation}>
+        <div className={`table-row table-row-scroll ${index % 2 === 1 ? 'row-even' : ''}`}>
+          {row.getVisibleCells().map((cell) => {
+            const columnId = cell.column.id || cell.column.columnDef?.accessorKey;
+            const isNameColumn = columnId === 'fundName';
+            const align = isNameColumn ? '' : NON_FROZEN_COLUMN_IDS.includes(columnId) ? 'text-right' : 'text-center';
+            const cellClassName = (cell.column.columnDef.meta && cell.column.columnDef.meta.cellClassName) || '';
+            const style = getCommonPinningStyles(cell.column, false);
+            const isPinned = cell.column.getIsPinned();
+            return (
+              <div
+                key={cell.id}
+                className={`table-cell ${align} ${cellClassName} ${isPinned ? 'pinned-cell' : ''}`}
+                style={style}
+              >
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </div>
+            );
+          })}
+        </div>
+      </SortableRow>
+    );
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.index === nextProps.index &&
+      prevProps.sortBy === nextProps.sortBy &&
+      prevProps.enableAnimation === nextProps.enableAnimation &&
+      prevProps.isFavorites === nextProps.isFavorites &&
+      prevProps.isSelected === nextProps.isSelected &&
+      prevProps.masked === nextProps.masked &&
+      prevProps.periodReturns === nextProps.periodReturns &&
+      prevProps.relatedSector === nextProps.relatedSector &&
+      prevProps.sectorQuote === nextProps.sectorQuote &&
+      prevProps.fundExtraData === nextProps.fundExtraData &&
+      prevProps.columnOrder === nextProps.columnOrder &&
+      prevProps.columnVisibility === nextProps.columnVisibility &&
+      prevProps.columnSizing === nextProps.columnSizing &&
+      prevProps.row.original === nextProps.row.original
+    );
+  }
+);
+
+MemoizedTableRow.displayName = 'MemoizedTableRow';
+
 /**
  * PC 端基金列表表格组件（基于 @tanstack/react-table）
  *
@@ -245,6 +319,9 @@ export default function PcFundTable({
 
   const [activeId, setActiveId] = useState(null);
   const [cardDialogRow, setCardDialogRow] = useState(null);
+  const handleOpenCardDialog = useCallback((row) => {
+    setCardDialogRow(row);
+  }, []);
   const dragScrollYRef = useRef(0);
   const dragScrollRafRef = useRef(null);
   const isTableDraggingRef = useRef(false);
@@ -1225,7 +1302,7 @@ export default function PcFundTable({
           <FundNameCell
             info={info}
             showFullFundName={showFullFundName}
-            onOpenCardDialog={getFundCardProps ? (row) => setCardDialogRow(row) : undefined}
+            onOpenCardDialog={getFundCardProps ? handleOpenCardDialog : undefined}
           />
         ),
         meta: {
@@ -2208,6 +2285,7 @@ export default function PcFundTable({
       currentTab,
       showFullFundName,
       getFundCardProps,
+      handleOpenCardDialog,
       masked,
       relatedSectorByCode,
       sectorQuoteByLabel,
@@ -2300,7 +2378,7 @@ export default function PcFundTable({
     rowVirtualizer.measure();
   }, [enableVirtualization, tableRows.length, rowVirtualizer]);
 
-  const getCommonPinningStyles = (column, isHeader) => {
+  const getCommonPinningStyles = useCallback((column, isHeader) => {
     const isPinned = column.getIsPinned();
     const isNameColumn = column.id === 'fundName' || column.columnDef?.accessorKey === 'fundName';
     const style = {
@@ -2327,7 +2405,7 @@ export default function PcFundTable({
       textAlign: isNameColumn ? 'left' : 'center',
       justifyContent: isNameColumn ? 'flex-start' : 'center'
     };
-  };
+  }, []);
 
   const getSortHeaderMeta = useCallback(
     (columnId) => {
@@ -2591,32 +2669,27 @@ export default function PcFundTable({
                           zIndex: activeId === row.original.code ? 9999 : 1
                         }}
                       >
-                        <SortableRow row={row} disabled={sortBy !== 'default'} enableAnimation={false}>
-                          <div className={`table-row table-row-scroll ${virtualRow.index % 2 === 1 ? 'row-even' : ''}`}>
-                            {row.getVisibleCells().map((cell) => {
-                              const columnId = cell.column.id || cell.column.columnDef?.accessorKey;
-                              const isNameColumn = columnId === 'fundName';
-                              const align = isNameColumn
-                                ? ''
-                                : NON_FROZEN_COLUMN_IDS.includes(columnId)
-                                  ? 'text-right'
-                                  : 'text-center';
-                              const cellClassName =
-                                (cell.column.columnDef.meta && cell.column.columnDef.meta.cellClassName) || '';
-                              const style = getCommonPinningStyles(cell.column, false);
-                              const isPinned = cell.column.getIsPinned();
-                              return (
-                                <div
-                                  key={cell.id}
-                                  className={`table-cell ${align} ${cellClassName} ${isPinned ? 'pinned-cell' : ''}`}
-                                  style={style}
-                                >
-                                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </SortableRow>
+                        <MemoizedTableRow
+                          row={row}
+                          index={virtualRow.index}
+                          sortBy={sortBy}
+                          enableAnimation={false}
+                          getCommonPinningStyles={getCommonPinningStyles}
+                          isFavorites={favorites?.has?.(row.original.code)}
+                          isSelected={selectedCodes?.has?.(row.original.code)}
+                          masked={masked}
+                          periodReturns={periodReturnsByCode[row.original.code]}
+                          relatedSector={relatedSectorByCode[row.original.code]}
+                          sectorQuote={
+                            relatedSectorByCode[row.original.code]
+                              ? sectorQuoteByLabel[String(relatedSectorByCode[row.original.code]).trim()]
+                              : null
+                          }
+                          fundExtraData={fundExtraDataByCode[row.original.code]}
+                          columnOrder={columnOrder}
+                          columnVisibility={columnVisibility}
+                          columnSizing={columnSizing}
+                        />
                       </div>
                     );
                   })}
@@ -2639,73 +2712,55 @@ export default function PcFundTable({
               {enableRowAnimation ? (
                 <AnimatePresence mode="popLayout">
                   {tableRows.map((row, index) => (
-                    <SortableRow
+                    <MemoizedTableRow
                       key={row.original.code || row.id}
                       row={row}
-                      disabled={sortBy !== 'default'}
+                      index={index}
+                      sortBy={sortBy}
                       enableAnimation
-                    >
-                      <div className={`table-row table-row-scroll ${index % 2 === 1 ? 'row-even' : ''}`}>
-                        {row.getVisibleCells().map((cell) => {
-                          const columnId = cell.column.id || cell.column.columnDef?.accessorKey;
-                          const isNameColumn = columnId === 'fundName';
-                          const align = isNameColumn
-                            ? ''
-                            : NON_FROZEN_COLUMN_IDS.includes(columnId)
-                              ? 'text-right'
-                              : 'text-center';
-                          const cellClassName =
-                            (cell.column.columnDef.meta && cell.column.columnDef.meta.cellClassName) || '';
-                          const style = getCommonPinningStyles(cell.column, false);
-                          const isPinned = cell.column.getIsPinned();
-                          return (
-                            <div
-                              key={cell.id}
-                              className={`table-cell ${align} ${cellClassName} ${isPinned ? 'pinned-cell' : ''}`}
-                              style={style}
-                            >
-                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </SortableRow>
+                      getCommonPinningStyles={getCommonPinningStyles}
+                      isFavorites={favorites?.has?.(row.original.code)}
+                      isSelected={selectedCodes?.has?.(row.original.code)}
+                      masked={masked}
+                      periodReturns={periodReturnsByCode[row.original.code]}
+                      relatedSector={relatedSectorByCode[row.original.code]}
+                      sectorQuote={
+                        relatedSectorByCode[row.original.code]
+                          ? sectorQuoteByLabel[String(relatedSectorByCode[row.original.code]).trim()]
+                          : null
+                      }
+                      fundExtraData={fundExtraDataByCode[row.original.code]}
+                      columnOrder={columnOrder}
+                      columnVisibility={columnVisibility}
+                      columnSizing={columnSizing}
+                    />
                   ))}
                 </AnimatePresence>
               ) : (
                 <>
                   {tableRows.map((row, index) => (
-                    <SortableRow
+                    <MemoizedTableRow
                       key={row.original.code || row.id}
                       row={row}
-                      disabled={sortBy !== 'default'}
+                      index={index}
+                      sortBy={sortBy}
                       enableAnimation={false}
-                    >
-                      <div className={`table-row table-row-scroll ${index % 2 === 1 ? 'row-even' : ''}`}>
-                        {row.getVisibleCells().map((cell) => {
-                          const columnId = cell.column.id || cell.column.columnDef?.accessorKey;
-                          const isNameColumn = columnId === 'fundName';
-                          const align = isNameColumn
-                            ? ''
-                            : NON_FROZEN_COLUMN_IDS.includes(columnId)
-                              ? 'text-right'
-                              : 'text-center';
-                          const cellClassName =
-                            (cell.column.columnDef.meta && cell.column.columnDef.meta.cellClassName) || '';
-                          const style = getCommonPinningStyles(cell.column, false);
-                          const isPinned = cell.column.getIsPinned();
-                          return (
-                            <div
-                              key={cell.id}
-                              className={`table-cell ${align} ${cellClassName} ${isPinned ? 'pinned-cell' : ''}`}
-                              style={style}
-                            >
-                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </SortableRow>
+                      getCommonPinningStyles={getCommonPinningStyles}
+                      isFavorites={favorites?.has?.(row.original.code)}
+                      isSelected={selectedCodes?.has?.(row.original.code)}
+                      masked={masked}
+                      periodReturns={periodReturnsByCode[row.original.code]}
+                      relatedSector={relatedSectorByCode[row.original.code]}
+                      sectorQuote={
+                        relatedSectorByCode[row.original.code]
+                          ? sectorQuoteByLabel[String(relatedSectorByCode[row.original.code]).trim()]
+                          : null
+                      }
+                      fundExtraData={fundExtraDataByCode[row.original.code]}
+                      columnOrder={columnOrder}
+                      columnVisibility={columnVisibility}
+                      columnSizing={columnSizing}
+                    />
                   ))}
                 </>
               )}
