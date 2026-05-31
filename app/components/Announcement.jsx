@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { storageStore } from '../stores';
 
-const ANNOUNCEMENT_KEY = 'hasClosedAnnouncement_v1.6.0';
+const ANNOUNCEMENT_KEY = 'hasClosedAnnouncement_v2.0.0';
 
 export default function Announcement() {
   const [isVisible, setIsVisible] = useState(false);
@@ -109,9 +109,15 @@ export default function Announcement() {
                 paddingRight: '4px'
               }}
             >
-              <p>v1.6.0 更新内容如下：</p>
-              <p>1. 部分基金支持查看“实时净值估算图”（仅支持数据源1）。</p>
-              <p>2. 优化移动端验证码键盘弹起逻辑。</p>
+              <p>v2.0.0 大版本更新内容：</p>
+              <p>1. 新增行情页面，开放热门板块和估算涨幅相关表格内容展示。</p>
+              <p>2. 估算涨幅相关基金数据支持添加到首页。</p>
+              <p>3. 新增分红方式收益计算。</p>
+              <p>4. 新增连续涨跌天数排序。</p>
+              <p>5. 编辑模式允许在所有排序下进行。</p>
+              <p>6. 统一 toast 组件。</p>
+              <p>7. 优化拍照识别方案。</p>
+              <p>8. 资产总计金额支持单独隐藏。</p>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
               <button
