@@ -12,7 +12,6 @@ import { restrictToVerticalAxis, restrictToParentElement } from '@dnd-kit/modifi
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import ConfirmModal from './ConfirmModal';
-import FitText from './FitText';
 import PcTableSettingModal from './PcTableSettingModal';
 import FundCard from './FundCard';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -700,7 +699,7 @@ export default function PcFundTable({
       const rect = targetEl?.getBoundingClientRect();
 
       if (!rect || (rect.width === 0 && rect.height === 0)) {
-        setShowPortalHeader(false);
+        setShowPortalHeader((prev) => (prev === false ? prev : false));
         return;
       }
 
@@ -709,7 +708,8 @@ export default function PcFundTable({
       const hasPassedHeader = rect.top + headerHeight <= nextStickyTop;
       const hasTableInView = rect.bottom > nextStickyTop;
 
-      setShowPortalHeader(hasPassedHeader && hasTableInView);
+      const nextPortalVisible = hasPassedHeader && hasTableInView;
+      setShowPortalHeader((prev) => (prev === nextPortalVisible ? prev : nextPortalVisible));
 
       setPortalHorizontal((prev) => {
         const next = {
@@ -926,25 +926,48 @@ export default function PcFundTable({
 
     let cancelled = false;
     (async () => {
+      const batchResults = {};
+      let updateTimeout = null;
+
+      const triggerBatchUpdate = () => {
+        if (cancelled || Object.keys(batchResults).length === 0) return;
+        setPeriodReturnsByCode((prev) => {
+          let changed = false;
+          const next = { ...prev };
+          for (const [c, val] of Object.entries(batchResults)) {
+            const prevVal = next[c];
+            if (
+              prevVal &&
+              prevVal.week === val.week &&
+              prevVal.month === val.month &&
+              prevVal.month3 === val.month3 &&
+              prevVal.month6 === val.month6 &&
+              prevVal.year1 === val.year1
+            ) {
+              continue;
+            }
+            next[c] = val;
+            changed = true;
+          }
+          return changed ? next : prev;
+        });
+        for (const key of Object.keys(batchResults)) {
+          delete batchResults[key];
+        }
+      };
+
       await asyncPool(4, missing, async (code) => {
         const value = await fetchFundPeriodReturns(code);
         periodReturnsCacheRef.current.set(code, value);
         if (cancelled) return;
-        setPeriodReturnsByCode((prev) => {
-          const prevVal = prev[code];
-          if (
-            prevVal &&
-            prevVal.week === value.week &&
-            prevVal.month === value.month &&
-            prevVal.month3 === value.month3 &&
-            prevVal.month6 === value.month6 &&
-            prevVal.year1 === value.year1
-          ) {
-            return prev;
-          }
-          return { ...prev, [code]: value };
-        });
+
+        batchResults[code] = value;
+
+        if (updateTimeout) clearTimeout(updateTimeout);
+        updateTimeout = setTimeout(triggerBatchUpdate, 100);
       });
+
+      triggerBatchUpdate();
     })();
 
     return () => {
@@ -996,41 +1019,35 @@ export default function PcFundTable({
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 8 }}
       >
         {batchRemoveEnabled && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <label
-                onClick={(e) => e.stopPropagation?.()}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: 18,
-                  height: 18,
-                  flexShrink: 0,
-                  cursor: holdingLocked ? 'not-allowed' : 'pointer',
-                  opacity: holdingLocked ? 0.45 : 1
-                }}
-              >
-                <input
-                  type="checkbox"
-                  disabled={holdingLocked}
-                  checked={!holdingLocked && (selectedCodes?.has?.(code) || false)}
-                  onChange={(e) => toggleSelected(code, e.target.checked)}
-                  onClick={(e) => e.stopPropagation?.()}
-                  style={{
-                    width: 14,
-                    height: 14,
-                    accentColor: 'var(--primary)',
-                    cursor: holdingLocked ? 'not-allowed' : 'pointer'
-                  }}
-                  aria-label="选择基金"
-                />
-              </label>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{holdingLocked ? '关联持仓不可批量选择' : '选择用于移动分组/批量删除'}</p>
-            </TooltipContent>
-          </Tooltip>
+          <label
+            onClick={(e) => e.stopPropagation?.()}
+            title={holdingLocked ? '关联持仓不可批量选择' : '选择用于移动分组/批量删除'}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 18,
+              height: 18,
+              flexShrink: 0,
+              cursor: holdingLocked ? 'not-allowed' : 'pointer',
+              opacity: holdingLocked ? 0.45 : 1
+            }}
+          >
+            <input
+              type="checkbox"
+              disabled={holdingLocked}
+              checked={!holdingLocked && (selectedCodes?.has?.(code) || false)}
+              onChange={(e) => toggleSelected(code, e.target.checked)}
+              onClick={(e) => e.stopPropagation?.()}
+              style={{
+                width: 14,
+                height: 14,
+                accentColor: 'var(--primary)',
+                cursor: holdingLocked ? 'not-allowed' : 'pointer'
+              }}
+              aria-label="选择基金"
+            />
+          </label>
         )}
         {sortBy === 'default' ? (
           <Tooltip>
@@ -1096,88 +1113,72 @@ export default function PcFundTable({
           </Tooltip>
         )}
         {showFavoriteButton ? (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                className={`icon-button fav-button ${isFavorites ? 'active' : ''}`}
-                onClick={(e) => {
+          <button
+            className={`icon-button fav-button ${isFavorites ? 'active' : ''}`}
+            title={isFavorites ? '取消自选' : '添加自选'}
+            onClick={(e) => {
+              e.stopPropagation?.();
+              onToggleFavoriteRef.current?.(original);
+            }}
+          >
+            <StarIcon width="18" height="18" filled={isFavorites} />
+          </button>
+        ) : null}
+        <div
+          className="title-text"
+          role={onOpenCardDialog ? 'button' : undefined}
+          tabIndex={onOpenCardDialog ? 0 : undefined}
+          title={onOpenCardDialog ? '查看基金详情' : original.isUpdated ? '今日净值已更新' : undefined}
+          onClick={
+            onOpenCardDialog
+              ? (e) => {
                   e.stopPropagation?.();
-                  onToggleFavoriteRef.current?.(original);
+                  onOpenCardDialog(original);
+                }
+              : undefined
+          }
+          onKeyDown={
+            onOpenCardDialog
+              ? (e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onOpenCardDialog(original);
+                  }
+                }
+              : undefined
+          }
+          style={onOpenCardDialog ? { cursor: 'pointer' } : undefined}
+        >
+          <span className={`name-text ${showFullFundName ? 'show-full' : ''}`}>
+            {holdingLocked ? (
+              <span
+                aria-label="已关联持仓"
+                title="持仓来自自定义分组汇总"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  marginRight: 6,
+                  color: 'var(--primary)',
+                  verticalAlign: 'middle',
+                  position: 'relative',
+                  bottom: 2,
+                  cursor: 'default'
                 }}
               >
-                <StarIcon width="18" height="18" filled={isFavorites} />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{isFavorites ? '取消自选' : '添加自选'}</p>
-            </TooltipContent>
-          </Tooltip>
-        ) : null}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div
-              className="title-text"
-              role={onOpenCardDialog ? 'button' : undefined}
-              tabIndex={onOpenCardDialog ? 0 : undefined}
-              onClick={
-                onOpenCardDialog
-                  ? (e) => {
-                      e.stopPropagation?.();
-                      onOpenCardDialog(original);
-                    }
-                  : undefined
-              }
-              onKeyDown={
-                onOpenCardDialog
-                  ? (e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        onOpenCardDialog(original);
-                      }
-                    }
-                  : undefined
-              }
-              style={onOpenCardDialog ? { cursor: 'pointer' } : undefined}
-            >
-              <span className={`name-text ${showFullFundName ? 'show-full' : ''}`}>
-                {holdingLocked ? (
-                  <Tooltip delayDuration={150}>
-                    <TooltipTrigger asChild>
-                      <span
-                        aria-label="已关联持仓"
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          marginRight: 6,
-                          color: 'var(--primary)',
-                          verticalAlign: 'middle',
-                          position: 'relative',
-                          bottom: 2,
-                          cursor: 'default'
-                        }}
-                      >
-                        <LinkIcon width="14" height="14" />
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent>持仓来自自定义分组汇总</TooltipContent>
-                  </Tooltip>
-                ) : null}
-                <ConsecutiveTrendBadge trend={fundExtraDataByCode?.[code]?.consecutiveTrend} />
-                {info.getValue() ?? '—'}
+                <LinkIcon width="14" height="14" />
               </span>
-              {code ? (
-                <span className="muted code-text">
-                  #{code}
-                  {hasDca && <span className="dca-indicator">定</span>}
-                  {isUpdated && <span className="updated-indicator">✓</span>}
-                </span>
-              ) : null}
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{onOpenCardDialog ? '查看基金详情' : original.isUpdated ? '今日净值已更新' : undefined}</p>
-          </TooltipContent>
-        </Tooltip>
+            ) : null}
+            <ConsecutiveTrendBadge trend={fundExtraDataByCode?.[code]?.consecutiveTrend} />
+            {info.getValue() ?? '—'}
+          </span>
+          {code ? (
+            <span className="muted code-text">
+              #{code}
+              {hasDca && <span className="dca-indicator">定</span>}
+              {isUpdated && <span className="updated-indicator">✓</span>}
+            </span>
+          ) : null}
+        </div>
       </div>
     );
   };
@@ -1238,62 +1239,56 @@ export default function PcFundTable({
           const list = Array.isArray(original.fundTags) ? original.fundTags : [];
           const hasTags = list.length > 0;
           return (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation?.();
-                    onFundTagsClickRef.current?.(original);
-                  }}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation?.();
+                onFundTagsClickRef.current?.(original);
+              }}
+              title={onFundTagsClick ? '编辑标签' : undefined}
+              style={{
+                width: '100%',
+                minWidth: 0,
+                border: 'none',
+                background: 'transparent',
+                padding: '4px 0',
+                cursor: onFundTagsClick ? 'pointer' : 'default',
+                textAlign: 'left'
+              }}
+              disabled={!onFundTagsClick}
+            >
+              {hasTags ? (
+                <div
                   style={{
-                    width: '100%',
-                    minWidth: 0,
-                    border: 'none',
-                    background: 'transparent',
-                    padding: '4px 0',
-                    cursor: onFundTagsClick ? 'pointer' : 'default',
-                    textAlign: 'left'
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: 4,
+                    justifyContent: 'flex-end'
                   }}
-                  disabled={!onFundTagsClick}
                 >
-                  {hasTags ? (
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: 4,
-                        justifyContent: 'flex-end'
-                      }}
-                    >
-                      {list.map((raw, idx) => {
-                        const item =
-                          raw && typeof raw === 'object' && raw.name != null
-                            ? {
-                                name: String(raw.name).trim(),
-                                theme: String(raw.theme ?? 'default').trim() || 'default'
-                              }
-                            : { name: String(raw).trim(), theme: 'default' };
-                        if (!item.name) return null;
-                        const { variant, className: themeCls } = getTagThemeBadgeProps(item.theme);
-                        return (
-                          <Badge key={`${item.name}-${idx}`} variant={variant} className={cn('font-normal', themeCls)}>
-                            {item.name}
-                          </Badge>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <div className="muted" style={{ textAlign: 'right', fontSize: '12px' }}>
-                      —
-                    </div>
-                  )}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{onFundTagsClick ? '编辑标签' : undefined}</p>
-              </TooltipContent>
-            </Tooltip>
+                  {list.map((raw, idx) => {
+                    const item =
+                      raw && typeof raw === 'object' && raw.name != null
+                        ? {
+                            name: String(raw.name).trim(),
+                            theme: String(raw.theme ?? 'default').trim() || 'default'
+                          }
+                        : { name: String(raw).trim(), theme: 'default' };
+                    if (!item.name) return null;
+                    const { variant, className: themeCls } = getTagThemeBadgeProps(item.theme);
+                    return (
+                      <Badge key={`${item.name}-${idx}`} variant={variant} className={cn('font-normal', themeCls)}>
+                        {item.name}
+                      </Badge>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="muted" style={{ textAlign: 'right', fontSize: '12px' }}>
+                  —
+                </div>
+              )}
+            </button>
           );
         },
         meta: {
@@ -1330,15 +1325,20 @@ export default function PcFundTable({
               }}
             >
               {pctText != null ? (
-                <FitText
+                <span
                   className={pctCls}
-                  style={{ fontWeight: 700, textAlign: 'right' }}
-                  maxFontSize={14}
-                  minFontSize={10}
-                  as="div"
+                  style={{
+                    fontWeight: 700,
+                    textAlign: 'right',
+                    fontSize: 'clamp(10px, 1.2vw, 14px)',
+                    display: 'block',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
                 >
                   {pctText}
-                </FitText>
+                </span>
               ) : null}
               <span
                 style={{
@@ -1375,9 +1375,18 @@ export default function PcFundTable({
           const text = value != null && Number.isFinite(value) ? `${value > 0 ? '+' : ''}${value.toFixed(2)}%` : '—';
           return (
             <div style={{ textAlign: 'right' }}>
-              <FitText className={cls} style={{ fontWeight: 700 }} maxFontSize={14} minFontSize={10} as="div">
+              <div
+                className={cls}
+                style={{
+                  fontWeight: 700,
+                  fontSize: 'clamp(10px, 1.2vw, 14px)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {text}
-              </FitText>
+              </div>
             </div>
           );
         },
@@ -1396,9 +1405,18 @@ export default function PcFundTable({
           const text = value != null && Number.isFinite(value) ? `${value > 0 ? '+' : ''}${value.toFixed(2)}%` : '—';
           return (
             <div style={{ textAlign: 'right' }}>
-              <FitText className={cls} style={{ fontWeight: 700 }} maxFontSize={14} minFontSize={10} as="div">
+              <div
+                className={cls}
+                style={{
+                  fontWeight: 700,
+                  fontSize: 'clamp(10px, 1.2vw, 14px)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {text}
-              </FitText>
+              </div>
             </div>
           );
         },
@@ -1417,9 +1435,18 @@ export default function PcFundTable({
           const text = value != null && Number.isFinite(value) ? `${value > 0 ? '+' : ''}${value.toFixed(2)}%` : '—';
           return (
             <div style={{ textAlign: 'right' }}>
-              <FitText className={cls} style={{ fontWeight: 700 }} maxFontSize={14} minFontSize={10} as="div">
+              <div
+                className={cls}
+                style={{
+                  fontWeight: 700,
+                  fontSize: 'clamp(10px, 1.2vw, 14px)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {text}
-              </FitText>
+              </div>
             </div>
           );
         },
@@ -1438,9 +1465,18 @@ export default function PcFundTable({
           const text = value != null && Number.isFinite(value) ? `${value > 0 ? '+' : ''}${value.toFixed(2)}%` : '—';
           return (
             <div style={{ textAlign: 'right' }}>
-              <FitText className={cls} style={{ fontWeight: 700 }} maxFontSize={14} minFontSize={10} as="div">
+              <div
+                className={cls}
+                style={{
+                  fontWeight: 700,
+                  fontSize: 'clamp(10px, 1.2vw, 14px)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {text}
-              </FitText>
+              </div>
             </div>
           );
         },
@@ -1459,9 +1495,18 @@ export default function PcFundTable({
           const text = value != null && Number.isFinite(value) ? `${value > 0 ? '+' : ''}${value.toFixed(2)}%` : '—';
           return (
             <div style={{ textAlign: 'right' }}>
-              <FitText className={cls} style={{ fontWeight: 700 }} maxFontSize={14} minFontSize={10} as="div">
+              <div
+                className={cls}
+                style={{
+                  fontWeight: 700,
+                  fontSize: 'clamp(10px, 1.2vw, 14px)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {text}
-              </FitText>
+              </div>
             </div>
           );
         },
@@ -1478,9 +1523,17 @@ export default function PcFundTable({
           const date = typeof rawDate === 'string' && rawDate.length > 5 ? rawDate.slice(5) : rawDate;
           return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0 }}>
-              <FitText style={{ fontWeight: 700 }} maxFontSize={14} minFontSize={10} as="div">
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: 'clamp(10px, 1.2vw, 14px)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {info.getValue() ?? '—'}
-              </FitText>
+              </div>
               <span className="muted" style={{ fontSize: '11px' }}>
                 {date}
               </span>
@@ -1505,9 +1558,17 @@ export default function PcFundTable({
           const hasEstimateNav = estimateNav != null && estimateNav !== '—';
           return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0 }}>
-              <FitText style={{ fontWeight: 700 }} maxFontSize={14} minFontSize={10} as="div">
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: 'clamp(10px, 1.2vw, 14px)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {estimateNav ?? '—'}
-              </FitText>
+              </div>
               {hasEstimateNav && date && date !== '-' ? (
                 <span className="muted" style={{ fontSize: '11px' }}>
                   {date}
@@ -1534,9 +1595,18 @@ export default function PcFundTable({
           const cls = value > 0 ? 'up' : value < 0 ? 'down' : '';
           return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0 }}>
-              <FitText className={cls} style={{ fontWeight: 700 }} maxFontSize={14} minFontSize={10} as="div">
+              <div
+                className={cls}
+                style={{
+                  fontWeight: 700,
+                  fontSize: 'clamp(10px, 1.2vw, 14px)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {info.getValue() ?? '—'}
-              </FitText>
+              </div>
               <span className="muted" style={{ fontSize: '11px' }}>
                 {date}
               </span>
@@ -1564,9 +1634,18 @@ export default function PcFundTable({
           const hasText = text != null && text !== '—';
           return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0 }}>
-              <FitText className={cls} style={{ fontWeight: 700 }} maxFontSize={14} minFontSize={10} as="div">
+              <div
+                className={cls}
+                style={{
+                  fontWeight: 700,
+                  fontSize: 'clamp(10px, 1.2vw, 14px)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {text ?? '—'}
-              </FitText>
+              </div>
               {hasText && time && time !== '-' ? (
                 <span className="muted" style={{ fontSize: '11px' }}>
                   {time}
@@ -1595,20 +1674,26 @@ export default function PcFundTable({
           const hasText = text != null && text !== '—';
           return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0 }}>
-              <FitText className={cls} style={{ fontWeight: 700 }} maxFontSize={14} minFontSize={10} as="div">
+              <div
+                className={cls}
+                style={{
+                  fontWeight: 700,
+                  fontSize: 'clamp(10px, 1.2vw, 14px)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {text ?? '—'}
-              </FitText>
+              </div>
               {hasText && displayDate ? (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="muted" style={{ fontSize: '11px' }}>
-                      {displayDate}
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{rawDate && rawDate !== displayDate ? rawDate : undefined}</p>
-                  </TooltipContent>
-                </Tooltip>
+                <span
+                  className="muted"
+                  style={{ fontSize: '11px' }}
+                  title={rawDate && rawDate !== displayDate ? rawDate : undefined}
+                >
+                  {displayDate}
+                </span>
               ) : null}
             </div>
           );
@@ -1633,17 +1718,33 @@ export default function PcFundTable({
 
           return (
             <div style={{ width: '100%' }}>
-              <FitText className={cls} style={{ fontWeight: 700, display: 'block' }} maxFontSize={14} minFontSize={10}>
+              <span
+                className={cls}
+                style={{
+                  fontWeight: 700,
+                  display: 'block',
+                  fontSize: 'clamp(10px, 1.2vw, 14px)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {masked && hasProfit ? <span className="mask-text">******</span> : amountStr}
-              </FitText>
+              </span>
               {hasProfit && percentStr && !masked ? (
                 <span
                   className={`${cls} estimate-profit-percent`}
-                  style={{ display: 'block', fontSize: '0.75em', opacity: 0.9, fontWeight: 500 }}
+                  style={{
+                    display: 'block',
+                    fontSize: 'clamp(9px, 0.9vw, 11px)',
+                    opacity: 0.9,
+                    fontWeight: 500,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
                 >
-                  <FitText maxFontSize={11} minFontSize={9}>
-                    {percentStr}
-                  </FitText>
+                  {percentStr}
                 </span>
               ) : null}
             </div>
@@ -1665,85 +1766,82 @@ export default function PcFundTable({
           const holdingLinkedTitle = '持仓来自自定义分组汇总，点击选择分组后操作';
           if (original.holdingAmountValue == null) {
             return (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    className="muted"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 4,
-                      fontSize: '12px',
-                      cursor: 'pointer'
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation?.();
-                      onHoldingAmountClickRef.current?.(original, { hasHolding: false });
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        onHoldingAmountClickRef.current?.(original, { hasHolding: false });
-                      }
-                    }}
-                  >
-                    未设置 <SettingsIcon width="12" height="12" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{holdingLocked ? holdingLinkedTitle : '编辑持仓'}</p>
-                </TooltipContent>
-              </Tooltip>
+              <div
+                role="button"
+                tabIndex={0}
+                className="muted"
+                title={holdingLocked ? holdingLinkedTitle : '编辑持仓'}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  fontSize: '12px',
+                  cursor: 'pointer'
+                }}
+                onClick={(e) => {
+                  e.stopPropagation?.();
+                  onHoldingAmountClickRef.current?.(original, { hasHolding: false });
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onHoldingAmountClickRef.current?.(original, { hasHolding: false });
+                  }
+                }}
+              >
+                未设置 <SettingsIcon width="12" height="12" />
+              </div>
             );
           }
           return (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div
+            <div
+              title={holdingLocked ? holdingLinkedTitle : '编辑持仓'}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                cursor: 'pointer',
+                width: '100%',
+                minWidth: 0
+              }}
+              onClick={(e) => {
+                e.stopPropagation?.();
+                onHoldingAmountClickRef.current?.(original, { hasHolding: true });
+              }}
+            >
+              <div style={{ flex: '1 1 0', minWidth: 0 }}>
+                <span
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    width: '100%',
-                    minWidth: 0
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation?.();
-                    onHoldingAmountClickRef.current?.(original, { hasHolding: true });
+                    fontWeight: 700,
+                    fontSize: 'clamp(10px, 1.2vw, 14px)',
+                    display: 'block',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
                   }}
                 >
-                  <div style={{ flex: '1 1 0', minWidth: 0 }}>
-                    <FitText style={{ fontWeight: 700 }} maxFontSize={14} minFontSize={10}>
-                      {masked ? <span className="mask-text">******</span> : (info.getValue() ?? '—')}
-                    </FitText>
-                  </div>
-                  <button
-                    className="icon-button no-hover"
-                    onClick={(e) => {
-                      e.stopPropagation?.();
-                      onHoldingAmountClickRef.current?.(original, { hasHolding: true });
-                    }}
-                    style={{
-                      border: 'none',
-                      width: '28px',
-                      height: '28px',
-                      marginLeft: 4,
-                      flexShrink: 0,
-                      backgroundColor: 'transparent',
-                      color: holdingLocked ? 'var(--muted)' : undefined,
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <SettingsIcon width="14" height="14" />
-                  </button>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{holdingLocked ? holdingLinkedTitle : '编辑持仓'}</p>
-              </TooltipContent>
-            </Tooltip>
+                  {masked ? <span className="mask-text">******</span> : (info.getValue() ?? '—')}
+                </span>
+              </div>
+              <button
+                className="icon-button no-hover"
+                onClick={(e) => {
+                  e.stopPropagation?.();
+                  onHoldingAmountClickRef.current?.(original, { hasHolding: true });
+                }}
+                style={{
+                  border: 'none',
+                  width: '28px',
+                  height: '28px',
+                  marginLeft: 4,
+                  flexShrink: 0,
+                  backgroundColor: 'transparent',
+                  color: holdingLocked ? 'var(--muted)' : undefined,
+                  cursor: 'pointer'
+                }}
+              >
+                <SettingsIcon width="14" height="14" />
+              </button>
+            </div>
           );
         },
         meta: {
@@ -1768,9 +1866,19 @@ export default function PcFundTable({
           }
           const text = `${(value * 100).toFixed(2)}%`;
           return (
-            <FitText style={{ fontWeight: 700, textAlign: 'right' }} maxFontSize={14} minFontSize={10}>
+            <span
+              style={{
+                fontWeight: 700,
+                display: 'block',
+                textAlign: 'right',
+                fontSize: 'clamp(10px, 1.2vw, 14px)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}
+            >
               {masked ? <span className="mask-text">******</span> : text}
-            </FitText>
+            </span>
           );
         },
         meta: {
@@ -1796,9 +1904,18 @@ export default function PcFundTable({
             <div
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', width: '100%', minWidth: 0 }}
             >
-              <FitText style={{ fontWeight: 700 }} maxFontSize={14} minFontSize={10}>
+              <span
+                style={{
+                  fontWeight: 700,
+                  fontSize: 'clamp(10px, 1.2vw, 14px)',
+                  display: 'block',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {masked ? <span className="mask-text">******</span> : (info.getValue() ?? '—')}
-              </FitText>
+              </span>
             </div>
           );
         },
@@ -1822,9 +1939,19 @@ export default function PcFundTable({
             );
           }
           return (
-            <FitText style={{ fontWeight: 700, textAlign: 'right' }} maxFontSize={14} minFontSize={10}>
+            <span
+              style={{
+                fontWeight: 700,
+                display: 'block',
+                textAlign: 'right',
+                fontSize: 'clamp(10px, 1.2vw, 14px)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}
+            >
               {masked ? <span className="mask-text">******</span> : (info.getValue() ?? '—')}
-            </FitText>
+            </span>
           );
         },
         meta: {
@@ -1869,17 +1996,33 @@ export default function PcFundTable({
           const isUpdated = original.isUpdated;
           return (
             <div style={{ width: '100%' }}>
-              <FitText className={cls} style={{ fontWeight: 700, display: 'block' }} maxFontSize={14} minFontSize={10}>
+              <span
+                className={cls}
+                style={{
+                  fontWeight: 700,
+                  display: 'block',
+                  fontSize: 'clamp(10px, 1.2vw, 14px)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {masked && hasProfit ? <span className="mask-text">******</span> : amountStr}
-              </FitText>
+              </span>
               {percentStr && !masked ? (
                 <span
                   className={`${cls} today-profit-percent`}
-                  style={{ display: 'block', fontSize: '0.75em', opacity: 0.9, fontWeight: 500 }}
+                  style={{
+                    display: 'block',
+                    fontSize: 'clamp(9px, 0.9vw, 11px)',
+                    opacity: 0.9,
+                    fontWeight: 500,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
                 >
-                  <FitText maxFontSize={11} minFontSize={9}>
-                    {percentStr}
-                  </FitText>
+                  {percentStr}
                 </span>
               ) : null}
             </div>
@@ -1907,17 +2050,33 @@ export default function PcFundTable({
             pctVal != null && Number.isFinite(pctVal) ? (pctVal > 0 ? 'up' : pctVal < 0 ? 'down' : '') : 'muted';
           return (
             <div style={{ width: '100%' }}>
-              <FitText className={cls} style={{ fontWeight: 700, display: 'block' }} maxFontSize={14} minFontSize={10}>
+              <span
+                className={cls}
+                style={{
+                  fontWeight: 700,
+                  display: 'block',
+                  fontSize: 'clamp(10px, 1.2vw, 14px)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {masked && hasProfit ? <span className="mask-text">******</span> : amountStr}
-              </FitText>
+              </span>
               {percentStr && !masked ? (
                 <span
                   className={`${pctCls} yesterday-profit-percent`}
-                  style={{ display: 'block', fontSize: '0.75em', opacity: 0.9, fontWeight: 500 }}
+                  style={{
+                    display: 'block',
+                    fontSize: 'clamp(9px, 0.9vw, 11px)',
+                    opacity: 0.9,
+                    fontWeight: 500,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
                 >
-                  <FitText maxFontSize={11} minFontSize={9}>
-                    {percentStr}
-                  </FitText>
+                  {percentStr}
                 </span>
               ) : null}
             </div>
@@ -1942,17 +2101,33 @@ export default function PcFundTable({
           const percentStr = original.holdingProfitPercent ?? '';
           return (
             <div style={{ width: '100%' }}>
-              <FitText className={cls} style={{ fontWeight: 700, display: 'block' }} maxFontSize={14} minFontSize={10}>
+              <span
+                className={cls}
+                style={{
+                  fontWeight: 700,
+                  display: 'block',
+                  fontSize: 'clamp(10px, 1.2vw, 14px)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}
+              >
                 {masked && hasTotal ? <span className="mask-text">******</span> : amountStr}
-              </FitText>
+              </span>
               {percentStr && !masked ? (
                 <span
                   className={`${cls} holding-profit-percent`}
-                  style={{ display: 'block', fontSize: '0.75em', opacity: 0.9, fontWeight: 500 }}
+                  style={{
+                    display: 'block',
+                    fontSize: 'clamp(9px, 0.9vw, 11px)',
+                    opacity: 0.9,
+                    fontWeight: 500,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
                 >
-                  <FitText maxFontSize={11} minFontSize={9}>
-                    {percentStr}
-                  </FitText>
+                  {percentStr}
                 </span>
               ) : null}
             </div>
@@ -1968,29 +2143,23 @@ export default function PcFundTable({
         header: () => (
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
             <span>操作</span>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  className="icon-button"
-                  onClick={(e) => {
-                    e.stopPropagation?.();
-                    setSettingModalOpen(true);
-                  }}
-                  style={{
-                    border: 'none',
-                    width: '24px',
-                    height: '24px',
-                    backgroundColor: 'transparent',
-                    color: 'var(--text)'
-                  }}
-                >
-                  <SettingsIcon width="14" height="14" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>个性化设置</p>
-              </TooltipContent>
-            </Tooltip>
+            <button
+              className="icon-button"
+              title="个性化设置"
+              onClick={(e) => {
+                e.stopPropagation?.();
+                setSettingModalOpen(true);
+              }}
+              style={{
+                border: 'none',
+                width: '24px',
+                height: '24px',
+                backgroundColor: 'transparent',
+                color: 'var(--text)'
+              }}
+            >
+              <SettingsIcon width="14" height="14" />
+            </button>
           </div>
         ),
         size: 80,
@@ -2013,25 +2182,19 @@ export default function PcFundTable({
 
           return (
             <div className="row" style={{ justifyContent: 'center', gap: 4, padding: '8px 0' }}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    className="icon-button danger"
-                    onClick={handleClick}
-                    style={{
-                      width: '28px',
-                      height: '28px',
-                      opacity: 1,
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <TrashIcon width="14" height="14" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>删除</p>
-                </TooltipContent>
-              </Tooltip>
+              <button
+                className="icon-button danger"
+                title="删除"
+                onClick={handleClick}
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  opacity: 1,
+                  cursor: 'pointer'
+                }}
+              >
+                <TrashIcon width="14" height="14" />
+              </button>
             </div>
           );
         }
@@ -2039,8 +2202,6 @@ export default function PcFundTable({
     ],
     [
       currentTab,
-      favorites,
-      sortBy,
       showFullFundName,
       getFundCardProps,
       masked,
@@ -2054,7 +2215,6 @@ export default function PcFundTable({
       onRemoveFunds,
       onMoveFunds,
       setAllSelected,
-      toggleSelected,
       onFundTagsClick
     ]
   );
@@ -2754,30 +2914,24 @@ function BatchRemoveHeader({
       style={{ display: 'inline-flex', alignItems: 'center', gap: 10, width: '100%', justifyContent: 'space-between' }}
     >
       <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <label
-              onClick={(e) => e.stopPropagation?.()}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}
-            >
-              <input
-                ref={ref}
-                type="checkbox"
-                checked={!!checked}
-                onChange={(e) => onToggleAll?.(e.target.checked)}
-                onClick={(e) => e.stopPropagation?.()}
-                style={{ width: 14, height: 14, accentColor: 'var(--primary)', cursor: 'pointer' }}
-                aria-label="全选"
-              />
-              <span className="muted" style={{ fontSize: 12, whiteSpace: 'nowrap' }}>
-                已选 {selectedCount}/{totalCount}
-              </span>
-            </label>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{checked ? '取消全选' : '全选'}</p>
-          </TooltipContent>
-        </Tooltip>
+        <label
+          onClick={(e) => e.stopPropagation?.()}
+          title={checked ? '取消全选' : '全选'}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}
+        >
+          <input
+            ref={ref}
+            type="checkbox"
+            checked={!!checked}
+            onChange={(e) => onToggleAll?.(e.target.checked)}
+            onClick={(e) => e.stopPropagation?.()}
+            style={{ width: 14, height: 14, accentColor: 'var(--primary)', cursor: 'pointer' }}
+            aria-label="全选"
+          />
+          <span className="muted" style={{ fontSize: 12, whiteSpace: 'nowrap' }}>
+            已选 {selectedCount}/{totalCount}
+          </span>
+        </label>
         {selectedCount > 0 && (
           <button
             className="link-button"

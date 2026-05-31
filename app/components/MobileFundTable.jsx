@@ -12,7 +12,6 @@ import { restrictToVerticalAxis, restrictToParentElement } from '@dnd-kit/modifi
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { throttle } from 'lodash';
-import FitText from './FitText';
 import MobileFundCardDrawer from './MobileFundCardDrawer';
 import MobileSettingModal from './MobileSettingModal';
 import MoveGroupModal from './MoveGroupModal';
@@ -38,7 +37,6 @@ import {
 import { storageStore } from '../stores';
 import { asyncPool } from '@/app/lib/asyncHelper';
 import { Badge } from '@/components/ui/badge';
-import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { getTagThemeBadgeProps } from '@/app/components/AddTagDialog';
 import { cn } from '@/lib/utils';
 
@@ -143,41 +141,34 @@ function EditDragHandleCell({ disabled }) {
   );
   if (!rowSortable) return null;
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <span
-          ref={setActivatorRef}
-          className="icon-button fav-button"
-          role="button"
-          aria-label="拖动排序"
-          style={{
-            backgroundColor: 'transparent',
-            touchAction: 'none',
-            cursor: disabled ? 'not-allowed' : 'grab',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            opacity: disabled ? 0.45 : 1
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-          onPointerDown={(e) => {
-            if (disabled) {
-              e.stopPropagation();
-              sonnerToast.info('拖拽基金顺序需要在默认排序下操作');
-            }
-          }}
-          {...(disabled ? {} : rowSortable.activatorProps)}
-          {...(disabled ? {} : rowSortable.listeners)}
-        >
-          <DragIcon width="18" height="18" />
-        </span>
-      </TooltipTrigger>
-      <TooltipContent>
-        <p>拖动排序</p>
-      </TooltipContent>
-    </Tooltip>
+    <span
+      ref={setActivatorRef}
+      className="icon-button fav-button"
+      role="button"
+      aria-label="拖动排序"
+      style={{
+        backgroundColor: 'transparent',
+        touchAction: 'none',
+        cursor: disabled ? 'not-allowed' : 'grab',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        opacity: disabled ? 0.45 : 1
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+      onPointerDown={(e) => {
+        if (disabled) {
+          e.stopPropagation();
+          sonnerToast.info('拖拽基金顺序需要在默认排序下操作');
+        }
+      }}
+      {...(disabled ? {} : rowSortable.activatorProps)}
+      {...(disabled ? {} : rowSortable.listeners)}
+    >
+      <DragIcon width="18" height="18" />
+    </span>
   );
 }
 
@@ -222,30 +213,23 @@ function MobileEditBatchHeader({
           marginLeft: '5px'
         }}
       >
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <label
-              onClick={(e) => e.stopPropagation?.()}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer', flexShrink: 0 }}
-            >
-              <input
-                ref={checkboxRef}
-                type="checkbox"
-                checked={!!checked}
-                onChange={(e) => onToggleAll?.(e.target.checked)}
-                onClick={(e) => e.stopPropagation?.()}
-                style={{ width: 14, height: 14, accentColor: 'var(--primary)', cursor: 'pointer' }}
-                aria-label="全选"
-              />
-              <span className="muted" style={{ fontSize: 12, whiteSpace: 'nowrap' }}>
-                已选 {selectedCount}/{totalCount}
-              </span>
-            </label>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{checked ? '取消全选' : '全选'}</p>
-          </TooltipContent>
-        </Tooltip>
+        <label
+          onClick={(e) => e.stopPropagation?.()}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer', flexShrink: 0 }}
+        >
+          <input
+            ref={checkboxRef}
+            type="checkbox"
+            checked={!!checked}
+            onChange={(e) => onToggleAll?.(e.target.checked)}
+            onClick={(e) => e.stopPropagation?.()}
+            style={{ width: 14, height: 14, accentColor: 'var(--primary)', cursor: 'pointer' }}
+            aria-label="全选"
+          />
+          <span className="muted" style={{ fontSize: 12, whiteSpace: 'nowrap' }}>
+            已选 {selectedCount}/{totalCount}
+          </span>
+        </label>
       </div>
 
       <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
@@ -301,37 +285,30 @@ function MobileEditBatchHeader({
         >
           <TrashIcon width="17" height="17" />
         </button>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type="button"
-              className="icon-button"
-              onClick={(e) => {
-                e.stopPropagation?.();
-                onClose?.();
-              }}
-              aria-label="退出编辑"
-              style={{
-                border: 'none',
-                height: 28,
-                minHeight: 28,
-                width: 28,
-                minWidth: 28,
-                padding: 0,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'transparent',
-                color: 'var(--text)'
-              }}
-            >
-              <CloseIcon width="18" height="18" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>完成</p>
-          </TooltipContent>
-        </Tooltip>
+        <button
+          type="button"
+          className="icon-button"
+          onClick={(e) => {
+            e.stopPropagation?.();
+            onClose?.();
+          }}
+          aria-label="退出编辑"
+          style={{
+            border: 'none',
+            height: 28,
+            minHeight: 28,
+            width: 28,
+            minWidth: 28,
+            padding: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'transparent',
+            color: 'var(--text)'
+          }}
+        >
+          <CloseIcon width="18" height="18" />
+        </button>
       </div>
     </div>
   );
@@ -857,7 +834,7 @@ export default function MobileFundTable({
       const tableEl = tableContainerRef.current;
       const tableRect = tableEl?.getBoundingClientRect();
       if (!tableRect || (tableRect.width === 0 && tableRect.height === 0)) {
-        setShowPortalHeader(false);
+        setShowPortalHeader((prev) => (prev === false ? prev : false));
         return;
       }
 
@@ -866,7 +843,8 @@ export default function MobileFundTable({
       const hasPassedHeader = tableRect.top + headerHeight <= nextStickyTop;
       const hasTableInView = tableRect.bottom > nextStickyTop;
 
-      setShowPortalHeader(hasPassedHeader && hasTableInView);
+      const nextPortalVisible = hasPassedHeader && hasTableInView;
+      setShowPortalHeader((prev) => (prev === nextPortalVisible ? prev : nextPortalVisible));
     };
 
     const throttledVerticalUpdate = throttle(updateVerticalState, 1000 / 60, { leading: true, trailing: true });
@@ -1143,25 +1121,48 @@ export default function MobileFundTable({
 
     let cancelled = false;
     (async () => {
+      const batchResults = {};
+      let updateTimeout = null;
+
+      const triggerBatchUpdate = () => {
+        if (cancelled || Object.keys(batchResults).length === 0) return;
+        setPeriodReturnsByCode((prev) => {
+          let changed = false;
+          const next = { ...prev };
+          for (const [c, val] of Object.entries(batchResults)) {
+            const prevVal = next[c];
+            if (
+              prevVal &&
+              prevVal.week === val.week &&
+              prevVal.month === val.month &&
+              prevVal.month3 === val.month3 &&
+              prevVal.month6 === val.month6 &&
+              prevVal.year1 === val.year1
+            ) {
+              continue;
+            }
+            next[c] = val;
+            changed = true;
+          }
+          return changed ? next : prev;
+        });
+        for (const key of Object.keys(batchResults)) {
+          delete batchResults[key];
+        }
+      };
+
       await asyncPool(4, missing, async (code) => {
         const value = await fetchFundPeriodReturns(code);
         periodReturnsCacheRef.current.set(code, value);
         if (cancelled) return;
-        setPeriodReturnsByCode((prev) => {
-          const prevVal = prev[code];
-          if (
-            prevVal &&
-            prevVal.week === value.week &&
-            prevVal.month === value.month &&
-            prevVal.month3 === value.month3 &&
-            prevVal.month6 === value.month6 &&
-            prevVal.year1 === value.year1
-          ) {
-            return prev;
-          }
-          return { ...prev, [code]: value };
-        });
+
+        batchResults[code] = value;
+
+        if (updateTimeout) clearTimeout(updateTimeout);
+        updateTimeout = setTimeout(triggerBatchUpdate, 100);
       });
+
+      triggerBatchUpdate();
     })();
 
     return () => {
@@ -1243,7 +1244,6 @@ export default function MobileFundTable({
     const showGroupDeleteButton = false;
     const editSelected = code ? editSelectedCodes.has(code) : false;
     const holdingLocked = (currentTab === 'all' || currentTab === 'fav') && !!original.isHoldingLinked;
-    const holdingLinkedTitle = '持仓来自自定义分组汇总，点击选择分组后操作';
 
     if (isEditMode) {
       return (
@@ -1285,39 +1285,27 @@ export default function MobileFundTable({
             />
           </label>
           <div className="title-text">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className={`name-text ${showFullFundName ? 'show-full' : ''}`}>
-                  {holdingLocked ? (
-                    <Tooltip delayDuration={150}>
-                      <TooltipTrigger asChild>
-                        <span
-                          aria-label="已关联持仓"
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            marginRight: 6,
-                            color: 'var(--primary)',
-                            verticalAlign: 'middle',
-                            marginBottom: 2,
-                            position: 'relative',
-                            cursor: 'default'
-                          }}
-                        >
-                          <LinkIcon width="14" height="14" />
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent>持仓来自自定义分组汇总</TooltipContent>
-                    </Tooltip>
-                  ) : null}
-                  <ConsecutiveTrendBadge trend={fundExtraDataByCode?.[code]?.consecutiveTrend} />
-                  {info.getValue() ?? '—'}
+            <span className={`name-text ${showFullFundName ? 'show-full' : ''}`}>
+              {holdingLocked ? (
+                <span
+                  aria-label="已关联持仓"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    marginRight: 6,
+                    color: 'var(--primary)',
+                    verticalAlign: 'middle',
+                    marginBottom: 2,
+                    position: 'relative',
+                    cursor: 'default'
+                  }}
+                >
+                  <LinkIcon width="14" height="14" />
                 </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{isUpdated ? '今日净值已更新' : undefined}</p>
-              </TooltipContent>
-            </Tooltip>
+              ) : null}
+              <ConsecutiveTrendBadge trend={fundExtraDataByCode?.[code]?.consecutiveTrend} />
+              {info.getValue() ?? '—'}
+            </span>
             {holdingAmountDisplay ? (
               <span className="muted code-text">
                 {masked ? <span className="mask-text">******</span> : holdingAmountDisplay}
@@ -1343,160 +1331,120 @@ export default function MobileFundTable({
       >
         {isGroupTab ? (
           showGroupDeleteButton ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  className="icon-button"
-                  onClick={(e) => {
-                    e.stopPropagation?.();
-                    onRemoveFundRef.current?.(original);
-                  }}
-                  style={{
-                    backgroundColor: 'transparent',
-                    flexShrink: 0,
-                    opacity: 1,
-                    cursor: 'pointer',
-                    border: 'none',
-                    height: 26,
-                    width: 26,
-                    marginRight: 4
-                  }}
-                >
-                  <TrashIcon width="18" height="18" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>删除</p>
-              </TooltipContent>
-            </Tooltip>
+            <button
+              type="button"
+              className="icon-button"
+              onClick={(e) => {
+                e.stopPropagation?.();
+                onRemoveFundRef.current?.(original);
+              }}
+              style={{
+                backgroundColor: 'transparent',
+                flexShrink: 0,
+                opacity: 1,
+                cursor: 'pointer',
+                border: 'none',
+                height: 26,
+                width: 26,
+                marginRight: 4
+              }}
+            >
+              <TrashIcon width="18" height="18" />
+            </button>
           ) : null
         ) : (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                className={`icon-button fav-button ${isFavorites ? 'active' : ''}`}
-                onClick={(e) => {
-                  e.stopPropagation?.();
-                  onToggleFavoriteRef.current?.(original);
-                }}
-                style={{ backgroundColor: 'transparent' }}
-              >
-                <StarIcon width="18" height="18" filled={isFavorites} />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{isFavorites ? '取消自选' : '添加自选'}</p>
-            </TooltipContent>
-          </Tooltip>
+          <button
+            className={`icon-button fav-button ${isFavorites ? 'active' : ''}`}
+            onClick={(e) => {
+              e.stopPropagation?.();
+              onToggleFavoriteRef.current?.(original);
+            }}
+            style={{ backgroundColor: 'transparent' }}
+          >
+            <StarIcon width="18" height="18" filled={isFavorites} />
+          </button>
         )}
         <div className="title-text">
-          <Tooltip>
-            <TooltipTrigger asChild>
+          <span
+            className={`name-text ${showFullFundName ? 'show-full' : ''}`}
+            role={onOpenCardSheet ? 'button' : undefined}
+            tabIndex={onOpenCardSheet ? 0 : undefined}
+            style={onOpenCardSheet ? { cursor: 'pointer' } : undefined}
+            onClick={(e) => {
+              if (onOpenCardSheet) {
+                e.stopPropagation?.();
+                onOpenCardSheet(original);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (onOpenCardSheet && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault();
+                onOpenCardSheet(original);
+              }
+            }}
+          >
+            {holdingLocked ? (
               <span
-                className={`name-text ${showFullFundName ? 'show-full' : ''}`}
-                role={onOpenCardSheet ? 'button' : undefined}
-                tabIndex={onOpenCardSheet ? 0 : undefined}
-                style={onOpenCardSheet ? { cursor: 'pointer' } : undefined}
-                onClick={(e) => {
-                  if (onOpenCardSheet) {
-                    e.stopPropagation?.();
-                    onOpenCardSheet(original);
-                  }
-                }}
-                onKeyDown={(e) => {
-                  if (onOpenCardSheet && (e.key === 'Enter' || e.key === ' ')) {
-                    e.preventDefault();
-                    onOpenCardSheet(original);
-                  }
+                aria-label="已关联持仓"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  marginRight: 6,
+                  color: 'var(--primary)',
+                  verticalAlign: 'middle',
+                  bottom: 2,
+                  position: 'relative',
+                  cursor: 'default'
                 }}
               >
-                {holdingLocked ? (
-                  <Tooltip delayDuration={150}>
-                    <TooltipTrigger asChild>
-                      <span
-                        aria-label="已关联持仓"
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          marginRight: 6,
-                          color: 'var(--primary)',
-                          verticalAlign: 'middle',
-                          bottom: 2,
-                          position: 'relative',
-                          cursor: 'default'
-                        }}
-                      >
-                        <LinkIcon width="14" height="14" />
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent>持仓来自自定义分组汇总</TooltipContent>
-                  </Tooltip>
-                ) : null}
-                <ConsecutiveTrendBadge trend={fundExtraDataByCode?.[code]?.consecutiveTrend} />
-                {info.getValue() ?? '—'}
+                <LinkIcon width="14" height="14" />
               </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{isUpdated ? '今日净值已更新' : onOpenCardSheet ? '点击查看卡片' : ''}</p>
-            </TooltipContent>
-          </Tooltip>
+            ) : null}
+            <ConsecutiveTrendBadge trend={fundExtraDataByCode?.[code]?.consecutiveTrend} />
+            {info.getValue() ?? '—'}
+          </span>
           {holdingAmountDisplay ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span
-                  className="muted code-text"
-                  role="button"
-                  tabIndex={0}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(e) => {
-                    e.stopPropagation?.();
-                    onHoldingAmountClickRef.current?.(original, { hasHolding: true });
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      onHoldingAmountClickRef.current?.(original, { hasHolding: true });
-                    }
-                  }}
-                >
-                  {masked ? <span className="mask-text">******</span> : holdingAmountDisplay}
-                  {hasDca && <span className="dca-indicator">定</span>}
-                  {isUpdated && <span className="updated-indicator">✓</span>}
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{holdingLocked ? holdingLinkedTitle : '编辑持仓'}</p>
-              </TooltipContent>
-            </Tooltip>
+            <span
+              className="muted code-text"
+              role="button"
+              tabIndex={0}
+              style={{ cursor: 'pointer' }}
+              onClick={(e) => {
+                e.stopPropagation?.();
+                onHoldingAmountClickRef.current?.(original, { hasHolding: true });
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onHoldingAmountClickRef.current?.(original, { hasHolding: true });
+                }
+              }}
+            >
+              {masked ? <span className="mask-text">******</span> : holdingAmountDisplay}
+              {hasDca && <span className="dca-indicator">定</span>}
+              {isUpdated && <span className="updated-indicator">✓</span>}
+            </span>
           ) : code ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span
-                  className="muted code-text"
-                  role="button"
-                  tabIndex={0}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(e) => {
-                    e.stopPropagation?.();
-                    onHoldingAmountClickRef.current?.(original, { hasHolding: false });
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      onHoldingAmountClickRef.current?.(original, { hasHolding: false });
-                    }
-                  }}
-                >
-                  #{code}
-                  {hasDca && <span className="dca-indicator">定</span>}
-                  {isUpdated && <span className="updated-indicator">✓</span>}
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{holdingLocked ? holdingLinkedTitle : '编辑持仓'}</p>
-              </TooltipContent>
-            </Tooltip>
+            <span
+              className="muted code-text"
+              role="button"
+              tabIndex={0}
+              style={{ cursor: 'pointer' }}
+              onClick={(e) => {
+                e.stopPropagation?.();
+                onHoldingAmountClickRef.current?.(original, { hasHolding: false });
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onHoldingAmountClickRef.current?.(original, { hasHolding: false });
+                }
+              }}
+            >
+              #{code}
+              {hasDca && <span className="dca-indicator">定</span>}
+              {isUpdated && <span className="updated-indicator">✓</span>}
+            </span>
           ) : null}
         </div>
       </div>
@@ -1537,70 +1485,56 @@ export default function MobileFundTable({
           }
           return (
             <div style={{ display: 'flex', alignItems: 'center', width: '100%', gap: 6 }}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    className="icon-button"
-                    onClick={(e) => {
-                      e.stopPropagation?.();
-                      setSettingModalOpen(true);
-                    }}
-                    style={{
-                      border: 'none',
-                      width: '28px',
-                      height: '28px',
-                      minWidth: '28px',
-                      backgroundColor: 'transparent',
-                      color: 'var(--text)',
-                      flexShrink: 0,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <SettingsIcon width="18" height="18" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>个性化设置</p>
-                </TooltipContent>
-              </Tooltip>
+              <button
+                type="button"
+                className="icon-button"
+                onClick={(e) => {
+                  e.stopPropagation?.();
+                  setSettingModalOpen(true);
+                }}
+                style={{
+                  border: 'none',
+                  width: '28px',
+                  height: '28px',
+                  minWidth: '28px',
+                  backgroundColor: 'transparent',
+                  color: 'var(--text)',
+                  flexShrink: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <SettingsIcon width="18" height="18" />
+              </button>
               {true && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      type="button"
-                      className="icon-button"
-                      onClick={(e) => {
-                        e.stopPropagation?.();
-                        clearEditLongPressTimer();
-                        setIsEditMode(true);
-                        setEditSelectedCodes(new Set());
-                      }}
-                      aria-label="编辑"
-                      style={{
-                        border: 'none',
-                        width: '28px',
-                        height: '28px',
-                        minWidth: '28px',
-                        backgroundColor: 'transparent',
-                        color: 'var(--text)',
-                        flexShrink: 0,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        opacity: 1,
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <PencilIcon width="18" height="18" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>编辑</p>
-                  </TooltipContent>
-                </Tooltip>
+                <button
+                  type="button"
+                  className="icon-button"
+                  onClick={(e) => {
+                    e.stopPropagation?.();
+                    clearEditLongPressTimer();
+                    setIsEditMode(true);
+                    setEditSelectedCodes(new Set());
+                  }}
+                  aria-label="编辑"
+                  style={{
+                    border: 'none',
+                    width: '28px',
+                    height: '28px',
+                    minWidth: '28px',
+                    backgroundColor: 'transparent',
+                    color: 'var(--text)',
+                    flexShrink: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    opacity: 1,
+                    cursor: 'pointer'
+                  }}
+                >
+                  <PencilIcon width="18" height="18" />
+                </button>
               )}
             </div>
           );
@@ -1623,42 +1557,35 @@ export default function MobileFundTable({
           const canMove = sortBy === 'default' && idx > 0 && onReorder;
           return (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    className="link-button"
-                    disabled={idx <= 0}
-                    aria-label={idx <= 0 ? '已在最前' : '移到最前'}
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 600,
-                      padding: '4px 6px',
-                      border: 'none',
-                      background: 'transparent',
-                      color: canMove ? 'var(--primary)' : 'var(--muted)',
-                      cursor: !canMove ? 'not-allowed' : 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (sortBy !== 'default') {
-                        sonnerToast.info('拖拽基金顺序需要在默认排序下操作');
-                        return;
-                      }
-                      if (idx <= 0 || !onReorder) return;
-                      onReorder(idx, 0);
-                    }}
-                  >
-                    <ArrowUpToLineIcon width={18} height={18} aria-hidden />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{idx <= 0 ? '已在最前' : '移到最前'}</p>
-                </TooltipContent>
-              </Tooltip>
+              <button
+                type="button"
+                className="link-button"
+                disabled={idx <= 0}
+                aria-label={idx <= 0 ? '已在最前' : '移到最前'}
+                style={{
+                  fontSize: 12,
+                  fontWeight: 600,
+                  padding: '4px 6px',
+                  border: 'none',
+                  background: 'transparent',
+                  color: canMove ? 'var(--primary)' : 'var(--muted)',
+                  cursor: !canMove ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (sortBy !== 'default') {
+                    sonnerToast.info('拖拽基金顺序需要在默认排序下操作');
+                    return;
+                  }
+                  if (idx <= 0 || !onReorder) return;
+                  onReorder(idx, 0);
+                }}
+              >
+                <ArrowUpToLineIcon width={18} height={18} aria-hidden />
+              </button>
             </div>
           );
         },
@@ -1686,66 +1613,59 @@ export default function MobileFundTable({
           const list = Array.isArray(original.fundTags) ? original.fundTags : [];
           const hasTags = list.length > 0;
           return (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation?.();
-                    onFundTagsClickRef.current?.(original);
-                  }}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation?.();
+                onFundTagsClickRef.current?.(original);
+              }}
+              style={{
+                width: '100%',
+                minWidth: 0,
+                border: 'none',
+                background: 'transparent',
+                padding: '2px 0',
+                cursor: onFundTagsClick ? 'pointer' : 'default',
+                textAlign: 'left'
+              }}
+              disabled={!onFundTagsClick}
+            >
+              {hasTags ? (
+                <div
                   style={{
-                    width: '100%',
-                    minWidth: 0,
-                    border: 'none',
-                    background: 'transparent',
-                    padding: '2px 0',
-                    cursor: onFundTagsClick ? 'pointer' : 'default',
-                    textAlign: 'left'
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: 4,
+                    justifyContent: 'flex-end'
                   }}
-                  disabled={!onFundTagsClick}
                 >
-                  {hasTags ? (
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: 4,
-                        justifyContent: 'flex-end'
-                      }}
-                    >
-                      {list.map((raw, idx) => {
-                        const item =
-                          raw && typeof raw === 'object' && raw.name != null
-                            ? {
-                                name: String(raw.name).trim(),
-                                theme: String(raw.theme ?? 'default').trim() || 'default'
-                              }
-                            : { name: String(raw).trim(), theme: 'default' };
-                        if (!item.name) return null;
-                        const { variant, className: themeCls } = getTagThemeBadgeProps(item.theme);
-                        return (
-                          <Badge
-                            key={`${item.name}-${idx}`}
-                            variant={variant}
-                            className={cn('text-[11px] font-normal', themeCls)}
-                          >
-                            {item.name}
-                          </Badge>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <div className="muted" style={{ textAlign: 'right', fontSize: '12px' }}>
-                      —
-                    </div>
-                  )}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{onFundTagsClick ? '编辑标签' : undefined}</p>
-              </TooltipContent>
-            </Tooltip>
+                  {list.map((raw, idx) => {
+                    const item =
+                      raw && typeof raw === 'object' && raw.name != null
+                        ? {
+                            name: String(raw.name).trim(),
+                            theme: String(raw.theme ?? 'default').trim() || 'default'
+                          }
+                        : { name: String(raw).trim(), theme: 'default' };
+                    if (!item.name) return null;
+                    const { variant, className: themeCls } = getTagThemeBadgeProps(item.theme);
+                    return (
+                      <Badge
+                        key={`${item.name}-${idx}`}
+                        variant={variant}
+                        className={cn('text-[11px] font-normal', themeCls)}
+                      >
+                        {item.name}
+                      </Badge>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="muted" style={{ textAlign: 'right', fontSize: '12px' }}>
+                  —
+                </div>
+              )}
+            </button>
           );
         },
         meta: { align: 'right', cellClassName: 'tags-cell', width: columnWidthMap.tags ?? 120 }
@@ -1777,15 +1697,19 @@ export default function MobileFundTable({
               }}
             >
               {pctText != null ? (
-                <FitText
+                <div
                   className={pctCls}
-                  style={{ fontWeight: 700, textAlign: 'right' }}
-                  maxFontSize={12}
-                  minFontSize={9}
-                  as="div"
+                  style={{
+                    fontWeight: 700,
+                    textAlign: 'right',
+                    fontSize: 'clamp(9px, 2.5vw, 12px)',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
                 >
                   {pctText}
-                </FitText>
+                </div>
               ) : null}
               <span
                 style={{
@@ -1816,15 +1740,19 @@ export default function MobileFundTable({
           const cls = value > 0 ? 'up' : value < 0 ? 'down' : '';
           const text = value != null && Number.isFinite(value) ? `${value > 0 ? '+' : ''}${value.toFixed(2)}%` : '—';
           return (
-            <FitText
+            <div
               className={cls}
-              style={{ fontWeight: 700, textAlign: 'right' }}
-              maxFontSize={14}
-              minFontSize={10}
-              as="div"
+              style={{
+                fontWeight: 700,
+                textAlign: 'right',
+                fontSize: 'clamp(10px, 3vw, 14px)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}
             >
               {text}
-            </FitText>
+            </div>
           );
         },
         meta: { align: 'right', cellClassName: 'period-return-cell', width: columnWidthMap.period1w ?? 72 }
@@ -1839,15 +1767,19 @@ export default function MobileFundTable({
           const cls = value > 0 ? 'up' : value < 0 ? 'down' : '';
           const text = value != null && Number.isFinite(value) ? `${value > 0 ? '+' : ''}${value.toFixed(2)}%` : '—';
           return (
-            <FitText
+            <div
               className={cls}
-              style={{ fontWeight: 700, textAlign: 'right' }}
-              maxFontSize={14}
-              minFontSize={10}
-              as="div"
+              style={{
+                fontWeight: 700,
+                textAlign: 'right',
+                fontSize: 'clamp(10px, 3vw, 14px)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}
             >
               {text}
-            </FitText>
+            </div>
           );
         },
         meta: { align: 'right', cellClassName: 'period-return-cell', width: columnWidthMap.period1m ?? 72 }
@@ -1862,15 +1794,19 @@ export default function MobileFundTable({
           const cls = value > 0 ? 'up' : value < 0 ? 'down' : '';
           const text = value != null && Number.isFinite(value) ? `${value > 0 ? '+' : ''}${value.toFixed(2)}%` : '—';
           return (
-            <FitText
+            <div
               className={cls}
-              style={{ fontWeight: 700, textAlign: 'right' }}
-              maxFontSize={14}
-              minFontSize={10}
-              as="div"
+              style={{
+                fontWeight: 700,
+                textAlign: 'right',
+                fontSize: 'clamp(10px, 3vw, 14px)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}
             >
               {text}
-            </FitText>
+            </div>
           );
         },
         meta: { align: 'right', cellClassName: 'period-return-cell', width: columnWidthMap.period3m ?? 72 }
@@ -1885,15 +1821,19 @@ export default function MobileFundTable({
           const cls = value > 0 ? 'up' : value < 0 ? 'down' : '';
           const text = value != null && Number.isFinite(value) ? `${value > 0 ? '+' : ''}${value.toFixed(2)}%` : '—';
           return (
-            <FitText
+            <div
               className={cls}
-              style={{ fontWeight: 700, textAlign: 'right' }}
-              maxFontSize={14}
-              minFontSize={10}
-              as="div"
+              style={{
+                fontWeight: 700,
+                textAlign: 'right',
+                fontSize: 'clamp(10px, 3vw, 14px)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}
             >
               {text}
-            </FitText>
+            </div>
           );
         },
         meta: { align: 'right', cellClassName: 'period-return-cell', width: columnWidthMap.period6m ?? 72 }
@@ -1908,15 +1848,19 @@ export default function MobileFundTable({
           const cls = value > 0 ? 'up' : value < 0 ? 'down' : '';
           const text = value != null && Number.isFinite(value) ? `${value > 0 ? '+' : ''}${value.toFixed(2)}%` : '—';
           return (
-            <FitText
+            <div
               className={cls}
-              style={{ fontWeight: 700, textAlign: 'right' }}
-              maxFontSize={14}
-              minFontSize={10}
-              as="div"
+              style={{
+                fontWeight: 700,
+                textAlign: 'right',
+                fontSize: 'clamp(10px, 3vw, 14px)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}
             >
               {text}
-            </FitText>
+            </div>
           );
         },
         meta: { align: 'right', cellClassName: 'period-return-cell', width: columnWidthMap.period1y ?? 72 }
@@ -1936,9 +1880,19 @@ export default function MobileFundTable({
           }
           const text = `${(value * 100).toFixed(2)}%`;
           return (
-            <FitText style={{ fontWeight: 700, textAlign: 'right' }} maxFontSize={14} minFontSize={10}>
+            <span
+              style={{
+                fontWeight: 700,
+                textAlign: 'right',
+                fontSize: 'clamp(10px, 3vw, 14px)',
+                display: 'block',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}
+            >
               {masked ? <span className="mask-text">******</span> : text}
-            </FitText>
+            </span>
           );
         },
         meta: { align: 'right', cellClassName: 'holding-ratio-cell', width: columnWidthMap.holdingRatio ?? 72 }
@@ -1956,9 +1910,19 @@ export default function MobileFundTable({
             );
           }
           return (
-            <FitText style={{ fontWeight: 700, textAlign: 'right' }} maxFontSize={14} minFontSize={10}>
+            <span
+              style={{
+                fontWeight: 700,
+                textAlign: 'right',
+                fontSize: 'clamp(10px, 3vw, 14px)',
+                display: 'block',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}
+            >
               {masked ? <span className="mask-text">******</span> : (info.getValue() ?? '—')}
-            </FitText>
+            </span>
           );
         },
         meta: { align: 'right', cellClassName: 'holding-cost-cell', width: columnWidthMap.holdingCost ?? 80 }
@@ -1976,9 +1940,19 @@ export default function MobileFundTable({
             );
           }
           return (
-            <FitText style={{ fontWeight: 700, textAlign: 'right' }} maxFontSize={14} minFontSize={10}>
+            <span
+              style={{
+                fontWeight: 700,
+                textAlign: 'right',
+                fontSize: 'clamp(10px, 3vw, 14px)',
+                display: 'block',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}
+            >
               {masked ? <span className="mask-text">******</span> : (info.getValue() ?? '—')}
-            </FitText>
+            </span>
           );
         },
         meta: { align: 'right', cellClassName: 'cost-nav-cell', width: columnWidthMap.costNav ?? 64 }
@@ -1993,9 +1967,17 @@ export default function MobileFundTable({
           return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0 }}>
               <span style={{ display: 'block', width: '100%', fontWeight: 700 }}>
-                <FitText maxFontSize={14} minFontSize={10}>
+                <span
+                  style={{
+                    fontSize: 'clamp(10px, 3vw, 14px)',
+                    display: 'block',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
                   {info.getValue() ?? '—'}
-                </FitText>
+                </span>
               </span>
               <span className="muted" style={{ fontSize: '10px' }}>
                 {displayDate}
@@ -2018,9 +2000,17 @@ export default function MobileFundTable({
           return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0 }}>
               <span style={{ display: 'block', width: '100%', fontWeight: 700 }}>
-                <FitText maxFontSize={14} minFontSize={10}>
+                <span
+                  style={{
+                    fontSize: 'clamp(10px, 3vw, 14px)',
+                    display: 'block',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
                   {estimateNav ?? '—'}
-                </FitText>
+                </span>
               </span>
               {hasEstimateNav && displayDate && displayDate !== '-' ? (
                 <span className="muted" style={{ fontSize: '10px' }}>
@@ -2044,9 +2034,17 @@ export default function MobileFundTable({
           return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0 }}>
               <span className={cls} style={{ display: 'block', width: '100%', fontWeight: 700 }}>
-                <FitText maxFontSize={14} minFontSize={10}>
+                <span
+                  style={{
+                    fontSize: 'clamp(10px, 3vw, 14px)',
+                    display: 'block',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
                   {info.getValue() ?? '—'}
-                </FitText>
+                </span>
               </span>
               <span className="muted" style={{ fontSize: '10px' }}>
                 {displayDate}
@@ -2071,9 +2069,17 @@ export default function MobileFundTable({
           return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0 }}>
               <span className={cls} style={{ display: 'block', width: '100%', fontWeight: 700 }}>
-                <FitText maxFontSize={14} minFontSize={10}>
+                <span
+                  style={{
+                    fontSize: 'clamp(10px, 3vw, 14px)',
+                    display: 'block',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
                   {text ?? '—'}
-                </FitText>
+                </span>
               </span>
               {hasText && displayTime && displayTime !== '-' ? (
                 <span className="muted" style={{ fontSize: '10px' }}>
@@ -2099,21 +2105,26 @@ export default function MobileFundTable({
           return (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0 }}>
               <span className={cls} style={{ display: 'block', width: '100%', fontWeight: 700 }}>
-                <FitText maxFontSize={14} minFontSize={10}>
+                <span
+                  style={{
+                    fontSize: 'clamp(10px, 3vw, 14px)',
+                    display: 'block',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
                   {text ?? '—'}
-                </FitText>
+                </span>
               </span>
               {hasText && displayDate ? (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="muted" style={{ fontSize: '10px' }}>
-                      {displayDate}
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{rawDate && rawDate !== displayDate ? rawDate : undefined}</p>
-                  </TooltipContent>
-                </Tooltip>
+                <span
+                  className="muted"
+                  style={{ fontSize: '10px' }}
+                  title={rawDate && rawDate !== displayDate ? rawDate : undefined}
+                >
+                  {displayDate}
+                </span>
               ) : null}
             </div>
           );
@@ -2134,18 +2145,34 @@ export default function MobileFundTable({
           return (
             <div style={{ width: '100%' }}>
               <span className={cls} style={{ display: 'block', width: '100%', fontWeight: 700 }}>
-                <FitText maxFontSize={14} minFontSize={10}>
+                <span
+                  style={{
+                    fontSize: 'clamp(10px, 3vw, 14px)',
+                    display: 'block',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
                   {masked && hasProfit ? <span className="mask-text">******</span> : amountStr}
-                </FitText>
+                </span>
               </span>
               {hasProfit && percentStr && !masked ? (
                 <span
                   className={`${cls} estimate-profit-percent`}
                   style={{ display: 'block', width: '100%', fontSize: '0.75em', opacity: 0.9, fontWeight: 500 }}
                 >
-                  <FitText maxFontSize={11} minFontSize={9}>
+                  <span
+                    style={{
+                      fontSize: 'clamp(9px, 2.3vw, 11px)',
+                      display: 'block',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis'
+                    }}
+                  >
                     {percentStr}
-                  </FitText>
+                  </span>
                 </span>
               ) : null}
             </div>
@@ -2183,18 +2210,34 @@ export default function MobileFundTable({
           return (
             <div style={{ width: '100%' }}>
               <span className={cls} style={{ display: 'block', width: '100%', fontWeight: 700 }}>
-                <FitText maxFontSize={14} minFontSize={10}>
+                <span
+                  style={{
+                    fontSize: 'clamp(10px, 3vw, 14px)',
+                    display: 'block',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
                   {masked && hasProfit ? <span className="mask-text">******</span> : amountStr}
-                </FitText>
+                </span>
               </span>
               {percentStr && !masked ? (
                 <span
                   className={`${cls} today-profit-percent`}
                   style={{ display: 'block', width: '100%', fontSize: '0.75em', opacity: 0.9, fontWeight: 500 }}
                 >
-                  <FitText maxFontSize={11} minFontSize={9}>
+                  <span
+                    style={{
+                      fontSize: 'clamp(9px, 2.3vw, 11px)',
+                      display: 'block',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis'
+                    }}
+                  >
                     {percentStr}
-                  </FitText>
+                  </span>
                 </span>
               ) : null}
             </div>
@@ -2218,18 +2261,34 @@ export default function MobileFundTable({
           return (
             <div style={{ width: '100%' }}>
               <span className={cls} style={{ display: 'block', width: '100%', fontWeight: 700 }}>
-                <FitText maxFontSize={14} minFontSize={10}>
+                <span
+                  style={{
+                    fontSize: 'clamp(10px, 3vw, 14px)',
+                    display: 'block',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
                   {masked && hasProfit ? <span className="mask-text">******</span> : amountStr}
-                </FitText>
+                </span>
               </span>
               {percentStr && !masked ? (
                 <span
                   className={`${pctCls} yesterday-profit-percent`}
                   style={{ display: 'block', width: '100%', fontSize: '0.75em', opacity: 0.9, fontWeight: 500 }}
                 >
-                  <FitText maxFontSize={11} minFontSize={9}>
+                  <span
+                    style={{
+                      fontSize: 'clamp(9px, 2.3vw, 11px)',
+                      display: 'block',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis'
+                    }}
+                  >
                     {percentStr}
-                  </FitText>
+                  </span>
                 </span>
               ) : null}
             </div>
@@ -2250,18 +2309,34 @@ export default function MobileFundTable({
           return (
             <div style={{ width: '100%' }}>
               <span className={cls} style={{ display: 'block', width: '100%', fontWeight: 700 }}>
-                <FitText maxFontSize={14} minFontSize={10}>
+                <span
+                  style={{
+                    fontSize: 'clamp(10px, 3vw, 14px)',
+                    display: 'block',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
                   {masked && hasTotal ? <span className="mask-text">******</span> : amountStr}
-                </FitText>
+                </span>
               </span>
               {percentStr && !masked ? (
                 <span
                   className={`${cls} holding-profit-percent`}
                   style={{ display: 'block', width: '100%', fontSize: '0.75em', opacity: 0.9, fontWeight: 500 }}
                 >
-                  <FitText maxFontSize={11} minFontSize={9}>
+                  <span
+                    style={{
+                      fontSize: 'clamp(9px, 2.3vw, 11px)',
+                      display: 'block',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis'
+                    }}
+                  >
                     {percentStr}
-                  </FitText>
+                  </span>
                 </span>
               ) : null}
             </div>
@@ -2271,8 +2346,6 @@ export default function MobileFundTable({
       }
     ],
     [
-      currentTab,
-      favorites,
       columnWidthMap,
       showFullFundName,
       getFundCardProps,
@@ -2289,7 +2362,6 @@ export default function MobileFundTable({
       masked,
       onReorder,
       data,
-      selectableCodes,
       batchSelectableCount,
       setAllEditSelected,
       onFundTagsClick
@@ -2406,7 +2478,7 @@ export default function MobileFundTable({
     };
   }, []);
 
-  const mobileGridLayout = (() => {
+  const mobileGridLayout = useMemo(() => {
     if (!headerGroup?.headers?.length) return { gridTemplateColumns: '', minWidth: undefined };
     const gap = 12;
     const widths = headerGroup.headers.map((h) => h.column.columnDef.meta?.width ?? 80);
@@ -2415,7 +2487,7 @@ export default function MobileFundTable({
       gridTemplateColumns: widths.map((w) => `${w}px`).join(' '),
       minWidth: widths.reduce((a, b) => a + b, 0) + (widths.length - 1) * gap
     };
-  })();
+  }, [headerGroup?.headers, columnWidthMap]);
 
   const getPinClass = (columnId, isHeader) => {
     if (columnId === 'fundName') {
