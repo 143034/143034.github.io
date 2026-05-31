@@ -17,6 +17,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import MobileFundCardDrawer from './MobileFundCardDrawer';
 import FundCard from './FundCard';
 import { Spinner } from '@/components/ui/spinner';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 function FundDetailDialog({ cardDialogRow, getFundCardProps, setCardDialogRow}) {
   return (
@@ -155,21 +156,28 @@ export default function MarketTab({ onAddFund, getFundCardProps }) {
           return (
             <div className="w-full">
               <div className="flex items-start gap-1.5 mb-1">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (!isAdded && onAddFund) {
-                      onAddFund({ code: fund.bzdm, name: fund.jjjc });
-                    }
-                  }}
-                  className={cn(
-                    "focus:outline-none flex-shrink-0 mt-[2px]", 
-                    isAdded ? "text-[var(--success)] cursor-default" : "text-muted-foreground opacity-50 hover:opacity-100 hover:text-primary transition-colors cursor-pointer"
-                  )}
-                  disabled={isAdded}
-                >
-                  {isAdded ? <CheckCircle size={16} /> : <PlusCircle size={16} />}
-                </button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!isAdded && onAddFund) {
+                          onAddFund({ code: fund.bzdm, name: fund.jjjc });
+                        }
+                      }}
+                      className={cn(
+                        "focus:outline-none flex-shrink-0 mt-[2px]", 
+                        isAdded ? "text-[var(--success)] cursor-default" : "text-muted-foreground opacity-50 hover:opacity-100 hover:text-primary transition-colors cursor-pointer"
+                      )}
+                      disabled={isAdded}
+                    >
+                      {isAdded ? <CheckCircle size={16} /> : <PlusCircle size={16} />}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{isAdded ? '已添加' : '添加'}</p>
+                  </TooltipContent>
+                </Tooltip>
                 <span 
                   className="font-medium text-sm whitespace-normal break-all leading-snug cursor-pointer hover:text-primary transition-colors"
                   onClick={() => setDetailFund(fund)}
