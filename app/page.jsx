@@ -2,7 +2,10 @@
 
 import { useEffect, useRef, useState, useMemo, useCallback, useTransition, useDeferredValue } from 'react';
 import dynamic from 'next/dynamic';
-import ScanButton from './components/ScanButton';
+import SearchBar from './components/SearchBar';
+import SummaryTabContent from './components/SummaryTabContent';
+import FundListView from './components/FundListView';
+import NavLayout from './components/NavLayout';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
@@ -4295,609 +4298,547 @@ export default function HomePage() {
   };
 
   return (
-    <>
-      <PcSideNav value={mainTab} onChange={setMainTab} />
-      <div ref={containerRef} className={containerClassName} style={{ width: isMobile ? '100%' : containerWidth }}>
-        <AnimatePresence>
-          {showThemeTransition && (
-            <motion.div
-              className="theme-transition-overlay"
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <motion.div
-                className="theme-transition-circle"
-                initial={{ scale: 0, opacity: 0.5 }}
-                animate={{ scale: 2.5, opacity: 0 }}
-                transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                onAnimationComplete={() => setShowThemeTransition(false)}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <div
-          className="mobile-main-tab-panel mobile-main-tab-panel--home"
-          style={{ display: mobileHomeTabVisible ? 'contents' : 'none' }}
-          aria-hidden={!mobileHomeTabVisible || undefined}
-        >
-          <>
-            <Announcement />
-            <div className="navbar glass" ref={navbarRef}>
-              {refreshing && <div className="loading-bar"></div>}
-              <div className={`brand ${isSearchFocused || selectedFunds.length > 0 ? 'search-focused-sibling' : ''}`}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div
-                      style={{
-                        width: 24,
-                        height: 24,
-                        marginRight: 4,
-                        position: 'relative',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        overflow: 'hidden'
-                      }}
-                    >
-                      {/* 同步中图标 */}
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        style={{
-                          position: 'absolute',
-                          inset: 0,
-                          margin: 'auto',
-                          opacity: isSyncing ? 1 : 0,
-                          transform: isSyncing ? 'translateY(0px)' : 'translateY(4px)',
-                          transition: 'opacity 0.25s ease, transform 0.25s ease'
-                        }}
-                      >
-                        <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" stroke="var(--primary)" />
-                        <path d="M12 12v9" stroke="var(--accent)" />
-                        <path d="m16 16-4-4-4 4" stroke="var(--accent)" />
-                      </svg>
-                      {/* 默认图标 */}
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        style={{
-                          position: 'absolute',
-                          inset: 0,
-                          margin: 'auto',
-                          opacity: isSyncing ? 0 : 1,
-                          transform: isSyncing ? 'translateY(-4px)' : 'translateY(0px)',
-                          transition: 'opacity 0.25s ease, transform 0.25s ease'
-                        }}
-                      >
-                        <circle cx="12" cy="12" r="10" stroke="var(--accent)" strokeWidth="2" />
-                        <path d="M5 14c2-4 7-6 14-5" stroke="var(--primary)" strokeWidth="2" />
-                      </svg>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{isSyncing ? '正在同步到云端...' : undefined}</p>
-                  </TooltipContent>
-                </Tooltip>
-                <span>基估宝</span>
-              </div>
-              <div
-                className={`glass add-fund-section navbar-add-fund ${isSearchFocused || selectedFunds.length > 0 ? 'search-focused' : ''}`}
-                role="region"
-                aria-label="添加基金"
-              >
-                <div className="search-container" ref={dropdownRef}>
-                  {selectedFunds.length > 0 && (
-                    <div className="selected-inline-chips" style={{ marginBottom: 8, marginLeft: 0 }}>
-                      {selectedFunds.map((fund) => (
-                        <div key={fund.CODE} className="fund-chip">
-                          <span>{fund.NAME}</span>
-                          <button onClick={() => toggleSelectFund(fund)} className="remove-chip">
-                            <CloseIcon width="14" height="14" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <form className="form" onSubmit={addFund}>
-                    <div
-                      className="search-input-wrapper"
-                      style={{ flex: 1, gap: 8, alignItems: 'center', flexWrap: 'wrap' }}
-                    >
-                      <span className="navbar-search-icon" aria-hidden="true">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                          <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-                          <path d="M16.5 16.5L21 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                        </svg>
-                      </span>
-                      <div className="input navbar-input-shell" style={{ display: 'flex', alignItems: 'center' }}>
-                        <input
-                          ref={inputRef}
-                          className="navbar-input-field"
-                          placeholder="搜索基金名称或代码..."
-                          value={searchTerm}
-                          onChange={handleSearchInput}
-                          onFocus={() => {
-                            setShowDropdown(true);
-                            setIsSearchFocused(true);
-                          }}
-                          onBlur={() => {
-                            // 延迟关闭，以允许点击搜索结果
-                            setTimeout(() => setIsSearchFocused(false), 200);
-                          }}
-                          style={{ flex: 1 }}
-                        />
-                        <div style={{ marginRight: 8, display: 'flex', alignItems: 'center' }}>
-                          <ScanButton onClick={handleScanClick} disabled={isScanning} />
-                        </div>
-                      </div>
-                      {isSearching && <div className="search-spinner" />}
-                    </div>
-                    <button
-                      className="button"
-                      type="submit"
-                      onMouseDown={(e) => e.preventDefault()}
-                      style={{
-                        display: isSearchFocused || selectedFunds.length > 0 ? 'inline-flex' : undefined,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        whiteSpace: 'nowrap',
-                        minWidth: 'fit-content'
-                      }}
-                    >
-                      添加
-                    </button>
-                  </form>
-
-                  <AnimatePresence>
-                    {showDropdown && (String(searchTerm ?? '').trim() || searchResults.length > 0) && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="search-dropdown glass scrollbar-y-styled"
-                      >
-                        {searchResults.length > 0 ? (
-                          <div className="search-results">
-                            {searchResults.map((fund) => {
-                              const isSelected = selectedFunds.some((f) => f.CODE === fund.CODE);
-                              return (
-                                <div
-                                  key={fund.CODE}
-                                  className={`search-item ${isSelected ? 'selected' : ''}`}
-                                  onMouseDown={(e) => e.preventDefault()}
-                                  onClick={() => {
-                                    toggleSelectFund(fund);
-                                  }}
-                                >
-                                  <div className="fund-info">
-                                    <span className="fund-name">{fund.NAME}</span>
-                                    <span className="fund-code muted">
-                                      #{fund.CODE} | {fund.TYPE}
-                                    </span>
-                                  </div>
-                                  <div className="checkbox">{isSelected && <div className="checked-mark" />}</div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        ) : String(searchTerm ?? '').trim() && !isSearching ? (
-                          <div className="no-results muted">未找到相关基金</div>
-                        ) : null}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-                {error && (
-                  <div className="muted" style={{ marginTop: 8, color: 'var(--danger)' }}>
-                    {error}
-                  </div>
-                )}
-              </div>
-              <div className={`actions ${isSearchFocused || selectedFunds.length > 0 ? 'search-focused-sibling' : ''}`}>
-                <UpdateChecker onModalOpenChange={setIsUpdateModalOpen} />
-                <span className="github-icon-wrap">
-                  <Image
-                    unoptimized
-                    alt="项目Github地址"
-                    src={githubImg}
-                    style={{ width: '30px', height: '30px', cursor: 'pointer' }}
-                    onClick={() => window.open('https://github.com/hzm0321/real-time-fund')}
-                  />
-                </span>
-                {isMobile && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        className="icon-button mobile-search-btn"
-                        aria-label="筛选基金"
-                        onClick={handleMobileSearchClick}
-                      >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                          <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-                          <path d="M16.5 16.5L21 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                        </svg>
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>筛选</p>
-                    </TooltipContent>
-                  </Tooltip>
-                )}
-                <RefreshButton
-                  refreshMs={refreshMs}
-                  manualRefresh={manualRefresh}
-                  refreshing={refreshing}
-                  fundsLength={funds.length}
-                  refreshCycleStartRef={refreshCycleStartRef}
-                />
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      className="icon-button"
-                      aria-label={theme === 'dark' ? '切换到亮色主题' : '切换到暗色主题'}
-                      onClick={handleThemeToggle}
-                    >
-                      {theme === 'dark' ? <SunIcon width="18" height="18" /> : <MoonIcon width="18" height="18" />}
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{theme === 'dark' ? '亮色' : '暗色'}</p>
-                  </TooltipContent>
-                </Tooltip>
-                <UserMenu
-                  user={user}
-                  userAvatar={userAvatar}
-                  navbarHeight={navbarHeight}
-                  lastSyncTime={lastSyncTime}
-                  isSyncing={isSyncing}
-                  onSync={() => user?.id && syncUserConfig(user.id)}
-                  onOpenSettings={() => setSettingsOpen(true)}
-                  onOpenPortfolioEarnings={() => setPortfolioEarningsOpen(true)}
-                  onOpenLogin={handleOpenLogin}
-                  onLogout={handleLogout}
-                  onLogoutConfirmOpenChange={setIsLogoutConfirmOpen}
-                  onTutorial={() => {
-                    if (isMobile) {
-                      setTutorialDrawerOpen(true);
-                    } else {
-                      window.open('https://www.yuque.com/u267605/ookgim/im06q8tembbld6im?singleDoc', '_blank');
-                    }
-                  }}
-                  onUpdateLog={() => setUpdateLogOpen(true)}
-                />
-              </div>
-            </div>
-            {shouldShowMarketIndex && (
-              <MarketIndexAccordion
-                navbarHeight={navbarHeight}
-                onCustomSettingsChange={triggerCustomSettingsSync}
-                refreshing={refreshing}
-              />
-            )}
-            <div style={{ display: mainTab === 'home' ? 'contents' : 'none' }}>
-              <div className="grid">
-                <div className="col-12">
+    <NavLayout
+      mainTab={mainTab}
+      setMainTab={setMainTab}
+      isMobile={isMobile}
+      containerRef={containerRef}
+      containerClassName={containerClassName}
+      containerWidth={containerWidth}
+      showThemeTransition={showThemeTransition}
+      setShowThemeTransition={setShowThemeTransition}
+      mobileBottomNavHidden={mobileBottomNavHidden}
+    >
+      <div
+        className="mobile-main-tab-panel mobile-main-tab-panel--home"
+        style={{ display: mobileHomeTabVisible ? 'contents' : 'none' }}
+        aria-hidden={!mobileHomeTabVisible || undefined}
+      >
+        <>
+          <Announcement />
+          <div className="navbar glass" ref={navbarRef}>
+            {refreshing && <div className="loading-bar"></div>}
+            <div className={`brand ${isSearchFocused || selectedFunds.length > 0 ? 'search-focused-sibling' : ''}`}>
+              <Tooltip>
+                <TooltipTrigger asChild>
                   <div
-                    ref={filterBarRef}
-                    className="filter-bar"
                     style={{
-                      top: `calc(${navbarHeight}px + var(--market-index-height, 0px))`,
-                      marginTop: 0,
-                      marginBottom: 8,
-                      display: 'flex',
-                      justifyContent: 'space-between',
+                      width: 24,
+                      height: 24,
+                      marginRight: 4,
+                      position: 'relative',
+                      display: 'inline-flex',
                       alignItems: 'center',
-                      flexWrap: 'wrap',
-                      gap: 12
+                      justifyContent: 'center',
+                      overflow: 'hidden'
                     }}
                   >
-                    <div className="tabs-container">
-                      <div className="tabs-scroll-area" data-mask-left={canLeft} data-mask-right={canRight}>
-                        <div
-                          className="tabs"
-                          ref={tabsRef}
-                          onMouseDown={handleMouseDown}
-                          onMouseLeave={handleMouseLeaveOrUp}
-                          onMouseUp={handleMouseLeaveOrUp}
-                          onMouseMove={handleMouseMove}
-                          onWheel={handleWheel}
-                          onScroll={updateTabOverflow}
-                        >
-                          <AnimatePresence mode="popLayout">
-                            {showPortfolioSummaryTab && (
-                              <motion.button
-                                layout
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.8 }}
-                                key="portfolio-summary"
-                                className={`tab ${currentTab === SUMMARY_TAB_ID ? 'active' : ''}`}
-                                onClick={() => handleTabClick(SUMMARY_TAB_ID)}
-                                transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 1 }}
-                              >
-                                汇总
-                              </motion.button>
-                            )}
-                            <motion.button
-                              layout
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              exit={{ opacity: 0, scale: 0.8 }}
-                              key="all"
-                              className={`tab ${currentTab === 'all' ? 'active' : ''}`}
-                              onClick={() => handleTabClick('all')}
-                              transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 1 }}
-                            >
-                              全部 ({funds.length})
-                            </motion.button>
-                            <motion.button
-                              layout
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              exit={{ opacity: 0, scale: 0.8 }}
-                              key="fav"
-                              className={`tab ${currentTab === 'fav' ? 'active' : ''}`}
-                              onClick={() => handleTabClick('fav')}
-                              transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 1 }}
-                            >
-                              自选 ({favorites.size})
-                            </motion.button>
-                            {groups.map((g) => (
-                              <motion.button
-                                layout
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.8 }}
-                                key={g.id}
-                                className={`tab ${currentTab === g.id ? 'active' : ''}`}
-                                onClick={() => handleTabClick(g.id)}
-                                transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 1 }}
-                              >
-                                {g.name} ({g.codes.length})
-                              </motion.button>
-                            ))}
-                          </AnimatePresence>
-                        </div>
+                    {/* 同步中图标 */}
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        margin: 'auto',
+                        opacity: isSyncing ? 1 : 0,
+                        transform: isSyncing ? 'translateY(0px)' : 'translateY(4px)',
+                        transition: 'opacity 0.25s ease, transform 0.25s ease'
+                      }}
+                    >
+                      <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" stroke="var(--primary)" />
+                      <path d="M12 12v9" stroke="var(--accent)" />
+                      <path d="m16 16-4-4-4 4" stroke="var(--accent)" />
+                    </svg>
+                    {/* 默认图标 */}
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        margin: 'auto',
+                        opacity: isSyncing ? 0 : 1,
+                        transform: isSyncing ? 'translateY(-4px)' : 'translateY(0px)',
+                        transition: 'opacity 0.25s ease, transform 0.25s ease'
+                      }}
+                    >
+                      <circle cx="12" cy="12" r="10" stroke="var(--accent)" strokeWidth="2" />
+                      <path d="M5 14c2-4 7-6 14-5" stroke="var(--primary)" strokeWidth="2" />
+                    </svg>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{isSyncing ? '正在同步到云端...' : undefined}</p>
+                </TooltipContent>
+              </Tooltip>
+              <span>基估宝</span>
+            </div>
+            <div
+              className={`glass add-fund-section navbar-add-fund ${isSearchFocused || selectedFunds.length > 0 ? 'search-focused' : ''}`}
+              role="region"
+              aria-label="添加基金"
+            >
+              <div className="search-container" ref={dropdownRef}>
+                {selectedFunds.length > 0 && (
+                  <div className="selected-inline-chips" style={{ marginBottom: 8, marginLeft: 0 }}>
+                    {selectedFunds.map((fund) => (
+                      <div key={fund.CODE} className="fund-chip">
+                        <span>{fund.NAME}</span>
+                        <button onClick={() => toggleSelectFund(fund)} className="remove-chip">
+                          <CloseIcon width="14" height="14" />
+                        </button>
                       </div>
-                      {groups.length > 0 && (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <button className="icon-button manage-groups-btn" onClick={() => setGroupManageOpen(true)}>
-                              <SortIcon width="16" height="16" />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>管理分组</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      )}
+                    ))}
+                  </div>
+                )}
+                <SearchBar
+                  inputRef={inputRef}
+                  searchTerm={searchTerm}
+                  handleSearchInput={handleSearchInput}
+                  showDropdown={showDropdown}
+                  setShowDropdown={setShowDropdown}
+                  isSearchFocused={isSearchFocused}
+                  setIsSearchFocused={setIsSearchFocused}
+                  searchResults={searchResults}
+                  isSearching={isSearching}
+                  selectedFunds={selectedFunds}
+                  toggleSelectFund={toggleSelectFund}
+                  isScanning={isScanning}
+                  handleScanClick={handleScanClick}
+                  addFund={addFund}
+                />
+              </div>
+              {error && (
+                <div className="muted" style={{ marginTop: 8, color: 'var(--danger)' }}>
+                  {error}
+                </div>
+              )}
+            </div>
+            <div className={`actions ${isSearchFocused || selectedFunds.length > 0 ? 'search-focused-sibling' : ''}`}>
+              <UpdateChecker onModalOpenChange={setIsUpdateModalOpen} />
+              <span className="github-icon-wrap">
+                <Image
+                  unoptimized
+                  alt="项目Github地址"
+                  src={githubImg}
+                  style={{ width: '30px', height: '30px', cursor: 'pointer' }}
+                  onClick={() => window.open('https://github.com/hzm0321/real-time-fund')}
+                />
+              </span>
+              {isMobile && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className="icon-button mobile-search-btn"
+                      aria-label="筛选基金"
+                      onClick={handleMobileSearchClick}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+                        <path d="M16.5 16.5L21 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>筛选</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+              <RefreshButton
+                refreshMs={refreshMs}
+                manualRefresh={manualRefresh}
+                refreshing={refreshing}
+                fundsLength={funds.length}
+                refreshCycleStartRef={refreshCycleStartRef}
+              />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    className="icon-button"
+                    aria-label={theme === 'dark' ? '切换到亮色主题' : '切换到暗色主题'}
+                    onClick={handleThemeToggle}
+                  >
+                    {theme === 'dark' ? <SunIcon width="18" height="18" /> : <MoonIcon width="18" height="18" />}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{theme === 'dark' ? '亮色' : '暗色'}</p>
+                </TooltipContent>
+              </Tooltip>
+              <UserMenu
+                user={user}
+                userAvatar={userAvatar}
+                navbarHeight={navbarHeight}
+                lastSyncTime={lastSyncTime}
+                isSyncing={isSyncing}
+                onSync={() => user?.id && syncUserConfig(user.id)}
+                onOpenSettings={() => setSettingsOpen(true)}
+                onOpenPortfolioEarnings={() => setPortfolioEarningsOpen(true)}
+                onOpenLogin={handleOpenLogin}
+                onLogout={handleLogout}
+                onLogoutConfirmOpenChange={setIsLogoutConfirmOpen}
+                onTutorial={() => {
+                  if (isMobile) {
+                    setTutorialDrawerOpen(true);
+                  } else {
+                    window.open('https://www.yuque.com/u267605/ookgim/im06q8tembbld6im?singleDoc', '_blank');
+                  }
+                }}
+                onUpdateLog={() => setUpdateLogOpen(true)}
+              />
+            </div>
+          </div>
+          {shouldShowMarketIndex && (
+            <MarketIndexAccordion
+              navbarHeight={navbarHeight}
+              onCustomSettingsChange={triggerCustomSettingsSync}
+              refreshing={refreshing}
+            />
+          )}
+          <div style={{ display: mainTab === 'home' ? 'contents' : 'none' }}>
+            <div className="grid">
+              <div className="col-12">
+                <div
+                  ref={filterBarRef}
+                  className="filter-bar"
+                  style={{
+                    top: `calc(${navbarHeight}px + var(--market-index-height, 0px))`,
+                    marginTop: 0,
+                    marginBottom: 8,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: 12
+                  }}
+                >
+                  <div className="tabs-container">
+                    <div className="tabs-scroll-area" data-mask-left={canLeft} data-mask-right={canRight}>
+                      <div
+                        className="tabs"
+                        ref={tabsRef}
+                        onMouseDown={handleMouseDown}
+                        onMouseLeave={handleMouseLeaveOrUp}
+                        onMouseUp={handleMouseLeaveOrUp}
+                        onMouseMove={handleMouseMove}
+                        onWheel={handleWheel}
+                        onScroll={updateTabOverflow}
+                      >
+                        <AnimatePresence mode="popLayout">
+                          {showPortfolioSummaryTab && (
+                            <motion.button
+                              layout
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.8 }}
+                              key="portfolio-summary"
+                              className={`tab ${currentTab === SUMMARY_TAB_ID ? 'active' : ''}`}
+                              onClick={() => handleTabClick(SUMMARY_TAB_ID)}
+                              transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 1 }}
+                            >
+                              汇总
+                            </motion.button>
+                          )}
+                          <motion.button
+                            layout
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            key="all"
+                            className={`tab ${currentTab === 'all' ? 'active' : ''}`}
+                            onClick={() => handleTabClick('all')}
+                            transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 1 }}
+                          >
+                            全部 ({funds.length})
+                          </motion.button>
+                          <motion.button
+                            layout
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            key="fav"
+                            className={`tab ${currentTab === 'fav' ? 'active' : ''}`}
+                            onClick={() => handleTabClick('fav')}
+                            transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 1 }}
+                          >
+                            自选 ({favorites.size})
+                          </motion.button>
+                          {groups.map((g) => (
+                            <motion.button
+                              layout
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.8 }}
+                              key={g.id}
+                              className={`tab ${currentTab === g.id ? 'active' : ''}`}
+                              onClick={() => handleTabClick(g.id)}
+                              transition={{ type: 'spring', stiffness: 500, damping: 30, mass: 1 }}
+                            >
+                              {g.name} ({g.codes.length})
+                            </motion.button>
+                          ))}
+                        </AnimatePresence>
+                      </div>
+                    </div>
+                    {groups.length > 0 && (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <button className="icon-button add-group-btn" onClick={() => setGroupModalOpen(true)}>
-                            <PlusIcon width="16" height="16" />
+                          <button className="icon-button manage-groups-btn" onClick={() => setGroupManageOpen(true)}>
+                            <SortIcon width="16" height="16" />
                           </button>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>新增分组</p>
+                          <p>管理分组</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button className="icon-button add-group-btn" onClick={() => setGroupModalOpen(true)}>
+                          <PlusIcon width="16" height="16" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>新增分组</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+
+                  <div
+                    className="sort-group"
+                    style={{
+                      display: currentTab === SUMMARY_TAB_ID ? 'none' : 'flex',
+                      alignItems: 'center',
+                      gap: 12
+                    }}
+                  >
+                    <div
+                      className="view-toggle"
+                      style={{
+                        display: 'flex',
+                        background: 'rgba(255,255,255,0.05)',
+                        borderRadius: '10px',
+                        padding: '2px'
+                      }}
+                    >
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            className={`icon-button ${viewMode === 'card' ? 'active' : ''}`}
+                            onClick={() => {
+                              applyViewMode('card');
+                            }}
+                            style={{
+                              border: 'none',
+                              width: '32px',
+                              height: '32px',
+                              background: viewMode === 'card' ? 'var(--primary)' : 'transparent',
+                              color: viewMode === 'card' ? '#05263b' : 'var(--muted)'
+                            }}
+                          >
+                            <GridIcon width="16" height="16" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>卡片视图</p>
+                        </TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            className={`icon-button ${viewMode === 'list' ? 'active' : ''}`}
+                            onClick={() => {
+                              applyViewMode('list');
+                            }}
+                            style={{
+                              border: 'none',
+                              width: '32px',
+                              height: '32px',
+                              background: viewMode === 'list' ? 'var(--primary)' : 'transparent',
+                              color: viewMode === 'list' ? '#05263b' : 'var(--muted)'
+                            }}
+                          >
+                            <ListIcon width="16" height="16" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>表格视图</p>
                         </TooltipContent>
                       </Tooltip>
                     </div>
 
-                    <div
-                      className="sort-group"
-                      style={{
-                        display: currentTab === SUMMARY_TAB_ID ? 'none' : 'flex',
-                        alignItems: 'center',
-                        gap: 12
-                      }}
-                    >
-                      <div
-                        className="view-toggle"
-                        style={{
-                          display: 'flex',
-                          background: 'rgba(255,255,255,0.05)',
-                          borderRadius: '10px',
-                          padding: '2px'
-                        }}
-                      >
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <button
-                              className={`icon-button ${viewMode === 'card' ? 'active' : ''}`}
-                              onClick={() => {
-                                applyViewMode('card');
-                              }}
-                              style={{
-                                border: 'none',
-                                width: '32px',
-                                height: '32px',
-                                background: viewMode === 'card' ? 'var(--primary)' : 'transparent',
-                                color: viewMode === 'card' ? '#05263b' : 'var(--muted)'
-                              }}
-                            >
-                              <GridIcon width="16" height="16" />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>卡片视图</p>
-                          </TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <button
-                              className={`icon-button ${viewMode === 'list' ? 'active' : ''}`}
-                              onClick={() => {
-                                applyViewMode('list');
-                              }}
-                              style={{
-                                border: 'none',
-                                width: '32px',
-                                height: '32px',
-                                background: viewMode === 'list' ? 'var(--primary)' : 'transparent',
-                                color: viewMode === 'list' ? '#05263b' : 'var(--muted)'
-                              }}
-                            >
-                              <ListIcon width="16" height="16" />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>表格视图</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
+                    <div className="divider" style={{ width: '1px', height: '20px', background: 'var(--border)' }} />
 
-                      <div className="divider" style={{ width: '1px', height: '20px', background: 'var(--border)' }} />
-
-                      <div className="sort-items" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <button
-                              type="button"
-                              className="icon-button"
-                              onClick={() => setSortSettingOpen(true)}
-                              style={{
-                                border: 'none',
-                                background: 'transparent',
-                                padding: 0,
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 4,
-                                fontSize: '12px',
-                                color: 'var(--muted-foreground)',
-                                cursor: 'pointer',
-                                width: '50px'
-                              }}
+                    <div className="sort-items" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            className="icon-button"
+                            onClick={() => setSortSettingOpen(true)}
+                            style={{
+                              border: 'none',
+                              background: 'transparent',
+                              padding: 0,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 4,
+                              fontSize: '12px',
+                              color: 'var(--muted-foreground)',
+                              cursor: 'pointer',
+                              width: '50px'
+                            }}
+                          >
+                            <span className="muted">排序</span>
+                            <SettingsIcon width="14" height="14" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>排序个性化设置</p>
+                        </TooltipContent>
+                      </Tooltip>
+                      {(isMobile ? mobileSortDisplayMode : pcSortDisplayMode) === 'dropdown' ? (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <Select
+                            value={sortBy}
+                            onValueChange={(nextSortBy) => {
+                              startTransition(() => {
+                                setSortBy(nextSortBy);
+                                if (nextSortBy !== sortBy) setSortOrder('desc');
+                              });
+                            }}
+                          >
+                            <SelectTrigger
+                              className="h-4 min-w-[110px] py-0 text-xs shadow-none"
+                              style={{ background: 'var(--card-bg)', height: 36 }}
                             >
-                              <span className="muted">排序</span>
-                              <SettingsIcon width="14" height="14" />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>排序个性化设置</p>
-                          </TooltipContent>
-                        </Tooltip>
-                        {(isMobile ? mobileSortDisplayMode : pcSortDisplayMode) === 'dropdown' ? (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <Select
-                              value={sortBy}
-                              onValueChange={(nextSortBy) => {
-                                startTransition(() => {
-                                  setSortBy(nextSortBy);
-                                  if (nextSortBy !== sortBy) setSortOrder('desc');
-                                });
-                              }}
+                              <SelectValue placeholder="选择排序规则" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {sortRules
+                                .filter((s) => s.enabled)
+                                .map((s) => (
+                                  <SelectItem key={s.id} value={s.id}>
+                                    {s.alias || s.label}
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                          <Select
+                            value={sortOrder}
+                            onValueChange={(value) => {
+                              startTransition(() => {
+                                setSortOrder(value);
+                              });
+                            }}
+                          >
+                            <SelectTrigger
+                              className="h-4 min-w-[84px] py-0 text-xs shadow-none"
+                              style={{ background: 'var(--card-bg)', height: 36 }}
                             >
-                              <SelectTrigger
-                                className="h-4 min-w-[110px] py-0 text-xs shadow-none"
-                                style={{ background: 'var(--card-bg)', height: 36 }}
+                              <SelectValue placeholder="排序方向" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="desc">降序</SelectItem>
+                              <SelectItem value="asc">升序</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      ) : (
+                        <div className="chips">
+                          {sortRules
+                            .filter((s) => s.enabled)
+                            .map((s) => (
+                              <button
+                                key={s.id}
+                                className={`chip ${sortBy === s.id ? 'active' : ''}`}
+                                onClick={() => {
+                                  startTransition(() => {
+                                    if (sortBy === s.id) {
+                                      // 同一按钮重复点击，切换升序/降序
+                                      setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+                                    } else {
+                                      // 切换到新的排序字段，默认用降序
+                                      setSortBy(s.id);
+                                      setSortOrder('desc');
+                                    }
+                                  });
+                                }}
+                                style={{
+                                  height: '28px',
+                                  fontSize: '12px',
+                                  padding: '0 10px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 4
+                                }}
                               >
-                                <SelectValue placeholder="选择排序规则" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {sortRules
-                                  .filter((s) => s.enabled)
-                                  .map((s) => (
-                                    <SelectItem key={s.id} value={s.id}>
-                                      {s.alias || s.label}
-                                    </SelectItem>
-                                  ))}
-                              </SelectContent>
-                            </Select>
-                            <Select
-                              value={sortOrder}
-                              onValueChange={(value) => {
-                                startTransition(() => {
-                                  setSortOrder(value);
-                                });
-                              }}
-                            >
-                              <SelectTrigger
-                                className="h-4 min-w-[84px] py-0 text-xs shadow-none"
-                                style={{ background: 'var(--card-bg)', height: 36 }}
-                              >
-                                <SelectValue placeholder="排序方向" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="desc">降序</SelectItem>
-                                <SelectItem value="asc">升序</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                        ) : (
-                          <div className="chips">
-                            {sortRules
-                              .filter((s) => s.enabled)
-                              .map((s) => (
-                                <button
-                                  key={s.id}
-                                  className={`chip ${sortBy === s.id ? 'active' : ''}`}
-                                  onClick={() => {
-                                    startTransition(() => {
-                                      if (sortBy === s.id) {
-                                        // 同一按钮重复点击，切换升序/降序
-                                        setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-                                      } else {
-                                        // 切换到新的排序字段，默认用降序
-                                        setSortBy(s.id);
-                                        setSortOrder('desc');
-                                      }
-                                    });
-                                  }}
-                                  style={{
-                                    height: '28px',
-                                    fontSize: '12px',
-                                    padding: '0 10px',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 4
-                                  }}
-                                >
-                                  <span>{s.alias || s.label}</span>
-                                  {s.id !== 'default' && sortBy === s.id && (
-                                    <span
-                                      style={{
-                                        display: 'inline-flex',
-                                        flexDirection: 'column',
-                                        lineHeight: 1,
-                                        fontSize: '8px'
-                                      }}
-                                    >
-                                      <span style={{ opacity: sortOrder === 'asc' ? 1 : 0.3 }}>▲</span>
-                                      <span style={{ opacity: sortOrder === 'desc' ? 1 : 0.3 }}>▼</span>
-                                    </span>
-                                  )}
-                                </button>
-                              ))}
-                          </div>
-                        )}
-                      </div>
+                                <span>{s.alias || s.label}</span>
+                                {s.id !== 'default' && sortBy === s.id && (
+                                  <span
+                                    style={{
+                                      display: 'inline-flex',
+                                      flexDirection: 'column',
+                                      lineHeight: 1,
+                                      fontSize: '8px'
+                                    }}
+                                  >
+                                    <span style={{ opacity: sortOrder === 'asc' ? 1 : 0.3 }}>▲</span>
+                                    <span style={{ opacity: sortOrder === 'desc' ? 1 : 0.3 }}>▼</span>
+                                  </span>
+                                )}
+                              </button>
+                            ))}
+                        </div>
+                      )}
                     </div>
                   </div>
+                </div>
 
-                  {scopedFunds.length === 0 && !(currentTab === SUMMARY_TAB_ID && showPortfolioSummaryTab) ? (
-                    <EmptyStateCard
-                      fundsLength={funds.length}
-                      currentTab={currentTab}
-                      onAddToGroup={() => setAddFundToGroupOpen(true)}
-                    />
-                  ) : (
-                    <>
+                {scopedFunds.length === 0 && !(currentTab === SUMMARY_TAB_ID && showPortfolioSummaryTab) ? (
+                  <EmptyStateCard
+                    fundsLength={funds.length}
+                    currentTab={currentTab}
+                    onAddToGroup={() => setAddFundToGroupOpen(true)}
+                  />
+                ) : (
+                  <>
+                    {currentTab === SUMMARY_TAB_ID ? (
+                      <SummaryTabContent
+                        funds={displayFunds}
+                        holdings={holdingsForTabWithLinked}
+                        groups={groups}
+                        getProfit={getHoldingProfitForTab}
+                        summaryTabPortfolioTotals={summaryTabPortfolioTotals}
+                        navbarHeight={navbarHeight}
+                        filterBarHeight={filterBarHeight}
+                        isGroupSummarySticky={isGroupSummarySticky}
+                        setIsGroupSummarySticky={setIsGroupSummarySticky}
+                        maskAmounts={maskAmounts}
+                        setMaskAmounts={setMaskAmounts}
+                        shouldShowMarketIndex={shouldShowMarketIndex}
+                        summaryCardItems={summaryCardItems}
+                        isMobile={isMobile}
+                        startTransition={startTransition}
+                        setCurrentTab={setCurrentTab}
+                      />
+                    ) : (
                       <GroupSummary
                         funds={displayFunds}
                         holdings={holdingsForTabWithLinked}
                         portfolioTabId={currentTab}
                         groups={groups}
                         getProfit={getHoldingProfitForTab}
-                        summaryTotalsOverride={currentTab === SUMMARY_TAB_ID ? summaryTabPortfolioTotals : null}
+                        summaryTotalsOverride={null}
                         stickyTop={navbarHeight + filterBarHeight + (isMobile ? -14 : 0)}
                         isSticky={isGroupSummarySticky}
                         onToggleSticky={(next) => setIsGroupSummarySticky(next)}
@@ -4906,402 +4847,264 @@ export default function HomePage() {
                         shouldShowMarketIndex={shouldShowMarketIndex}
                         navbarHeight={navbarHeight}
                       />
-                      {currentTab === SUMMARY_TAB_ID && summaryCardItems.length > 0 && (
-                        <div
-                          className="grid"
-                          style={{
-                            marginTop: isGroupSummarySticky ? 50 : 10,
-                            gridColumn: 'span 12',
-                            gap: isMobile ? 10 : 16
-                          }}
-                        >
-                          {summaryCardItems.map((row) => (
-                            <div
-                              key={row.groupId}
-                              style={{
-                                minWidth: 0,
-                                gridColumn: isMobile ? 'span 12' : 'span 6'
-                              }}
-                            >
-                              <GroupAccountSummaryCard
-                                onActivate={() =>
-                                  startTransition(() =>
-                                    setCurrentTab(row.groupId === SUMMARY_SOURCE_GLOBAL ? 'all' : row.groupId)
-                                  )
-                                }
-                                groupName={row.groupName}
-                                totalAsset={row.totalAsset}
-                                holdingReturn={row.holdingReturn}
-                                holdingReturnPercent={row.holdingReturnPercent}
-                                accountReturn={row.accountReturn}
-                                accountReturnPercent={row.accountReturnPercent}
-                                hasAnyTodayData={row.hasAnyTodayData}
-                                upCount={row.upCount}
-                                downCount={row.downCount}
-                                sparkSeries={row.sparkSeries}
-                                masked={maskAmounts}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      {currentTab !== SUMMARY_TAB_ID && (
-                        <>
-                          {shouldShowGroupFundSearch && (
-                            <SearchFund value={groupFundSearchTerm} onSearch={(next) => setGroupFundSearchTerm(next)} />
-                          )}
+                    )}
+                    {currentTab !== SUMMARY_TAB_ID && (
+                      <>
+                        {shouldShowGroupFundSearch && (
+                          <SearchFund value={groupFundSearchTerm} onSearch={(next) => setGroupFundSearchTerm(next)} />
+                        )}
 
-                          {displayFunds.length === 0 ? (
-                            <div className="glass" style={{ marginTop: 10 }}>
-                              <Empty className="border-border/60">
-                                <EmptyHeader>
-                                  <EmptyMedia variant="icon">
-                                    <span className="text-3xl" aria-hidden="true">
-                                      📂
-                                    </span>
-                                  </EmptyMedia>
-                                  <EmptyTitle>未找到相关基金</EmptyTitle>
-                                  <EmptyDescription>
-                                    试试搜索基金名称的部分关键词，或直接输入 6 位基金代码。
-                                  </EmptyDescription>
-                                </EmptyHeader>
-                              </Empty>
-                            </div>
-                          ) : (
-                            <AnimatePresence mode="wait">
-                              <motion.div
-                                key={viewMode}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                transition={{ duration: 0.2 }}
-                                className={viewMode === 'card' ? 'grid' : 'table-container glass'}
-                                style={{ marginTop: isGroupSummarySticky ? 50 : 0 }}
-                              >
-                                <div
-                                  className={viewMode === 'card' ? 'grid col-12' : ''}
-                                  style={viewMode === 'card' ? { gridColumn: 'span 12', gap: 16 } : {}}
-                                >
-                                  {/* PC 列表：使用 PcFundTable + 右侧冻结操作列 */}
-                                  {viewMode === 'list' && !isMobile && (
-                                    <div className="table-pc-wrap">
-                                      <div className="table-scroll-area">
-                                        <div className="table-scroll-area-inner">
-                                          <PcFundTable
-                                            stickyTop={navbarHeight + filterBarHeight}
-                                            data={pcFundTableData}
-                                            relatedSectorSessionKey={user?.id ?? ''}
-                                            currentTab={currentTab}
-                                            groups={groups}
-                                            favorites={favorites}
-                                            sortBy={sortBy}
-                                            sortOrder={sortOrder}
-                                            sortRules={sortRules}
-                                            onSortChange={(id) => {
-                                              startTransition(() => {
-                                                if (sortBy === id) {
-                                                  setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-                                                } else {
-                                                  setSortBy(id);
-                                                  setSortOrder('desc');
-                                                }
-                                              });
-                                            }}
-                                            onReorder={handleReorder}
-                                            onRemoveFund={handleRemoveFundEntry}
-                                            onRemoveFunds={removeFundsFromCurrentTabHandler}
-                                            onMoveFunds={handleMoveFunds}
-                                            batchSelectionClearRef={pcBatchClearSelectionRef}
-                                            onToggleFavorite={handleToggleFavoriteRow}
-                                            onHoldingAmountClick={handleHoldingAmountClickRow}
-                                            onHoldingProfitClick={handleHoldingProfitClickRow}
-                                            onCustomSettingsChange={triggerCustomSettingsSync}
-                                            closeDialogRef={fundDetailDialogCloseRef}
-                                            masked={maskAmounts}
-                                            getFundCardProps={getFundCardPropsForRow}
-                                            onFundTagsClick={openFundTagsEdit}
-                                            fundExtraDataByCode={fundExtraDataByCode}
-                                          />
-                                        </div>
-                                      </div>
-                                    </div>
-                                  )}
-                                  {viewMode === 'list' && isMobile && (
-                                    <MobileFundTable
-                                      data={pcFundTableData}
-                                      relatedSectorSessionKey={user?.id ?? ''}
-                                      currentTab={currentTab}
-                                      groups={groups}
-                                      onMoveFunds={handleMoveFunds}
-                                      favorites={favorites}
-                                      sortBy={sortBy}
-                                      sortOrder={sortOrder}
-                                      sortRules={sortRules}
-                                      onSortChange={(id) => {
-                                        startTransition(() => {
-                                          if (sortBy === id) {
-                                            setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-                                          } else {
-                                            setSortBy(id);
-                                            setSortOrder('desc');
-                                          }
-                                        });
-                                      }}
-                                      stickyTop={navbarHeight + filterBarHeight}
-                                      closeDrawerRef={fundDetailDrawerCloseRef}
-                                      onReorder={handleReorder}
-                                      onRemoveFund={handleRemoveFundEntry}
-                                      onRemoveFunds={removeFundsFromCurrentTabHandler}
-                                      onToggleFavorite={handleToggleFavoriteRow}
-                                      onHoldingAmountClick={handleHoldingAmountClickRow}
-                                      onHoldingProfitClick={handleHoldingProfitClickRow}
-                                      batchSelectionClearRef={mobileBatchClearSelectionRef}
-                                      onCustomSettingsChange={triggerCustomSettingsSync}
-                                      onFundCardDrawerOpenChange={handleFundCardDrawerOpenChange}
-                                      onMobileSettingModalOpenChange={handleMobileSettingModalOpenChange}
-                                      getFundCardProps={getFundCardPropsForRow}
-                                      masked={maskAmounts}
-                                      onFundTagsClick={openFundTagsEdit}
-                                      fundExtraDataByCode={fundExtraDataByCode}
-                                    />
-                                  )}
-                                  <AnimatePresence mode="popLayout">
-                                    {viewMode === 'card' &&
-                                      displayFunds.map((f) => (
-                                        <motion.div
-                                          layout="position"
-                                          key={f.code}
-                                          className="col-6"
-                                          initial={{ opacity: 0, scale: 0.95 }}
-                                          animate={{ opacity: 1, scale: 1 }}
-                                          exit={{ opacity: 0, scale: 0.95 }}
-                                          transition={{ duration: 0.2 }}
-                                          style={{ position: 'relative', overflow: 'hidden' }}
-                                        >
-                                          <FundCard
-                                            fundCode={f.code}
-                                            isHoldingLinked={
-                                              (currentTab === 'all' || currentTab === 'fav') &&
-                                              linkedHoldingsForAllFav.linked?.has?.(f?.code)
-                                            }
-                                            todayStr={todayStr}
-                                            currentTab={currentTab}
-                                            favorites={favorites}
-                                            dcaPlans={dcaPlansForTab}
-                                            holdings={holdingsForTabWithLinked}
-                                            percentModes={percentModes}
-                                            todayPercentModes={todayPercentModes}
-                                            fundDailyEarnings={currentFundDailyEarnings}
-                                            valuationSeries={valuationSeries}
-                                            collapsedCodes={collapsedCodes}
-                                            collapsedTrends={collapsedTrends}
-                                            collapsedEarnings={collapsedEarnings}
-                                            transactions={transactionsForTab}
-                                            theme={theme}
-                                            isTradingDay={isTradingDay}
-                                            getHoldingProfit={getHoldingProfitForTab}
-                                            onToggleFavorite={toggleFavorite}
-                                            onRemoveFund={handleRemoveFundEntry}
-                                            onHoldingClick={openHoldingModal}
-                                            onActionClick={openActionModal}
-                                            onDataSourceClick={openDataSourceModal}
-                                            onPercentModeToggle={togglePercentMode}
-                                            onTodayPercentModeToggle={toggleTodayPercentMode}
-                                            onToggleCollapse={toggleCollapse}
-                                            onToggleTrendCollapse={toggleTrendCollapse}
-                                            onToggleEarningsCollapse={toggleEarningsCollapse}
-                                            masked={maskAmounts}
-                                            fundTags={
-                                              Array.isArray(fundTagListsByCode[f.code])
-                                                ? fundTagListsByCode[f.code]
-                                                : []
-                                            }
-                                            onFundTagsClick={openFundTagsEdit}
-                                            fundExtraData={fundExtraDataByCode[f.code]}
-                                            groupTotalHoldingAmount={groupTotalHoldingAmount}
-                                          />
-                                        </motion.div>
-                                      ))}
-                                  </AnimatePresence>
-                                </div>
-                              </motion.div>
-                            </AnimatePresence>
-                          )}
-                        </>
-                      )}
+                        {displayFunds.length === 0 ? (
+                          <div className="glass" style={{ marginTop: 10 }}>
+                            <Empty className="border-border/60">
+                              <EmptyHeader>
+                                <EmptyMedia variant="icon">
+                                  <span className="text-3xl" aria-hidden="true">
+                                    📂
+                                  </span>
+                                </EmptyMedia>
+                                <EmptyTitle>未找到相关基金</EmptyTitle>
+                                <EmptyDescription>
+                                  试试搜索基金名称的部分关键词，或直接输入 6 位基金代码。
+                                </EmptyDescription>
+                              </EmptyHeader>
+                            </Empty>
+                          </div>
+                        ) : (
+                          <FundListView
+                            viewMode={viewMode}
+                            isMobile={isMobile}
+                            isGroupSummarySticky={isGroupSummarySticky}
+                            navbarHeight={navbarHeight}
+                            filterBarHeight={filterBarHeight}
+                            pcFundTableData={pcFundTableData}
+                            userId={user?.id}
+                            currentTab={currentTab}
+                            groups={groups}
+                            favorites={favorites}
+                            sortBy={sortBy}
+                            sortOrder={sortOrder}
+                            sortRules={sortRules}
+                            setSortBy={setSortBy}
+                            setSortOrder={setSortOrder}
+                            startTransition={startTransition}
+                            handleReorder={handleReorder}
+                            handleRemoveFundEntry={handleRemoveFundEntry}
+                            removeFundsFromCurrentTabHandler={removeFundsFromCurrentTabHandler}
+                            handleMoveFunds={handleMoveFunds}
+                            pcBatchClearSelectionRef={pcBatchClearSelectionRef}
+                            handleToggleFavoriteRow={handleToggleFavoriteRow}
+                            handleHoldingAmountClickRow={handleHoldingAmountClickRow}
+                            handleHoldingProfitClickRow={handleHoldingProfitClickRow}
+                            triggerCustomSettingsSync={triggerCustomSettingsSync}
+                            fundDetailDialogCloseRef={fundDetailDialogCloseRef}
+                            maskAmounts={maskAmounts}
+                            getFundCardPropsForRow={getFundCardPropsForRow}
+                            openFundTagsEdit={openFundTagsEdit}
+                            fundExtraDataByCode={fundExtraDataByCode}
+                            fundDetailDrawerCloseRef={fundDetailDrawerCloseRef}
+                            mobileBatchClearSelectionRef={mobileBatchClearSelectionRef}
+                            handleFundCardDrawerOpenChange={handleFundCardDrawerOpenChange}
+                            handleMobileSettingModalOpenChange={handleMobileSettingModalOpenChange}
+                            displayFunds={displayFunds}
+                            linkedHoldingsForAllFav={linkedHoldingsForAllFav}
+                            todayStr={todayStr}
+                            dcaPlansForTab={dcaPlansForTab}
+                            holdingsForTabWithLinked={holdingsForTabWithLinked}
+                            percentModes={percentModes}
+                            todayPercentModes={todayPercentModes}
+                            currentFundDailyEarnings={currentFundDailyEarnings}
+                            valuationSeries={valuationSeries}
+                            collapsedCodes={collapsedCodes}
+                            collapsedTrends={collapsedTrends}
+                            collapsedEarnings={collapsedEarnings}
+                            transactionsForTab={transactionsForTab}
+                            theme={theme}
+                            isTradingDay={isTradingDay}
+                            getHoldingProfitForTab={getHoldingProfitForTab}
+                            toggleFavorite={toggleFavorite}
+                            openHoldingModal={openHoldingModal}
+                            openActionModal={openActionModal}
+                            openDataSourceModal={openDataSourceModal}
+                            togglePercentMode={togglePercentMode}
+                            toggleTodayPercentMode={toggleTodayPercentMode}
+                            toggleCollapse={toggleCollapse}
+                            toggleTrendCollapse={toggleTrendCollapse}
+                            toggleEarningsCollapse={toggleEarningsCollapse}
+                            fundTagListsByCode={fundTagListsByCode}
+                            groupTotalHoldingAmount={groupTotalHoldingAmount}
+                          />
+                        )}
+                      </>
+                    )}
 
-                      {currentTab !== 'all' && currentTab !== 'fav' && currentTab !== SUMMARY_TAB_ID && (
-                        <motion.button
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          className="button-dashed"
-                          onClick={() => setAddFundToGroupOpen(true)}
-                          style={{
-                            width: '100%',
-                            height: '48px',
-                            border: '2px dashed var(--border)',
-                            background: 'transparent',
-                            borderRadius: '12px',
-                            color: 'var(--muted)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '8px',
-                            marginTop: '16px',
-                            cursor: 'pointer',
-                            transition: 'all 0.2s ease',
-                            fontSize: '14px',
-                            fontWeight: 500
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.borderColor = 'var(--primary)';
-                            e.currentTarget.style.color = 'var(--primary)';
-                            e.currentTarget.style.background = 'rgba(34, 211, 238, 0.05)';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.borderColor = 'var(--border)';
-                            e.currentTarget.style.color = 'var(--muted)';
-                            e.currentTarget.style.background = 'transparent';
-                          }}
-                        >
-                          <PlusIcon width="18" height="18" />
-                          <span>添加基金到此分组</span>
-                        </motion.button>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
-
-              <input
-                type="file"
-                ref={fileInputRef}
-                accept="image/*"
-                multiple
-                style={{ display: 'none' }}
-                onChange={handleFilesUpload}
-              />
-
-              <div className="footer">
-                {!isMobile && (
-                  <>
-                    <p style={{ marginBottom: 8 }}>
-                      数据源：实时估值与重仓直连东方财富，仅供个人学习及参考使用。数据可能存在延迟，不作为任何投资建议
-                    </p>
-                    <p style={{ marginBottom: 12 }}>注：估算数据与真实结算数据会有1%左右误差，非股票型基金误差较大</p>
-                    <div
-                      style={{
-                        marginTop: 12,
-                        opacity: 0.8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: 8
-                      }}
-                    >
-                      <p style={{ margin: 0 }}>
-                        遇到任何问题或需求建议可
-                        <button
-                          className="link-button"
-                          onClick={() => {
-                            if (!user?.id) {
-                              sonnerToast.error('请先登录后再提交反馈');
-                              return;
-                            }
-                            setFeedbackNonce((n) => n + 1);
-                            setFeedbackOpen(true);
-                          }}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            color: 'var(--primary)',
-                            cursor: 'pointer',
-                            padding: '0 4px',
-                            textDecoration: 'underline',
-                            fontSize: 'inherit',
-                            fontWeight: 600
-                          }}
-                        >
-                          点此提交反馈
-                        </button>
-                      </p>
-                      <button
-                        onClick={() => setDonateOpen(true)}
+                    {currentTab !== 'all' && currentTab !== 'fav' && currentTab !== SUMMARY_TAB_ID && (
+                      <motion.button
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="button-dashed"
+                        onClick={() => setAddFundToGroupOpen(true)}
                         style={{
+                          width: '100%',
+                          height: '48px',
+                          border: '2px dashed var(--border)',
                           background: 'transparent',
-                          border: 'none',
+                          borderRadius: '12px',
                           color: 'var(--muted)',
-                          fontSize: '12px',
-                          cursor: 'pointer',
-                          display: 'inline-flex',
+                          display: 'flex',
                           alignItems: 'center',
-                          gap: 4,
-                          padding: '4px 8px',
-                          borderRadius: '6px',
-                          transition: 'all 0.2s ease'
+                          justifyContent: 'center',
+                          gap: '8px',
+                          marginTop: '16px',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s ease',
+                          fontSize: '14px',
+                          fontWeight: 500
                         }}
                         onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = 'var(--primary)';
                           e.currentTarget.style.color = 'var(--primary)';
-                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                          e.currentTarget.style.background = 'rgba(34, 211, 238, 0.05)';
                         }}
                         onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = 'var(--border)';
                           e.currentTarget.style.color = 'var(--muted)';
                           e.currentTarget.style.background = 'transparent';
                         }}
                       >
-                        <span>☕</span>
-                        <span>点此请作者喝杯咖啡</span>
-                      </button>
-                    </div>
+                        <PlusIcon width="18" height="18" />
+                        <span>添加基金到此分组</span>
+                      </motion.button>
+                    )}
                   </>
                 )}
               </div>
             </div>
-            {hasVisitedMarketTab && (
-              <div style={{ display: mainTab === 'market' ? 'contents' : 'none' }}>
-                <MarketTab
-                  onAddFund={handleMarketTabAddFund}
-                  getFundCardProps={getFundCardPropsForRow}
-                  isActive={mainTab === 'market'}
-                />
-              </div>
-            )}
-          </>
-        </div>
-        {isMobile && (
-          <MineTab
-            visible={mainTab === 'mine'}
-            user={user}
-            userAvatar={userAvatar}
-            lastSyncDisplay={lastSyncTime ? dayjs(lastSyncTime).format('MM-DD HH:mm') : null}
-            onLogin={handleOpenLogin}
-            onMyEarnings={() => setPortfolioEarningsOpen(true)}
-            onTutorial={() => {
-              if (isMobile) {
-                setTutorialDrawerOpen(true);
-              } else {
-                window.open('https://www.yuque.com/u267605/ookgim/im06q8tembbld6im?singleDoc', '_blank');
-              }
-            }}
-            onUpdateLog={() => setUpdateLogOpen(true)}
-            onFeedback={() => {
-              if (!user?.id) {
-                sonnerToast.error('请先登录后再提交反馈');
-                return;
-              }
-              setFeedbackNonce((n) => n + 1);
-              setFeedbackOpen(true);
-            }}
-            onSponsorSupport={() => setDonateOpen(true)}
-          />
-        )}
-        {isMobile && (
-          <MobileBottomNav value={mainTab} onChange={setMainTab} hidden={mobileBottomNavHidden && mainTab === 'home'} />
-        )}
 
-        {/* 弹框渲染层 - 独立组件，订阅 useModalStore，不触发 page.jsx 重渲染 */}
-        <ModalsLayer callbacksRef={modalCbRef} />
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              multiple
+              style={{ display: 'none' }}
+              onChange={handleFilesUpload}
+            />
+
+            <div className="footer">
+              {!isMobile && (
+                <>
+                  <p style={{ marginBottom: 8 }}>
+                    数据源：实时估值与重仓直连东方财富，仅供个人学习及参考使用。数据可能存在延迟，不作为任何投资建议
+                  </p>
+                  <p style={{ marginBottom: 12 }}>注：估算数据与真实结算数据会有1%左右误差，非股票型基金误差较大</p>
+                  <div
+                    style={{
+                      marginTop: 12,
+                      opacity: 0.8,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 8
+                    }}
+                  >
+                    <p style={{ margin: 0 }}>
+                      遇到任何问题或需求建议可
+                      <button
+                        className="link-button"
+                        onClick={() => {
+                          if (!user?.id) {
+                            sonnerToast.error('请先登录后再提交反馈');
+                            return;
+                          }
+                          setFeedbackNonce((n) => n + 1);
+                          setFeedbackOpen(true);
+                        }}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: 'var(--primary)',
+                          cursor: 'pointer',
+                          padding: '0 4px',
+                          textDecoration: 'underline',
+                          fontSize: 'inherit',
+                          fontWeight: 600
+                        }}
+                      >
+                        点此提交反馈
+                      </button>
+                    </p>
+                    <button
+                      onClick={() => setDonateOpen(true)}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'var(--muted)',
+                        fontSize: '12px',
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 4,
+                        padding: '4px 8px',
+                        borderRadius: '6px',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = 'var(--primary)';
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = 'var(--muted)';
+                        e.currentTarget.style.background = 'transparent';
+                      }}
+                    >
+                      <span>☕</span>
+                      <span>点此请作者喝杯咖啡</span>
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+          {hasVisitedMarketTab && (
+            <div style={{ display: mainTab === 'market' ? 'contents' : 'none' }}>
+              <MarketTab
+                onAddFund={handleMarketTabAddFund}
+                getFundCardProps={getFundCardPropsForRow}
+                isActive={mainTab === 'market'}
+              />
+            </div>
+          )}
+        </>
       </div>
-    </>
+      {isMobile && (
+        <MineTab
+          visible={mainTab === 'mine'}
+          user={user}
+          userAvatar={userAvatar}
+          lastSyncDisplay={lastSyncTime ? dayjs(lastSyncTime).format('MM-DD HH:mm') : null}
+          onLogin={handleOpenLogin}
+          onMyEarnings={() => setPortfolioEarningsOpen(true)}
+          onTutorial={() => {
+            if (isMobile) {
+              setTutorialDrawerOpen(true);
+            } else {
+              window.open('https://www.yuque.com/u267605/ookgim/im06q8tembbld6im?singleDoc', '_blank');
+            }
+          }}
+          onUpdateLog={() => setUpdateLogOpen(true)}
+          onFeedback={() => {
+            if (!user?.id) {
+              sonnerToast.error('请先登录后再提交反馈');
+              return;
+            }
+            setFeedbackNonce((n) => n + 1);
+            setFeedbackOpen(true);
+          }}
+          onSponsorSupport={() => setDonateOpen(true)}
+        />
+      )}
+      {/* 弹框渲染层 - 独立组件，订阅 useModalStore，不触发 page.jsx 重渲染 */}
+      <ModalsLayer callbacksRef={modalCbRef} />
+    </NavLayout>
   );
 }
