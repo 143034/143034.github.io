@@ -48,7 +48,7 @@ function FundDetailDialog({ cardDialogRow, getFundCardProps, setCardDialogRow}) 
   )
 }
 
-export default function MarketTab({ onAddFund, getFundCardProps }) {
+export default function MarketTab({ onAddFund, getFundCardProps, isActive }) {
   const [detailFund, setDetailFund] = useState(null);
   const [detailFundExtra, setDetailFundExtra] = useState(null);
 
@@ -88,6 +88,7 @@ export default function MarketTab({ onAddFund, getFundCardProps }) {
       }
     },
     refetchInterval: 300000,
+    enabled: !!isActive,
   });
 
   const filteredAndSortedSectors = useMemo(() => {
@@ -129,7 +130,8 @@ export default function MarketTab({ onAddFund, getFundCardProps }) {
       const res = await fetchFundValuationRanking(sort, order, 1, 20);
       return res?.Data?.list || [];
     },
-    refetchInterval: 60000,
+    refetchInterval: 300000,
+    enabled: !!isActive,
   });
 
   const formatPercent = (val) => {

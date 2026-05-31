@@ -6017,7 +6017,7 @@ export default function HomePage() {
       </div>
       {hasVisitedMarketTab && (
         <div style={{ display: mainTab === 'market' ? 'contents' : 'none' }}>
-          <MarketTab onAddFund={handleMarketTabAddFund} getFundCardProps={getFundCardPropsForRow} />
+          <MarketTab onAddFund={handleMarketTabAddFund} getFundCardProps={getFundCardPropsForRow} isActive={mainTab === 'market'} />
         </div>
       )}
       </>
