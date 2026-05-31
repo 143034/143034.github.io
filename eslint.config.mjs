@@ -1,4 +1,5 @@
 import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
+import prettierRecommended from 'eslint-plugin-prettier/recommended';
 
 const config = [
   {
@@ -10,6 +11,7 @@ const config = [
     ]
   },
   ...nextCoreWebVitals,
+  prettierRecommended,
   {
     rules: {
       'react-hooks/set-state-in-effect': 'off',

@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import ConfirmModal from './ConfirmModal';
 import { CloseIcon, CloudIcon } from './Icons';
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 export default function CloudConfigModal({ onConfirm, onCancel, type = 'empty' }) {
   const [pendingAction, setPendingAction] = useState(null); // 'local' | 'cloud' | null
@@ -40,10 +39,7 @@ export default function CloudConfigModal({ onConfirm, onCancel, type = 'empty' }
     setPendingAction(null);
   };
 
-  const confirmTitle =
-    pendingAction === 'local'
-      ? '确认使用本地配置覆盖云端？'
-      : '确认使用云端配置覆盖本地？';
+  const confirmTitle = pendingAction === 'local' ? '确认使用本地配置覆盖云端？' : '确认使用云端配置覆盖本地？';
 
   const confirmMessage =
     pendingAction === 'local'
@@ -55,7 +51,7 @@ export default function CloudConfigModal({ onConfirm, onCancel, type = 'empty' }
       className="modal-overlay"
       role="dialog"
       aria-modal="true"
-      aria-label={isConflict ? "配置冲突提示" : "云端同步提示"}
+      aria-label={isConflict ? '配置冲突提示' : '云端同步提示'}
       onClick={isConflict ? undefined : onCancel}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -81,9 +77,7 @@ export default function CloudConfigModal({ onConfirm, onCancel, type = 'empty' }
           )}
         </div>
         <p className="muted" style={{ marginBottom: 20, fontSize: '14px', lineHeight: '1.6' }}>
-          {isConflict
-            ? '检测到本地配置与云端不一致，请选择操作：'
-            : '是否将本地配置同步到云端？'}
+          {isConflict ? '检测到本地配置与云端不一致，请选择操作：' : '是否将本地配置同步到云端？'}
         </p>
         <div className="row" style={{ flexDirection: 'column', gap: 12 }}>
           <button className="button secondary" onClick={handlePrimaryClick}>
@@ -96,21 +90,20 @@ export default function CloudConfigModal({ onConfirm, onCancel, type = 'empty' }
       </motion.div>
       {pendingAction && (
         <Tooltip>
-<TooltipTrigger asChild>
-<ConfirmModal
-          
-          message={confirmMessage}
-          onConfirm={handleConfirmModalConfirm}
-          onCancel={handleConfirmModalCancel}
-          confirmText="确认覆盖"
-          icon={<CloudIcon width="20" height="20" />}
-          confirmVariant="danger"
-        />
-</TooltipTrigger>
-<TooltipContent>
-<p>{confirmTitle}</p>
-</TooltipContent>
-</Tooltip>
+          <TooltipTrigger asChild>
+            <ConfirmModal
+              message={confirmMessage}
+              onConfirm={handleConfirmModalConfirm}
+              onCancel={handleConfirmModalCancel}
+              confirmText="确认覆盖"
+              icon={<CloudIcon width="20" height="20" />}
+              confirmVariant="danger"
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{confirmTitle}</p>
+          </TooltipContent>
+        </Tooltip>
       )}
     </motion.div>
   );

@@ -49,7 +49,7 @@ export default function Announcement() {
             justifyContent: 'center',
             background: 'rgba(0, 0, 0, 0.6)',
             backdropFilter: 'blur(4px)',
-            padding: '20px',
+            padding: '20px'
           }}
         >
           <motion.div
@@ -66,18 +66,49 @@ export default function Announcement() {
               flexDirection: 'column',
               gap: '16px',
               maxHeight: 'calc(100dvh - 40px)',
-              overflow: 'hidden',
+              overflow: 'hidden'
             }}
           >
-            <div className="title" style={{ display: 'flex', alignItems: 'center', gap: '12px', fontWeight: 700, fontSize: '18px', color: 'var(--accent)' }}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <div
+              className="title"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                fontWeight: 700,
+                fontSize: '18px',
+                color: 'var(--accent)'
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
                 <line x1="12" y1="9" x2="12" y2="13"></line>
                 <line x1="12" y1="17" x2="12.01" y2="17"></line>
               </svg>
               <span>公告</span>
             </div>
-            <div className="scrollbar-y-styled" style={{ color: 'var(--text)', lineHeight: '1.6', fontSize: '15px', overflowY: 'auto', minHeight: 0, flex: 1, paddingRight: '4px' }}>
+            <div
+              className="scrollbar-y-styled"
+              style={{
+                color: 'var(--text)',
+                lineHeight: '1.6',
+                fontSize: '15px',
+                overflowY: 'auto',
+                minHeight: 0,
+                flex: 1,
+                paddingRight: '4px'
+              }}
+            >
               <p>v1.6.0 更新内容如下：</p>
               <p>1. 部分基金支持查看“实时净值估算图”（仅支持数据源1）。</p>
               <p>2. 优化移动端验证码键盘弹起逻辑。</p>
