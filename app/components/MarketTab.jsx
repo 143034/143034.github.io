@@ -18,6 +18,7 @@ import MobileFundCardDrawer from './MobileFundCardDrawer';
 import FundCard from './FundCard';
 import { Spinner } from '@/components/ui/spinner';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { Skeleton } from '@/components/ui/skeleton';
 
 function FundDetailDialog({ cardDialogRow, getFundCardProps, setCardDialogRow}) {
   return (
@@ -73,7 +74,7 @@ export default function MarketTab({ onAddFund, getFundCardProps }) {
   const funds = useStorageStore((s) => s.funds);
 
   // Queries for Hot Sectors (Supabase)
-  const { data: sectorEstimates } = useQuery({
+  const { data: sectorEstimates, isLoading: sectorsLoading } = useQuery({
     queryKey: ['hotSectors'],
     queryFn: async () => {
       try {
@@ -387,38 +388,67 @@ export default function MarketTab({ onAddFund, getFundCardProps }) {
               </button>
             </div>
 
-            <div className="market-sector-grid">
-              {filteredAndSortedSectors?.map(sector => {
-                const pctStr = sector.change_pct != null ? String(sector.change_pct) : '0.00';
-                const pctNum = parseFloat(pctStr);
-                const isUp = pctNum > 0;
-                const isDown = pctNum < 0;
+            <motion.div layout className="market-sector-grid">
+              <AnimatePresence mode="popLayout">
+                {sectorsLoading ? (
+                  Array.from({ length: isMobile ? 4 : 10 }).map((_, i) => (
+                    <motion.div
+                      key={`skeleton-sector-${i}`}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ type: 'spring', stiffness: 250, damping: 25, mass: 1 }}
+                      className="market-sector-card glass"
+                    >
+                      <div className="market-sector-main items-center mt-0.5">
+                        <Skeleton className="h-5 w-16" />
+                        <Skeleton className="h-4 w-12" />
+                      </div>
+                      <div className="market-sector-leader flex items-center mt-1 h-[18px]">
+                        <Skeleton className="h-3 w-20" />
+                      </div>
+                    </motion.div>
+                  ))
+                ) : filteredAndSortedSectors?.map(sector => {
+                  const pctStr = sector.change_pct != null ? String(sector.change_pct) : '0.00';
+                  const pctNum = parseFloat(pctStr);
+                  const isUp = pctNum > 0;
+                  const isDown = pctNum < 0;
 
-                return (
-                  <div key={sector.id || sector.sector_id} className="market-sector-card glass">
-                    <div className="market-sector-main">
-                      <span className="market-sector-name">{sector.sector_name}</span>
-                      {sectorSort === 'change_pct' ? (
-                        <span className={cn("market-sector-pct", getColorClass(pctStr))}>
-                          {formatPercent(pctStr)}
-                        </span>
-                      ) : (
-                        <span className={cn("market-sector-pct", getColorClass(sector.net_inflow))}>
-                          {sector.net_inflow ? (sector.net_inflow / 100000000).toFixed(2) + '亿' : '--'}
-                        </span>
-                      )}
-                    </div>
-                    <div className="market-sector-leader">
-                      {sectorSort === 'change_pct' ? (
-                        <>资金流入: {sector.net_inflow ? (sector.net_inflow / 100000000).toFixed(2) + '亿' : '--'}</>
-                      ) : (
-                        <>涨跌幅: <span className={getColorClass(pctStr)}>{formatPercent(pctStr)}</span></>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                  return (
+                    <motion.div
+                      layout
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ type: 'spring', stiffness: 250, damping: 25, mass: 1 }}
+                      key={sector.id || sector.sector_id}
+                      className="market-sector-card glass"
+                    >
+                      <div className="market-sector-main">
+                        <span className="market-sector-name">{sector.sector_name}</span>
+                        {sectorSort === 'change_pct' ? (
+                          <span className={cn("market-sector-pct", getColorClass(pctStr))}>
+                            {formatPercent(pctStr)}
+                          </span>
+                        ) : (
+                          <span className={cn("market-sector-pct", getColorClass(sector.net_inflow))}>
+                            {sector.net_inflow ? (sector.net_inflow / 100000000).toFixed(2) + '亿' : '--'}
+                          </span>
+                        )}
+                      </div>
+                      <div className="market-sector-leader">
+                        {sectorSort === 'change_pct' ? (
+                          <>资金流入: {sector.net_inflow ? (sector.net_inflow / 100000000).toFixed(2) + '亿' : '--'}</>
+                        ) : (
+                          <>涨跌幅: <span className={getColorClass(pctStr)}>{formatPercent(pctStr)}</span></>
+                        )}
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
+            </motion.div>
           </div>
 
           {/* 榜单栏 */}
@@ -542,10 +572,32 @@ export default function MarketTab({ onAddFund, getFundCardProps }) {
 
               <div className="market-ranking-list">
                 {rankingLoading ? (
-                  <div className="py-12 flex flex-col items-center justify-center gap-3 text-muted-foreground">
-                    <Spinner className="size-6 text-primary" />
-                    <span className="text-sm">加载中...</span>
-                  </div>
+                  Array.from({ length: 10 }).map((_, index) => (
+                    <div
+                      key={`skeleton-ranking-${index}`}
+                      className={`table-row market-ranking-table-row ${index % 2 === 1 ? 'row-even' : ''}`}
+                    >
+                      <div className="table-cell text-left" style={{ flex: 2, padding: '0 8px', display: 'flex', alignItems: 'center' }}>
+                        <div className="w-full">
+                          <div className="flex items-center gap-1.5 mb-1.5 mt-0.5">
+                            <Skeleton className="size-4 rounded-full flex-shrink-0" />
+                            <Skeleton className="h-[18px] w-28 sm:w-40" />
+                          </div>
+                          <div className="flex items-center gap-2 pl-5">
+                            <Skeleton className="h-3 w-12" />
+                            <Skeleton className="h-[14px] w-8" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="table-cell text-right" style={{ flex: 1, padding: '0 8px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center', gap: '4px' }}>
+                        <Skeleton className="h-[18px] w-14 sm:w-16" />
+                        <Skeleton className="h-3 w-10 sm:w-12" />
+                      </div>
+                      <div className="table-cell text-right" style={{ flex: 1, padding: '0 8px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
+                        <Skeleton className="h-[18px] w-14 sm:w-16" />
+                      </div>
+                    </div>
+                  ))
                 ) : rankingTable.getRowModel().rows.length > 0 ? (
                   rankingTable.getRowModel().rows.map((row, index) => (
                     <div
