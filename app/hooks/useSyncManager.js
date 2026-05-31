@@ -7,12 +7,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { useStorageStore, storageStore, useUserStore, useModalStore, getFundCodesSignature, SORT_DISPLAY_MODES } from '../stores';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { withRetry } from '../lib/asyncHelper';
-import { DAILY_EARNINGS_SCOPE_ALL } from '../lib/dailyEarnings';
+import {
+  DAILY_EARNINGS_SCOPE_ALL,
+  DCA_SCOPE_GLOBAL,
+  DEFAULT_FUND_TAG_THEME,
+} from '@/app/constants';
 import { normalizeCode, cleanCodeArray, normalizeNumber, dedupeByCode } from '../lib/normalize';
 import {
-  DCA_SCOPE_GLOBAL,
   hasOwn,
-  DEFAULT_FUND_TAG_THEME,
   stripLegacyTagsFromFundObject,
   getFundCodesFromTagRecord,
   sanitizeTagRowForStorage,

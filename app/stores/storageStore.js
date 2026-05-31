@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { isEqual, isArray } from 'lodash';
 import { getFundCodesFromTagRecord } from '@/app/lib/fundHelpers';
+import { DEFAULT_SORT_RULES, SORT_DISPLAY_MODES } from '@/app/constants';
+
 
 /**
  * 签名函数：用于检测 funds 列表是否发生实质性变更（jzrq, dwjz 等核心字段）
@@ -56,32 +58,7 @@ const SYNC_KEYS = new Set([
   'transactions', 'dcaPlans', 'customSettings', 'fundDailyEarnings', 'fundDividends'
 ]);
 
-/** 排序展示模式的合法值集合 */
-export const SORT_DISPLAY_MODES = new Set(['buttons', 'dropdown']);
-
-/** 排序规则的默认配置 */
-export const DEFAULT_SORT_RULES = [
-  { id: 'default', label: '默认', enabled: true },
-  { id: 'yield', label: '估算涨幅', alias: '涨跌幅', enabled: true },
-  { id: 'yesterdayIncrease', label: '最新涨幅', enabled: false },
-  { id: 'holdingAmount', label: '持仓金额', enabled: false },
-  { id: 'holdingRatio', label: '持仓占比', enabled: false },
-  { id: 'todayProfit', label: '当日收益', enabled: false },
-  { id: 'yesterdayProfit', label: '昨日收益', enabled: false },
-  { id: 'holdingDays', label: '持有天数', enabled: false },
-  { id: 'holding', label: '持有收益', enabled: true },
-  { id: 'estimateProfit', label: '估算收益', enabled: false },
-  { id: 'holdingCost', label: '持仓成本', enabled: false },
-  { id: 'last1Week', label: '近1周', enabled: false },
-  { id: 'last1Month', label: '近1月', enabled: false },
-  { id: 'last3Months', label: '近3月', enabled: false },
-  { id: 'last6Months', label: '近6月', enabled: false },
-  { id: 'last1Year', label: '近1年', enabled: false },
-  { id: 'sinceAddedChangePercent', label: '自添加来', enabled: false },
-  { id: 'consecutiveTrend', label: '连涨跌天数', enabled: false },
-  { id: 'tags', label: '基金标签', enabled: false },
-  { id: 'name', label: '基金名称', alias: '名称', enabled: true },
-];
+export { SORT_DISPLAY_MODES, DEFAULT_SORT_RULES };
 
 /**
  * 管理 localStorage 数据的 Zustand Store

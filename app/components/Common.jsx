@@ -13,10 +13,10 @@ import weixinImg from "../assets/weixin.jpg";
 import { CalendarIcon, MinusIcon, PlusIcon, TrendUpIcon, TrendDownIcon } from './Icons';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
+import { DEFAULT_TZ } from '@/app/constants';
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
-
-const DEFAULT_TZ = 'Asia/Shanghai';
 const getBrowserTimeZone = () => {
   if (typeof Intl !== 'undefined' && Intl.DateTimeFormat) {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;

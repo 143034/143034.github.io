@@ -7,8 +7,7 @@ import FitText from './FitText';
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 
-/** 与 app/page.jsx、EmptyStateCard 中虚拟「汇总」Tab id 保持一致 */
-const SUMMARY_TAB_ID = '__portfolio_groups_summary__';
+import { SUMMARY_TAB_ID } from "@/app/constants";
 
 // 数字滚动组件（初始化时无动画，后续变更再动画）
 function CountUp({

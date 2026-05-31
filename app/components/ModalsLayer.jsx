@@ -45,6 +45,8 @@ import MyEarningsCalendarPage from './MyEarningsCalendarPage';
 import {
   DEFAULT_FUND_TAG_THEME,
   DCA_SCOPE_GLOBAL,
+} from '@/app/constants';
+import {
   migrateDcaPlansToScoped
 } from '../lib/fundHelpers';
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";

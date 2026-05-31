@@ -48,7 +48,6 @@ import githubImg from "./assets/github.svg";
 import { supabase, isSupabaseConfigured } from './lib/supabase';
 import { recordValuation, setValuationSeries as persistValuationSeries, getAllValuationSeries, clearFund } from './lib/valuationTimeseries';
 import {
-  DAILY_EARNINGS_SCOPE_ALL,
   aggregatePortfolioDailyEarnings,
 } from './lib/dailyEarnings';
 import { loadHolidaysForYears, isTradingDay as isDateTradingDay } from './lib/tradingCalendar';
@@ -68,8 +67,18 @@ import { useScanImport } from './hooks/useScanImport';
 import { useRefreshManager } from './hooks/useRefreshManager';
 import { useSyncManager, normalizeFundDailyEarningsScoped } from './hooks/useSyncManager';
 import { useIsMobile } from './hooks/useIsMobile';
-import {useUserStore, clearAuthUser, setAuthUser, useStorageStore, storageStore, getFundCodesSignature, DEFAULT_SORT_RULES, SORT_DISPLAY_MODES, useModalStore, useIsAnyModalOpen} from './stores';
+import {useUserStore, clearAuthUser, setAuthUser, useStorageStore, storageStore, getFundCodesSignature, useModalStore, useIsAnyModalOpen} from './stores';
 import ModalsLayer from './components/ModalsLayer';
+
+import {
+  DEFAULT_SORT_RULES,
+  SORT_DISPLAY_MODES,
+  DCA_SCOPE_GLOBAL,
+  SUMMARY_TAB_ID,
+  SUMMARY_SOURCE_GLOBAL,
+  DAILY_EARNINGS_SCOPE_ALL,
+  DEFAULT_FUND_TAG_THEME,
+} from '@/app/constants';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -81,11 +90,7 @@ import {
   nowInTz,
   toTz,
   formatDate,
-  DCA_SCOPE_GLOBAL,
-  SUMMARY_TAB_ID,
-  SUMMARY_SOURCE_GLOBAL,
   hasOwn,
-  DEFAULT_FUND_TAG_THEME,
   normalizeFundTagTheme,
   normalizeFundTagInstanceListFromInput,
   stripLegacyTagsFromFundObject,

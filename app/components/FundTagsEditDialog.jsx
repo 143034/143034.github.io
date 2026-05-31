@@ -20,7 +20,8 @@ import {
 import ConfirmModal from './ConfirmModal';
 import { CloseIcon } from './Icons';
 import { cn } from '@/lib/utils';
-import AddTagDialog, { TAG_THEME_OPTIONS } from './AddTagDialog';
+import AddTagDialog from './AddTagDialog';
+import { TAG_THEME_OPTIONS } from '@/app/constants';
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 

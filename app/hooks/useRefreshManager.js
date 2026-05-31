@@ -8,7 +8,7 @@ import { isNumber, isString, isPlainObject, isArray } from 'lodash';
 
 import { useStorageStore, storageStore } from '../stores';
 import { recordValuation, setValuationSeries as persistValuationSeries } from '../lib/valuationTimeseries';
-import { DAILY_EARNINGS_SCOPE_ALL } from '../lib/dailyEarnings';
+import { DAILY_EARNINGS_SCOPE_ALL } from '@/app/constants';
 import { asyncPool } from '../lib/asyncHelper';
 import { fetchFundData, fetchNetValueRangeFromTrend, fetchFundDividends } from '../api/fund';
 import { TZ } from '../lib/fundHelpers';
