@@ -153,7 +153,7 @@ export default function AllSectorsModal({ onClose }) {
         </div>
       </div>
       
-      <div className="flex-1 overflow-y-auto px-4 pb-4 pt-0 no-scrollbar" ref={scrollRef}>
+      <div className="flex-1 overflow-y-auto px-4 pb-4 pt-0" ref={scrollRef}>
         {filteredAndSortedSectors.length === 0 ? (
           <div className="py-8 text-center text-muted-foreground">暂无数据</div>
         ) : (
