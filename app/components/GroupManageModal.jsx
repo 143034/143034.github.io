@@ -227,18 +227,12 @@ export default function GroupManageModal({ groups, onClose, onSave }) {
       <AnimatePresence>
         {deleteConfirm && (
           <div onPointerDown={(e) => e.stopPropagation()}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <ConfirmModal
-                  message={`确定要删除分组 "${deleteConfirm.name}" 吗？分组内的基金数据会被删除。`}
-                  onConfirm={handleConfirmDelete}
-                  onCancel={() => setDeleteConfirm(null)}
-                />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>删除确认</p>
-              </TooltipContent>
-            </Tooltip>
+            <ConfirmModal
+              title="删除确认"
+              message={`确定要删除分组 "${deleteConfirm.name}" 吗？分组内的基金数据会被删除。`}
+              onConfirm={handleConfirmDelete}
+              onCancel={() => setDeleteConfirm(null)}
+            />
           </div>
         )}
       </AnimatePresence>

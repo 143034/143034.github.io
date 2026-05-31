@@ -170,103 +170,90 @@ export default function ModalsLayer({ callbacksRef }) {
       {/* ===== Modal: 删除确认 ===== */}
       <AnimatePresence>
         {fundDeleteConfirm && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ConfirmModal
-                message={
-                  fundDeleteConfirm.scope === 'group'
-                    ? `确定从当前分组中移除「${fundDeleteConfirm.name}」吗？将清除该分组内的持仓、待定交易、定投计划与分组内交易记录；不会在「全部」中删除该基金。`
-                    : null
-                }
-                messageContent={
-                  fundDeleteConfirm.scope === 'group' ? null : fundDeleteConfirm.otherGroups &&
-                    fundDeleteConfirm.otherGroups.length > 0 ? (
-                    <>
-                      基金 &#34;{fundDeleteConfirm.name}&#34; 还存在于以下分组：
-                      <span className="text-[var(--primary)] font-semibold">
-                        {fundDeleteConfirm.otherGroups.join('、')}
-                      </span>
-                      。删除后将同时从这些分组中移除。确定要彻底删除吗？
-                    </>
-                  ) : (
-                    `基金 "${fundDeleteConfirm.name}" 存在持仓记录。删除后将从列表中移除该基金及其全部持仓与相关数据（含各分组内副本），是否继续？`
-                  )
-                }
-                confirmText="确定删除"
-                onConfirm={() => {
-                  cb.current.fundDetailDrawerCloseRef?.current?.();
-                  cb.current.fundDetailDialogCloseRef?.current?.();
-                  if (fundDeleteConfirm.scope === 'group' && fundDeleteConfirm.groupId) {
-                    cb.current.stripFundFromGroupScope(fundDeleteConfirm.code, fundDeleteConfirm.groupId);
-                  } else {
-                    cb.current.removeFund(fundDeleteConfirm.code);
-                  }
-                  setFundDeleteConfirm(null);
-                }}
-                onCancel={() => setFundDeleteConfirm(null)}
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>删除确认</p>
-            </TooltipContent>
-          </Tooltip>
+          <ConfirmModal
+            title="删除确认"
+            message={
+              fundDeleteConfirm.scope === 'group'
+                ? `确定从当前分组中移除「${fundDeleteConfirm.name}」吗？将清除该分组内的持仓、待定交易、定投计划与分组内交易记录；不会在「全部」中删除该基金。`
+                : null
+            }
+            messageContent={
+              fundDeleteConfirm.scope === 'group' ? null : fundDeleteConfirm.otherGroups &&
+                fundDeleteConfirm.otherGroups.length > 0 ? (
+                <>
+                  基金 &#34;{fundDeleteConfirm.name}&#34; 还存在于以下分组：
+                  <span className="text-[var(--primary)] font-semibold">
+                    {fundDeleteConfirm.otherGroups.join('、')}
+                  </span>
+                  。删除后将同时从这些分组中移除。确定要彻底删除吗？
+                </>
+              ) : (
+                `基金 "${fundDeleteConfirm.name}" 存在持仓记录。删除后将从列表中移除该基金及其全部持仓与相关数据（含各分组内副本），是否继续？`
+              )
+            }
+            confirmText="确定删除"
+            onConfirm={() => {
+              cb.current.fundDetailDrawerCloseRef?.current?.();
+              cb.current.fundDetailDialogCloseRef?.current?.();
+              if (fundDeleteConfirm.scope === 'group' && fundDeleteConfirm.groupId) {
+                cb.current.stripFundFromGroupScope(fundDeleteConfirm.code, fundDeleteConfirm.groupId);
+              } else {
+                cb.current.removeFund(fundDeleteConfirm.code);
+              }
+              setFundDeleteConfirm(null);
+            }}
+            onCancel={() => setFundDeleteConfirm(null)}
+          />
         )}
       </AnimatePresence>
 
       {/* ===== Modal: 批量删除确认 ===== */}
       <AnimatePresence>
         {fundDeleteBulkConfirm && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ConfirmModal
-                message={
-                  fundDeleteBulkConfirm.scope === 'global'
-                    ? fundDeleteBulkConfirm.fundsWithOtherGroups &&
-                      fundDeleteBulkConfirm.fundsWithOtherGroups.length > 0
-                      ? null
-                      : `确定删除已选的 ${fundDeleteBulkConfirm.count} 支基金吗？将从列表中移除这些基金及其全部持仓与相关数据。`
-                    : `确定从当前分组中移除已选的 ${fundDeleteBulkConfirm.count} 支基金吗？将清除这些基金在该分组内的持仓、待定交易、定投计划与分组内交易记录；不会在「全部」中删除这些基金。`
-                }
-                messageContent={
-                  fundDeleteBulkConfirm.scope === 'global' &&
-                  fundDeleteBulkConfirm.fundsWithOtherGroups &&
-                  fundDeleteBulkConfirm.fundsWithOtherGroups.length > 0 ? (
-                    <div className="flex flex-col gap-3 text-left">
-                      {fundDeleteBulkConfirm.fundsWithOtherGroups.map((f) => (
-                        <p key={f.code} className="m-0 leading-relaxed">
-                          基金 &#34;{f.name}&#34; 还存在于以下分组：
-                          <span className="text-[var(--primary)] font-semibold">{f.otherGroups.join('、')}</span>
-                          。删除后将同时从这些分组中移除。
-                        </p>
-                      ))}
-                      <p className="m-0 leading-relaxed">
-                        确定要彻底删除已选的全部 {fundDeleteBulkConfirm.count} 支基金吗？
-                      </p>
-                    </div>
-                  ) : null
-                }
-                confirmText="确定删除"
-                onConfirm={() => {
-                  cb.current.fundDetailDrawerCloseRef?.current?.();
-                  cb.current.fundDetailDialogCloseRef?.current?.();
-                  if (fundDeleteBulkConfirm.scope === 'global') {
-                    cb.current.removeFundsBulk(fundDeleteBulkConfirm.codes);
-                    cb.current.showToast(`已删除 ${fundDeleteBulkConfirm.count} 支基金`, 'success');
-                  } else {
-                    cb.current.stripManyFundsFromGroupScope(fundDeleteBulkConfirm.codes, fundDeleteBulkConfirm.groupId);
-                    cb.current.showToast(`已从当前分组移除 ${fundDeleteBulkConfirm.count} 支基金`, 'success');
-                  }
-                  cb.current.pcBatchClearSelectionRef?.current?.();
-                  cb.current.mobileBatchClearSelectionRef?.current?.();
-                  setFundDeleteBulkConfirm(null);
-                }}
-                onCancel={() => setFundDeleteBulkConfirm(null)}
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>批量删除确认</p>
-            </TooltipContent>
-          </Tooltip>
+          <ConfirmModal
+            title="批量删除确认"
+            message={
+              fundDeleteBulkConfirm.scope === 'global'
+                ? fundDeleteBulkConfirm.fundsWithOtherGroups && fundDeleteBulkConfirm.fundsWithOtherGroups.length > 0
+                  ? null
+                  : `确定删除已选的 ${fundDeleteBulkConfirm.count} 支基金吗？将从列表中移除这些基金及其全部持仓与相关数据。`
+                : `确定从当前分组中移除已选的 ${fundDeleteBulkConfirm.count} 支基金吗？将清除这些基金在该分组内的持仓、待定交易、定投计划与分组内交易记录；不会在「全部」中删除这些基金。`
+            }
+            messageContent={
+              fundDeleteBulkConfirm.scope === 'global' &&
+              fundDeleteBulkConfirm.fundsWithOtherGroups &&
+              fundDeleteBulkConfirm.fundsWithOtherGroups.length > 0 ? (
+                <div className="flex flex-col gap-3 text-left">
+                  {fundDeleteBulkConfirm.fundsWithOtherGroups.map((f) => (
+                    <p key={f.code} className="m-0 leading-relaxed">
+                      基金 &#34;{f.name}&#34; 还存在于以下分组：
+                      <span className="text-[var(--primary)] font-semibold">{f.otherGroups.join('、')}</span>
+                      。删除后将同时从这些分组中移除。
+                    </p>
+                  ))}
+                  <p className="m-0 leading-relaxed">
+                    确定要彻底删除已选的全部 {fundDeleteBulkConfirm.count} 支基金吗？
+                  </p>
+                </div>
+              ) : null
+            }
+            confirmText="确定删除"
+            onConfirm={() => {
+              cb.current.fundDetailDrawerCloseRef?.current?.();
+              cb.current.fundDetailDialogCloseRef?.current?.();
+              if (fundDeleteBulkConfirm.scope === 'global') {
+                cb.current.removeFundsBulk(fundDeleteBulkConfirm.codes);
+                cb.current.showToast(`已删除 ${fundDeleteBulkConfirm.count} 支基金`, 'success');
+              } else {
+                cb.current.stripManyFundsFromGroupScope(fundDeleteBulkConfirm.codes, fundDeleteBulkConfirm.groupId);
+                cb.current.showToast(`已从当前分组移除 ${fundDeleteBulkConfirm.count} 支基金`, 'success');
+              }
+              cb.current.pcBatchClearSelectionRef?.current?.();
+              cb.current.mobileBatchClearSelectionRef?.current?.();
+              setFundDeleteBulkConfirm(null);
+            }}
+            onCancel={() => setFundDeleteBulkConfirm(null)}
+          />
         )}
       </AnimatePresence>
 
@@ -676,19 +663,13 @@ export default function ModalsLayer({ callbacksRef }) {
       {/* ===== Modal: 清空持仓 ===== */}
       <AnimatePresence>
         {clearConfirm && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ConfirmModal
-                message={`确定要清空"${clearConfirm.fund?.name}"的所有持仓记录吗？此操作不可恢复。`}
-                onConfirm={cb.current.handleClearConfirm}
-                onCancel={() => setClearConfirm(null)}
-                confirmText="确认清空"
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>清空持仓</p>
-            </TooltipContent>
-          </Tooltip>
+          <ConfirmModal
+            title="清空持仓"
+            message={`确定要清空"${clearConfirm.fund?.name}"的所有持仓记录吗？此操作不可恢复。`}
+            onConfirm={cb.current.handleClearConfirm}
+            onCancel={() => setClearConfirm(null)}
+            confirmText="确认清空"
+          />
         )}
       </AnimatePresence>
 
@@ -748,47 +729,41 @@ export default function ModalsLayer({ callbacksRef }) {
       {/* ===== Modal: 持仓迁移 ===== */}
       <AnimatePresence>
         {holdingMigrateDialog.open && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ConfirmModal
-                messageContent={
-                  <div>
-                    {holdingMigrateDialog.name || holdingMigrateDialog.code || '该基金'}
-                    在全部分组中存在持仓数据，请在全部分组清空该基金持仓或迁移数据到本分组。
-                  </div>
-                }
-                icon={<FolderPlusIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
-                confirmVariant="primary"
-                confirmText="迁移数据到本分组"
-                onCancel={() => setHoldingMigrateDialog({ open: false, code: null, name: '', targetGroupId: null })}
-                onConfirm={async () => {
-                  const code = holdingMigrateDialog.code;
-                  const gid = holdingMigrateDialog.targetGroupId;
-                  if (!code || !gid) {
-                    setHoldingMigrateDialog({ open: false, code: null, name: '', targetGroupId: null });
-                    return;
-                  }
-                  try {
-                    await cb.current.handleMoveFunds?.({
-                      codes: [code],
-                      fromTab: 'all',
-                      targetId: gid,
-                      overwrite: true
-                    });
-                    cb.current.showToast?.('已迁移持仓数据到本分组', 'success');
-                  } catch (e) {
-                    console.warn('迁移持仓失败', e);
-                    cb.current.showToast?.('迁移失败，请稍后再试', 'error');
-                  } finally {
-                    setHoldingMigrateDialog({ open: false, code: null, name: '', targetGroupId: null });
-                  }
-                }}
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>提示</p>
-            </TooltipContent>
-          </Tooltip>
+          <ConfirmModal
+            title="提示"
+            messageContent={
+              <div>
+                {holdingMigrateDialog.name || holdingMigrateDialog.code || '该基金'}
+                在全部分组中存在持仓数据，请在全部分组清空该基金持仓或迁移数据到本分组。
+              </div>
+            }
+            icon={<FolderPlusIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
+            confirmVariant="primary"
+            confirmText="迁移数据到本分组"
+            onCancel={() => setHoldingMigrateDialog({ open: false, code: null, name: '', targetGroupId: null })}
+            onConfirm={async () => {
+              const code = holdingMigrateDialog.code;
+              const gid = holdingMigrateDialog.targetGroupId;
+              if (!code || !gid) {
+                setHoldingMigrateDialog({ open: false, code: null, name: '', targetGroupId: null });
+                return;
+              }
+              try {
+                await cb.current.handleMoveFunds?.({
+                  codes: [code],
+                  fromTab: 'all',
+                  targetId: gid,
+                  overwrite: true
+                });
+                cb.current.showToast?.('已迁移持仓数据到本分组', 'success');
+              } catch (e) {
+                console.warn('迁移持仓失败', e);
+                cb.current.showToast?.('迁移失败，请稍后再试', 'error');
+              } finally {
+                setHoldingMigrateDialog({ open: false, code: null, name: '', targetGroupId: null });
+              }
+            }}
+          />
         )}
       </AnimatePresence>
 
@@ -823,29 +798,23 @@ export default function ModalsLayer({ callbacksRef }) {
       {/* ===== Modal: 设备冲突 ===== */}
       <AnimatePresence>
         {deviceConflictModal.open && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ConfirmModal
-                onCancel={() => {
-                  setDeviceConflictModal({ ...deviceConflictModal, open: false });
-                  if (cb.current.skipSyncRef) cb.current.skipSyncRef.current = false;
-                  if (cb.current.refreshCycleStartRef) cb.current.refreshCycleStartRef.current = Date.now();
-                }}
-                onConfirm={async () => {
-                  const { userId } = deviceConflictModal;
-                  setDeviceConflictModal({ ...deviceConflictModal, open: false });
-                  if (cb.current.refreshCycleStartRef) cb.current.refreshCycleStartRef.current = Date.now();
-                  await cb.current.fetchCloudConfig?.(userId, false, { forceTakeover: true });
-                }}
-                message={deviceConflictModal.message}
-                confirmText="确认接管"
-                icon={<RefreshCw width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>其它设备登录提示</p>
-            </TooltipContent>
-          </Tooltip>
+          <ConfirmModal
+            title="其它设备登录提示"
+            onCancel={() => {
+              setDeviceConflictModal({ ...deviceConflictModal, open: false });
+              if (cb.current.skipSyncRef) cb.current.skipSyncRef.current = false;
+              if (cb.current.refreshCycleStartRef) cb.current.refreshCycleStartRef.current = Date.now();
+            }}
+            onConfirm={async () => {
+              const { userId } = deviceConflictModal;
+              setDeviceConflictModal({ ...deviceConflictModal, open: false });
+              if (cb.current.refreshCycleStartRef) cb.current.refreshCycleStartRef.current = Date.now();
+              await cb.current.fetchCloudConfig?.(userId, false, { forceTakeover: true });
+            }}
+            message={deviceConflictModal.message}
+            confirmText="确认接管"
+            icon={<RefreshCw width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
+          />
         )}
       </AnimatePresence>
 

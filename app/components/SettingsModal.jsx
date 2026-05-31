@@ -314,24 +314,18 @@ export default function SettingsModal({
         </div>
       </DialogContent>
       {resetWidthConfirmOpen && onResetContainerWidth && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <ConfirmModal
-              message="是否重置页面宽度为默认值 1200px？"
-              icon={<ResetIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
-              confirmVariant="primary"
-              onConfirm={() => {
-                onResetContainerWidth();
-                setResetWidthConfirmOpen(false);
-              }}
-              onCancel={() => setResetWidthConfirmOpen(false)}
-              confirmText="重置"
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>重置页面宽度</p>
-          </TooltipContent>
-        </Tooltip>
+        <ConfirmModal
+          title="重置页面宽度"
+          message="是否重置页面宽度为默认值 1200px？"
+          icon={<ResetIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
+          confirmVariant="primary"
+          onConfirm={() => {
+            onResetContainerWidth();
+            setResetWidthConfirmOpen(false);
+          }}
+          onCancel={() => setResetWidthConfirmOpen(false)}
+          confirmText="重置"
+        />
       )}
     </Dialog>
   );

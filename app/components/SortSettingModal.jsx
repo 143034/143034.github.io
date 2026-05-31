@@ -9,7 +9,6 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerClose } from '@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CloseIcon, DragIcon, ResetIcon, SettingsIcon } from './Icons';
 import ConfirmModal from './ConfirmModal';
-import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 function SortSettingReorderItem({
   item,
@@ -106,29 +105,23 @@ function SortSettingReorderItem({
           </div>
         ) : (
           <>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={() => startEditAlias(item)}
-                  style={{
-                    padding: 0,
-                    margin: 0,
-                    border: 'none',
-                    background: 'transparent',
-                    textAlign: 'left',
-                    fontSize: 14,
-                    color: 'inherit',
-                    cursor: 'pointer'
-                  }}
-                >
-                  {item.label}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>点击修改别名</p>
-              </TooltipContent>
-            </Tooltip>
+            <button
+              type="button"
+              title="点击修改别名"
+              onClick={() => startEditAlias(item)}
+              style={{
+                padding: 0,
+                margin: 0,
+                border: 'none',
+                background: 'transparent',
+                textAlign: 'left',
+                fontSize: 14,
+                color: 'inherit',
+                cursor: 'pointer'
+              }}
+            >
+              {item.label}
+            </button>
             {item.alias && (
               <span
                 className="muted"
@@ -144,45 +137,39 @@ function SortSettingReorderItem({
         )}
       </div>
       {item.id !== 'default' && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type="button"
-              className={isMobile ? 'icon-button' : 'icon-button pc-table-column-switch'}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleToggle(item.id);
-              }}
-              style={
-                isMobile
-                  ? {
-                      border: 'none',
-                      backgroundColor: 'transparent',
-                      cursor: 'pointer',
-                      flexShrink: 0,
-                      display: 'flex',
-                      alignItems: 'center'
-                    }
-                  : {
-                      border: 'none',
-                      padding: '0 4px',
-                      backgroundColor: 'transparent',
-                      cursor: 'pointer',
-                      flexShrink: 0,
-                      display: 'flex',
-                      alignItems: 'center'
-                    }
-              }
-            >
-              <span className={`dca-toggle-track ${item.enabled ? 'enabled' : ''}`}>
-                <span className="dca-toggle-thumb" style={{ left: item.enabled ? 16 : 2 }} />
-              </span>
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{item.enabled ? '关闭' : '开启'}</p>
-          </TooltipContent>
-        </Tooltip>
+        <button
+          type="button"
+          className={isMobile ? 'icon-button' : 'icon-button pc-table-column-switch'}
+          title={item.enabled ? '关闭' : '开启'}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleToggle(item.id);
+          }}
+          style={
+            isMobile
+              ? {
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                  display: 'flex',
+                  alignItems: 'center'
+                }
+              : {
+                  border: 'none',
+                  padding: '0 4px',
+                  backgroundColor: 'transparent',
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                  display: 'flex',
+                  alignItems: 'center'
+                }
+          }
+        >
+          <span className={`dca-toggle-track ${item.enabled ? 'enabled' : ''}`}>
+            <span className="dca-toggle-thumb" style={{ left: item.enabled ? 16 : 2 }} />
+          </span>
+        </button>
       )}
     </Reorder.Item>
   );
@@ -355,31 +342,25 @@ export default function SortSettingModal({ open, onClose }) {
           <h3 className="pc-table-setting-subtitle" style={{ margin: 0, fontSize: 14 }}>
             排序规则
           </h3>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                className="icon-button"
-                onClick={() => setResetConfirmOpen(true)}
-                style={{
-                  border: 'none',
-                  width: 28,
-                  height: 28,
-                  backgroundColor: 'transparent',
-                  color: 'var(--muted-foreground)',
-                  flexShrink: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <ResetIcon width="16" height="16" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>重置排序规则</p>
-            </TooltipContent>
-          </Tooltip>
+          <button
+            type="button"
+            className="icon-button"
+            title="重置排序规则"
+            onClick={() => setResetConfirmOpen(true)}
+            style={{
+              border: 'none',
+              width: 28,
+              height: 28,
+              backgroundColor: 'transparent',
+              color: 'var(--muted-foreground)',
+              flexShrink: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <ResetIcon width="16" height="16" />
+          </button>
         </div>
         <p className="muted" style={{ fontSize: 12, margin: 0, color: 'var(--muted-foreground)' }}>
           可拖拽调整优先级，右侧开关控制是否启用该排序规则。点击规则名称可编辑别名（例如“估算涨幅”的别名为“涨跌幅”）。
@@ -433,7 +414,7 @@ export default function SortSettingModal({ open, onClose }) {
             </div>
           )}
 
-          {/* 其他规则支持拖拽和开关 */}
+          {/* 其他规则支持拖拽 and 开关 */}
           <Reorder.Group
             axis="y"
             values={localRules.filter((item) => item.id !== 'default')}
@@ -469,27 +450,21 @@ export default function SortSettingModal({ open, onClose }) {
   const resetConfirm = (
     <AnimatePresence>
       {resetConfirmOpen && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <ConfirmModal
-              key="reset-sort-rules-confirm"
-              message="是否将排序规则恢复为默认配置？这会重置顺序、开关状态以及别名设置。"
-              icon={<ResetIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
-              confirmVariant="primary"
-              confirmText="恢复默认"
-              onConfirm={() => {
-                setResetConfirmOpen(false);
-                queueMicrotask(() => {
-                  setSortRules(DEFAULT_SORT_RULES);
-                });
-              }}
-              onCancel={() => setResetConfirmOpen(false)}
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>重置排序规则</p>
-          </TooltipContent>
-        </Tooltip>
+        <ConfirmModal
+          key="reset-sort-rules-confirm"
+          title="重置排序规则"
+          message="是否将排序规则恢复为默认配置？这会重置顺序、开关状态以及别名设置。"
+          icon={<ResetIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
+          confirmVariant="primary"
+          confirmText="恢复默认"
+          onConfirm={() => {
+            setResetConfirmOpen(false);
+            queueMicrotask(() => {
+              setSortRules(DEFAULT_SORT_RULES);
+            });
+          }}
+          onCancel={() => setResetConfirmOpen(false)}
+        />
       )}
     </AnimatePresence>
   );
@@ -510,22 +485,16 @@ export default function SortSettingModal({ open, onClose }) {
               <SettingsIcon width="20" height="20" />
               <span>排序个性化设置</span>
             </DrawerTitle>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <DrawerClose
-                  className="icon-button border-none bg-transparent p-1"
-                  style={{
-                    borderColor: 'transparent',
-                    backgroundColor: 'transparent'
-                  }}
-                >
-                  <CloseIcon width="20" height="20" />
-                </DrawerClose>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>关闭</p>
-              </TooltipContent>
-            </Tooltip>
+            <DrawerClose
+              className="icon-button border-none bg-transparent p-1"
+              title="关闭"
+              style={{
+                borderColor: 'transparent',
+                backgroundColor: 'transparent'
+              }}
+            >
+              <CloseIcon width="20" height="20" />
+            </DrawerClose>
           </DrawerHeader>
           <div className="flex-1 overflow-y-auto">{body}</div>
         </DrawerContent>
@@ -569,21 +538,15 @@ export default function SortSettingModal({ open, onClose }) {
                 <SettingsIcon width="20" height="20" />
                 <span>排序个性化设置</span>
               </div>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    className="icon-button"
-                    onClick={onClose}
-                    style={{ border: 'none', background: 'transparent' }}
-                  >
-                    <CloseIcon width="20" height="20" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>关闭</p>
-                </TooltipContent>
-              </Tooltip>
+              <button
+                type="button"
+                className="icon-button"
+                title="关闭"
+                onClick={onClose}
+                style={{ border: 'none', background: 'transparent' }}
+              >
+                <CloseIcon width="20" height="20" />
+              </button>
             </div>
 
             {body}

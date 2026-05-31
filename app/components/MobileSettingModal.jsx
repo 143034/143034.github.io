@@ -293,26 +293,20 @@ export default function MobileSettingModal({
 
       <AnimatePresence>
         {resetConfirmOpen && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ConfirmModal
-                key="mobile-reset-confirm"
-                message="是否重置表头顺序和显示/隐藏为默认值？"
-                icon={<ResetIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
-                confirmVariant="primary"
-                onConfirm={() => {
-                  onResetColumnOrder?.();
-                  onResetColumnVisibility?.();
-                  setResetConfirmOpen(false);
-                }}
-                onCancel={() => setResetConfirmOpen(false)}
-                confirmText="重置"
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>重置表头设置</p>
-            </TooltipContent>
-          </Tooltip>
+          <ConfirmModal
+            key="mobile-reset-confirm"
+            title="重置表头设置"
+            message="是否重置表头顺序和显示/隐藏为默认值？"
+            icon={<ResetIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
+            confirmVariant="primary"
+            onConfirm={() => {
+              onResetColumnOrder?.();
+              onResetColumnVisibility?.();
+              setResetConfirmOpen(false);
+            }}
+            onCancel={() => setResetConfirmOpen(false)}
+            confirmText="重置"
+          />
         )}
       </AnimatePresence>
       <AnimatePresence>

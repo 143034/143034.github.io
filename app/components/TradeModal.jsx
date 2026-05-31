@@ -709,23 +709,17 @@ export default function TradeModal({ type, fund, holding, onClose, onConfirm, pe
       </DialogContent>
       <AnimatePresence>
         {revokeTrade && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ConfirmModal
-                key="revoke-confirm"
-                message={`确定要撤销这笔 ${revokeTrade.share ? `${revokeTrade.share}份` : `${revokeTrade.amount}`} 的${revokeTrade.type === 'buy' ? '买入' : '卖出'}申请吗？`}
-                onConfirm={() => {
-                  onDeletePending?.(revokeTrade.id);
-                  setRevokeTrade(null);
-                }}
-                onCancel={() => setRevokeTrade(null)}
-                confirmText="确认撤销"
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>撤销交易</p>
-            </TooltipContent>
-          </Tooltip>
+          <ConfirmModal
+            key="revoke-confirm"
+            title="撤销交易"
+            message={`确定要撤销这笔 ${revokeTrade.share ? `${revokeTrade.share}份` : `${revokeTrade.amount}`} 的${revokeTrade.type === 'buy' ? '买入' : '卖出'}申请吗？`}
+            onConfirm={() => {
+              onDeletePending?.(revokeTrade.id);
+              setRevokeTrade(null);
+            }}
+            onCancel={() => setRevokeTrade(null)}
+            confirmText="确认撤销"
+          />
         )}
       </AnimatePresence>
       <PendingTradesModal

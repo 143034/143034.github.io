@@ -326,7 +326,7 @@ export default function FundTagsEditDialog({
                       </Badge>
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent>
+                  <TooltipContent className="z-[9999]">
                     <p>删除标签</p>
                   </TooltipContent>
                 </Tooltip>
@@ -378,32 +378,26 @@ export default function FundTagsEditDialog({
   );
 
   const deleteConfirmModal = deleteConfirm ? (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <ConfirmModal
-          confirmText="确定删除"
-          confirmVariant="danger"
-          onCancel={() => setDeleteConfirm(null)}
-          onConfirm={confirmDeleteOptionalTag}
-          messageContent={
-            <div className="flex flex-col gap-3">
-              <p>
-                标签「<span className="font-medium text-foreground">{deleteConfirm.name}</span>
-                」已用于以下基金，删除后这些基金将不再显示该标签。确定删除？
-              </p>
-              <ul className="list-inside list-disc space-y-1 text-sm">
-                {deleteConfirm.labels.map((line) => (
-                  <li key={line}>{line}</li>
-                ))}
-              </ul>
-            </div>
-          }
-        />
-      </TooltipTrigger>
-      <TooltipContent>
-        <p>删除标签</p>
-      </TooltipContent>
-    </Tooltip>
+    <ConfirmModal
+      title="删除标签"
+      confirmText="确定删除"
+      confirmVariant="danger"
+      onCancel={() => setDeleteConfirm(null)}
+      onConfirm={confirmDeleteOptionalTag}
+      messageContent={
+        <div className="flex flex-col gap-3">
+          <p>
+            标签「<span className="font-medium text-foreground">{deleteConfirm.name}</span>
+            」已用于以下基金，删除后这些基金将不再显示该标签。确定删除？
+          </p>
+          <ul className="list-inside list-disc space-y-1 text-sm">
+            {deleteConfirm.labels.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+        </div>
+      }
+    />
   ) : null;
 
   if (isMobile) {
@@ -413,19 +407,13 @@ export default function FundTagsEditDialog({
           <DrawerContent className="glass max-h-[90vh]" defaultHeight="77vh" minHeight="36vh" maxHeight="90vh">
             <DrawerHeader className="flex flex-row items-center justify-between gap-2 border-b border-[var(--border)] py-4 text-left">
               <DrawerTitle className="text-base font-semibold">编辑标签</DrawerTitle>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <DrawerClose
-                    className="icon-button border-none bg-transparent p-1"
-                    style={{ border: 'none', background: 'transparent' }}
-                  >
-                    <CloseIcon width="20" height="20" />
-                  </DrawerClose>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>关闭</p>
-                </TooltipContent>
-              </Tooltip>
+              <DrawerClose
+                className="icon-button border-none bg-transparent p-1"
+                title="关闭"
+                style={{ border: 'none', background: 'transparent' }}
+              >
+                <CloseIcon width="20" height="20" />
+              </DrawerClose>
             </DrawerHeader>
             <div className="scrollbar-y-styled flex-1 overflow-y-auto px-4 pb-6 pt-2">{body}</div>
           </DrawerContent>
@@ -454,22 +442,16 @@ export default function FundTagsEditDialog({
                 <Tag width={20} height={20} aria-hidden className="shrink-0 text-[var(--foreground)]" />
                 <span className="text-[var(--foreground)]">编辑标签</span>
               </div>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    className="icon-button shrink-0"
-                    aria-label="关闭"
-                    onClick={() => onOpenChange(false)}
-                    style={{ border: 'none', background: 'transparent' }}
-                  >
-                    <CloseIcon width={20} height={20} />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>关闭</p>
-                </TooltipContent>
-              </Tooltip>
+              <button
+                type="button"
+                className="icon-button shrink-0"
+                aria-label="关闭"
+                title="关闭"
+                onClick={() => onOpenChange(false)}
+                style={{ border: 'none', background: 'transparent' }}
+              >
+                <CloseIcon width={20} height={20} />
+              </button>
             </div>
             <div className="scrollbar-y-styled min-h-0 flex-1 overflow-y-auto px-4 py-4">{body}</div>
           </div>

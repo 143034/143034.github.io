@@ -198,25 +198,19 @@ export default function DcaModal({ fund, plan, onClose, onConfirm, onReset }) {
   return (
     <>
       {resetConfirmOpen && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <ConfirmModal
-              message={`是否重置「${fund?.name || fund?.code || '该基金'}」在当前分组下的定投数据？确认后将清除该基金在当前分组内的定投设置。`}
-              icon={<RotateCcw width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
-              confirmText="确认重置"
-              confirmVariant="danger"
-              onCancel={() => setResetConfirmOpen(false)}
-              onConfirm={() => {
-                setResetConfirmOpen(false);
-                // 由父级负责清除“当前分组-该基金”的定投数据
-                onReset?.(fund?.code);
-              }}
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>重置定投数据</p>
-          </TooltipContent>
-        </Tooltip>
+        <ConfirmModal
+          title="重置定投数据"
+          message={`是否重置「${fund?.name || fund?.code || '该基金'}」在当前分组下的定投数据？确认后将清除该基金在当前分组内的定投设置。`}
+          icon={<RotateCcw width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
+          confirmText="确认重置"
+          confirmVariant="danger"
+          onCancel={() => setResetConfirmOpen(false)}
+          onConfirm={() => {
+            setResetConfirmOpen(false);
+            // 由父级负责清除“当前分组-该基金”的定投数据
+            onReset?.(fund?.code);
+          }}
+        />
       )}
       <Dialog open onOpenChange={handleOpenChange}>
         <DialogContent

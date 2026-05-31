@@ -7,7 +7,6 @@ import ConfirmModal from './ConfirmModal';
 import SuccessModal from './SuccessModal';
 import SyncPersonalSettingsModal from './SyncPersonalSettingsModal';
 import { CloseIcon, DragIcon, RefreshIcon, ResetIcon, SettingsIcon, PinIcon } from './Icons';
-import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 
 /**
  * PC 表格个性化设置侧弹框
@@ -113,36 +112,30 @@ export default function PcTableSettingModal({
         <DragIcon width="18" height="18" />
       </div>
       {onTogglePinColumn && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type="button"
-              className="icon-button"
-              onClick={(e) => {
-                e.stopPropagation();
-                const isCurrentlyPinned = pinnedColumns.includes(item.id);
-                onTogglePinColumn(item.id);
-                if (!isCurrentlyPinned && scrollRef.current) {
-                  scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-              }}
-              style={{
-                border: 'none',
-                background: 'transparent',
-                padding: '0 8px 0 0',
-                color: pinnedColumns.includes(item.id) ? 'var(--primary)' : 'var(--muted)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
-              <PinIcon width="16" height="16" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{pinnedColumns.includes(item.id) ? '取消固定' : '固定在左侧'}</p>
-          </TooltipContent>
-        </Tooltip>
+        <button
+          type="button"
+          className="icon-button"
+          title={pinnedColumns.includes(item.id) ? '取消固定' : '固定在左侧'}
+          onClick={(e) => {
+            e.stopPropagation();
+            const isCurrentlyPinned = pinnedColumns.includes(item.id);
+            onTogglePinColumn(item.id);
+            if (!isCurrentlyPinned && scrollRef.current) {
+              scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+          style={{
+            border: 'none',
+            background: 'transparent',
+            padding: '0 8px 0 0',
+            color: pinnedColumns.includes(item.id) ? 'var(--primary)' : 'var(--muted)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          <PinIcon width="16" height="16" />
+        </button>
       )}
       <div style={{ flex: 1, fontSize: '14px', display: 'flex', flexDirection: 'column', gap: 2 }}>
         <span>{item.header}</span>
@@ -158,34 +151,28 @@ export default function PcTableSettingModal({
         )}
       </div>
       {onToggleColumnVisibility && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type="button"
-              className="icon-button pc-table-column-switch"
-              onClick={(e) => {
-                e.stopPropagation();
-                onToggleColumnVisibility(item.id, columnVisibility?.[item.id] === false);
-              }}
-              style={{
-                border: 'none',
-                padding: '0 4px',
-                backgroundColor: 'transparent',
-                cursor: 'pointer',
-                flexShrink: 0,
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
-              <span className={`dca-toggle-track ${columnVisibility?.[item.id] !== false ? 'enabled' : ''}`}>
-                <span className="dca-toggle-thumb" style={{ left: columnVisibility?.[item.id] !== false ? 16 : 2 }} />
-              </span>
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{columnVisibility?.[item.id] === false ? '显示' : '隐藏'}</p>
-          </TooltipContent>
-        </Tooltip>
+        <button
+          type="button"
+          className="icon-button pc-table-column-switch"
+          title={columnVisibility?.[item.id] === false ? '显示' : '隐藏'}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleColumnVisibility(item.id, columnVisibility?.[item.id] === false);
+          }}
+          style={{
+            border: 'none',
+            padding: '0 4px',
+            backgroundColor: 'transparent',
+            cursor: 'pointer',
+            flexShrink: 0,
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          <span className={`dca-toggle-track ${columnVisibility?.[item.id] !== false ? 'enabled' : ''}`}>
+            <span className="dca-toggle-thumb" style={{ left: columnVisibility?.[item.id] !== false ? 16 : 2 }} />
+          </span>
+        </button>
       )}
     </Reorder.Item>
   );
@@ -242,20 +229,14 @@ export default function PcTableSettingModal({
                   </button>
                 )}
               </div>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    className="icon-button"
-                    onClick={onClose}
-                    style={{ border: 'none', background: 'transparent' }}
-                  >
-                    <CloseIcon width="20" height="20" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>关闭</p>
-                </TooltipContent>
-              </Tooltip>
+              <button
+                className="icon-button"
+                title="关闭"
+                onClick={onClose}
+                style={{ border: 'none', background: 'transparent' }}
+              >
+                <CloseIcon width="20" height="20" />
+              </button>
             </div>
 
             <div className="pc-table-setting-body" ref={scrollRef}>
@@ -271,34 +252,28 @@ export default function PcTableSettingModal({
                   }}
                 >
                   <span style={{ fontSize: '14px' }}>展示完整基金名称</span>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        type="button"
-                        className="icon-button pc-table-column-switch"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onToggleShowFullFundName(!showFullFundName);
-                        }}
-                        style={{
-                          border: 'none',
-                          padding: '0 4px',
-                          backgroundColor: 'transparent',
-                          cursor: 'pointer',
-                          flexShrink: 0,
-                          display: 'flex',
-                          alignItems: 'center'
-                        }}
-                      >
-                        <span className={`dca-toggle-track ${showFullFundName ? 'enabled' : ''}`}>
-                          <span className="dca-toggle-thumb" style={{ left: showFullFundName ? 16 : 2 }} />
-                        </span>
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{showFullFundName ? '关闭' : '开启'}</p>
-                    </TooltipContent>
-                  </Tooltip>
+                  <button
+                    type="button"
+                    className="icon-button pc-table-column-switch"
+                    title={showFullFundName ? '关闭' : '开启'}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onToggleShowFullFundName(!showFullFundName);
+                    }}
+                    style={{
+                      border: 'none',
+                      padding: '0 4px',
+                      backgroundColor: 'transparent',
+                      cursor: 'pointer',
+                      flexShrink: 0,
+                      display: 'flex',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <span className={`dca-toggle-track ${showFullFundName ? 'enabled' : ''}`}>
+                      <span className="dca-toggle-thumb" style={{ left: showFullFundName ? 16 : 2 }} />
+                    </span>
+                  </button>
                 </div>
               )}
               <h3 className="pc-table-setting-subtitle">表头设置</h3>
@@ -315,27 +290,21 @@ export default function PcTableSettingModal({
                   拖拽调整列顺序
                 </p>
                 {onResetColumnOrder && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        className="icon-button"
-                        onClick={() => setResetOrderConfirmOpen(true)}
-                        style={{
-                          border: 'none',
-                          width: '28px',
-                          height: '28px',
-                          backgroundColor: 'transparent',
-                          color: 'var(--muted)',
-                          flexShrink: 0
-                        }}
-                      >
-                        <ResetIcon width="16" height="16" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>重置列顺序</p>
-                    </TooltipContent>
-                  </Tooltip>
+                  <button
+                    className="icon-button"
+                    title="重置列顺序"
+                    onClick={() => setResetOrderConfirmOpen(true)}
+                    style={{
+                      border: 'none',
+                      width: '28px',
+                      height: '28px',
+                      backgroundColor: 'transparent',
+                      color: 'var(--muted)',
+                      flexShrink: 0
+                    }}
+                  >
+                    <ResetIcon width="16" height="16" />
+                  </button>
                 )}
               </div>
               {columns.length === 0 ? (
@@ -400,26 +369,20 @@ export default function PcTableSettingModal({
         </motion.div>
       )}
       {resetOrderConfirmOpen && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <ConfirmModal
-              key="reset-order-confirm"
-              message="是否重置表头顺序和显示/隐藏为默认值？"
-              icon={<ResetIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
-              confirmVariant="primary"
-              onConfirm={() => {
-                onResetColumnOrder?.();
-                onResetColumnVisibility?.();
-                setResetOrderConfirmOpen(false);
-              }}
-              onCancel={() => setResetOrderConfirmOpen(false)}
-              confirmText="重置"
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>重置表头设置</p>
-          </TooltipContent>
-        </Tooltip>
+        <ConfirmModal
+          key="reset-order-confirm"
+          title="重置列设置"
+          message="是否重置表头顺序和显示/隐藏为默认值？"
+          icon={<ResetIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
+          confirmVariant="primary"
+          onConfirm={() => {
+            onResetColumnOrder?.();
+            onResetColumnVisibility?.();
+            setResetOrderConfirmOpen(false);
+          }}
+          onCancel={() => setResetOrderConfirmOpen(false)}
+          confirmText="重置"
+        />
       )}
       {syncModalOpen && (
         <SyncPersonalSettingsModal

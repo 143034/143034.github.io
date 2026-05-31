@@ -293,23 +293,17 @@ export default function UserMenu({
 
       <AnimatePresence>
         {logoutConfirmOpen && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ConfirmModal
-                message="确定要退出当前账号吗？"
-                icon={<LogoutIcon width="20" height="20" className="shrink-0 text-[var(--danger)]" />}
-                confirmText="确认登出"
-                onConfirm={() => {
-                  setLogoutConfirmOpen(false);
-                  onLogout?.();
-                }}
-                onCancel={() => setLogoutConfirmOpen(false)}
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>确认登出</p>
-            </TooltipContent>
-          </Tooltip>
+          <ConfirmModal
+            title="确认登出"
+            message="确定要退出当前账号吗？"
+            icon={<LogoutIcon width="20" height="20" className="shrink-0 text-[var(--danger)]" />}
+            confirmText="确认登出"
+            onConfirm={() => {
+              setLogoutConfirmOpen(false);
+              onLogout?.();
+            }}
+            onCancel={() => setLogoutConfirmOpen(false)}
+          />
         )}
       </AnimatePresence>
     </>

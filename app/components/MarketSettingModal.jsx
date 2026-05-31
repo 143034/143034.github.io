@@ -340,25 +340,19 @@ export default function MarketSettingModal({
         </DrawerContent>
         <AnimatePresence>
           {resetConfirmOpen && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <ConfirmModal
-                  key="mobile-index-reset-confirm"
-                  message="是否恢复已添加指数为默认配置？"
-                  icon={<ResetIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
-                  confirmVariant="primary"
-                  confirmText="恢复默认"
-                  onConfirm={() => {
-                    onResetDefault?.();
-                    setResetConfirmOpen(false);
-                  }}
-                  onCancel={() => setResetConfirmOpen(false)}
-                />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>恢复默认指数</p>
-              </TooltipContent>
-            </Tooltip>
+            <ConfirmModal
+              key="mobile-index-reset-confirm"
+              title="恢复默认指数"
+              message="是否恢复已添加指数为默认配置？"
+              icon={<ResetIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
+              confirmVariant="primary"
+              confirmText="恢复默认"
+              onConfirm={() => {
+                onResetDefault?.();
+                setResetConfirmOpen(false);
+              }}
+              onCancel={() => setResetConfirmOpen(false)}
+            />
           )}
         </AnimatePresence>
       </Drawer>
@@ -416,25 +410,19 @@ export default function MarketSettingModal({
         </motion.div>
       )}
       {resetConfirmOpen && (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <ConfirmModal
-              key="pc-index-reset-confirm"
-              message="是否恢复已添加指数为默认配置？"
-              icon={<ResetIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
-              confirmVariant="primary"
-              confirmText="恢复默认"
-              onConfirm={() => {
-                onResetDefault?.();
-                setResetConfirmOpen(false);
-              }}
-              onCancel={() => setResetConfirmOpen(false)}
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>恢复默认指数</p>
-          </TooltipContent>
-        </Tooltip>
+        <ConfirmModal
+          key="pc-index-reset-confirm"
+          title="恢复默认指数"
+          message="是否恢复已添加指数为默认配置？"
+          icon={<ResetIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
+          confirmVariant="primary"
+          confirmText="恢复默认"
+          onConfirm={() => {
+            onResetDefault?.();
+            setResetConfirmOpen(false);
+          }}
+          onCancel={() => setResetConfirmOpen(false)}
+        />
       )}
     </AnimatePresence>
   );

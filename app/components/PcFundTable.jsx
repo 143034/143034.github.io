@@ -1151,22 +1151,26 @@ export default function PcFundTable({
         >
           <span className={`name-text ${showFullFundName ? 'show-full' : ''}`}>
             {holdingLocked ? (
-              <span
-                aria-label="已关联持仓"
-                title="持仓来自自定义分组汇总"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  marginRight: 6,
-                  color: 'var(--primary)',
-                  verticalAlign: 'middle',
-                  position: 'relative',
-                  bottom: 2,
-                  cursor: 'default'
-                }}
-              >
-                <LinkIcon width="14" height="14" />
-              </span>
+              <Tooltip delayDuration={150}>
+                <TooltipTrigger asChild>
+                  <span
+                    aria-label="已关联持仓"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      marginRight: 6,
+                      color: 'var(--primary)',
+                      verticalAlign: 'middle',
+                      position: 'relative',
+                      bottom: 2,
+                      cursor: 'default'
+                    }}
+                  >
+                    <LinkIcon width="14" height="14" />
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>持仓来自自定义分组汇总</TooltipContent>
+              </Tooltip>
             ) : null}
             <ConsecutiveTrendBadge trend={fundExtraDataByCode?.[code]?.consecutiveTrend} />
             {info.getValue() ?? '—'}
@@ -2717,21 +2721,15 @@ export default function PcFundTable({
           </div>
         )}
         {resetConfirmOpen && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <ConfirmModal
-                message="是否重置表格列宽为默认值？"
-                icon={<ResetIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
-                confirmVariant="primary"
-                onConfirm={handleResetSizing}
-                onCancel={() => setResetConfirmOpen(false)}
-                confirmText="重置"
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>重置列宽</p>
-            </TooltipContent>
-          </Tooltip>
+          <ConfirmModal
+            title="重置列宽"
+            message="是否重置表格列宽为默认值？"
+            icon={<ResetIcon width="20" height="20" className="shrink-0 text-[var(--primary)]" />}
+            confirmVariant="primary"
+            onConfirm={handleResetSizing}
+            onCancel={() => setResetConfirmOpen(false)}
+            confirmText="重置"
+          />
         )}
         {showPortalHeader &&
           ReactDOM.createPortal(
