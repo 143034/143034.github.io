@@ -162,7 +162,7 @@ function MoreSection({ holding, profit, hasHoldingAmount, fundExtraData, masked,
 
   return (
     <>
-      <div style={{ display: 'flex', alignItems: 'center', margin: '8px 0 4px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', margin: '8px 0 12px' }}>
         <div style={{ flex: 1, height: '1px', background: 'var(--border, rgba(255,255,255,0.08))' }} />
         <button
           onClick={() => setExpanded((v) => !v)}
@@ -942,15 +942,7 @@ export default function Index({
           defaultValue={hasHoldings ? 'holdings' : 'trend'}
           className="w-full"
         >
-          <TabsList
-            className={`w-full ${
-              hasHoldings && hasHoldingAmount
-                ? 'grid grid-cols-3'
-                : hasHoldings || hasHoldingAmount
-                  ? 'grid grid-cols-2'
-                  : ''
-            }`}
-          >
+          <TabsList className="w-full flex">
             {hasHoldings && (
               <TabsTrigger value="holdings">前10重仓股票</TabsTrigger>
             )}
