@@ -680,7 +680,7 @@ export default function MyEarningsCalendarPage({ open, onOpenChange, series = []
         )}
 
         {isNumber(ytdRate) && (
-          <div className="shrink-0 pt-4 pb-6">
+          <div className="shrink-0 pt-2 pb-6">
             {isNumber(percentile) && percentile >= 0 ? (
               <div className="my-earnings-calendar-card my-earnings-rank-card relative overflow-hidden p-5 flex flex-col">
                 <div className="my-earnings-rank-heading flex items-center gap-3.5 z-10">
