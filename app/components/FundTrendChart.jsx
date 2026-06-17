@@ -5,6 +5,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchFundHistory } from '../api/fund';
 import * as qk from '../lib/query-keys';
+import { getChartAxisAvoidRects, getChartTooltipPosition } from '../lib/chartTooltipPosition';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronIcon } from './Icons';
 import {
@@ -24,6 +25,10 @@ import FundHistoryNetValue from './FundHistoryNetValue';
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
 const EMPTY_FUND_HISTORY = [];
+const TOOLTIP_SIZE = {
+  width: 140,
+  height: 78
+};
 
 const CHART_COLORS = {
   dark: {
@@ -68,9 +73,13 @@ export default function FundTrendChart({
   const clearActiveIndexRef = useRef(null);
   const [hiddenGrandSeries, setHiddenGrandSeries] = useState(() => new Set());
   const [activeIndex, setActiveIndex] = useState(null);
+  const [tooltipInfo, setTooltipInfo] = useState(null);
 
   useEffect(() => {
-    clearActiveIndexRef.current = () => setActiveIndex(null);
+    clearActiveIndexRef.current = () => {
+      setActiveIndex(null);
+      setTooltipInfo(null);
+    };
   });
 
   const chartColors = useMemo(() => getChartThemeColors(theme), [theme]);
@@ -263,7 +272,59 @@ export default function FundTrendChart({
           enabled: false, // 禁用默认 Tooltip，使用自定义绘制
           mode: 'index',
           intersect: false,
-          external: () => {} // 禁用外部 HTML tooltip
+          external: (context) => {
+            const { chart, tooltip } = context;
+            if (tooltip.opacity === 0) {
+              setTooltipInfo(null);
+              return;
+            }
+            if (tooltip.body) {
+              const dataPoints = tooltip.dataPoints;
+              if (dataPoints && dataPoints.length > 0) {
+                const mainPt = dataPoints.find((p) => p.datasetIndex === 0);
+                if (mainPt) {
+                  const dataIdx = mainPt.dataIndex;
+                  const rawVal = data[dataIdx]?.value;
+                  const dailyChange = data[dataIdx]?.equityReturn;
+                  const dateStr = data[dataIdx]?.date;
+                  const x = mainPt.element.x;
+                  const y = mainPt.element.y;
+                  const percentageValue = chart.data.datasets?.[0]?.data?.[dataIdx];
+                  const yLabel = `${isNumber(percentageValue) ? percentageValue.toFixed(2) : percentageValue}%`;
+                  const position = getChartTooltipPosition({
+                    anchorX: x,
+                    anchorY: y,
+                    tooltipWidth: TOOLTIP_SIZE.width,
+                    tooltipHeight: TOOLTIP_SIZE.height,
+                    chartWidth: chart.width,
+                    chartHeight: chart.height,
+                    chartArea: chart.chartArea,
+                    avoidRects: getChartAxisAvoidRects({
+                      chart,
+                      anchorX: x,
+                      anchorY: y,
+                      xLabel: dateStr,
+                      yLabel
+                    })
+                  });
+
+                  if (!position) {
+                    setTooltipInfo(null);
+                    return;
+                  }
+
+                  setTooltipInfo({
+                    x: position.left,
+                    y: position.top,
+                    date: dateStr,
+                    netValue: rawVal,
+                    dailyChange,
+                    color: mainPt.dataset.borderColor
+                  });
+                }
+              }
+            }
+          }
         }
       },
       scales: {
@@ -335,7 +396,7 @@ export default function FundTrendChart({
         }
       }
     };
-  }, [theme]);
+  }, [theme, data]);
 
   useEffect(() => {
     return () => {
@@ -573,8 +634,69 @@ export default function FundTrendChart({
   const lastIndex = data.length > 0 ? data.length - 1 : null;
   const currentIndex = activeIndex != null && activeIndex < data.length ? activeIndex : lastIndex;
 
+  const renderTrendTooltip = (className) =>
+    tooltipInfo ? (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.15 }}
+        className={`glass trend-tooltip ${className}`}
+        style={{
+          position: 'absolute',
+          left: tooltipInfo.x,
+          top: tooltipInfo.y,
+          pointerEvents: 'none',
+          padding: '12px',
+          borderRadius: '8px',
+          zIndex: 50,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+          background: theme === 'dark' ? 'rgba(15, 23, 42, 0.95)' : undefined,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+          width: TOOLTIP_SIZE.width,
+          color: 'var(--text-primary)'
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ width: 10, height: 2, borderRadius: 999, backgroundColor: tooltipInfo.color }} />
+            <span style={{ color: 'var(--muted, #888)' }}>净值</span>
+          </span>
+          <span style={{ fontFamily: 'Menlo, Monaco, monospace', fontWeight: '500' }}>
+            {tooltipInfo.netValue != null ? tooltipInfo.netValue.toFixed(4) : '--'}
+          </span>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ width: 10, height: 2, borderRadius: 999, backgroundColor: 'transparent' }} />
+            <span style={{ color: 'var(--muted, #888)' }}>日涨幅</span>
+          </span>
+          <span
+            style={{
+              fontFamily: 'Menlo, Monaco, monospace',
+              fontWeight: '500',
+              color:
+                tooltipInfo.dailyChange > 0
+                  ? 'var(--danger)'
+                  : tooltipInfo.dailyChange < 0
+                    ? 'var(--success)'
+                    : 'inherit'
+            }}
+          >
+            {isNumber(tooltipInfo.dailyChange) && Number.isFinite(tooltipInfo.dailyChange)
+              ? `${tooltipInfo.dailyChange > 0 ? '+' : ''}${tooltipInfo.dailyChange.toFixed(2)}%`
+              : '--'}
+          </span>
+        </div>
+      </motion.div>
+    ) : null;
+
   const chartBlock = (
-    <>
+    <div className="trend-chart-panel" style={{ position: 'relative' }}>
+      <AnimatePresence>{renderTrendTooltip('trend-tooltip-mobile')}</AnimatePresence>
+
       {/* 顶部图示：说明不同颜色/标记代表的含义 */}
       <div className="row" style={{ marginBottom: 8, gap: 12, alignItems: 'center', flexWrap: 'wrap', fontSize: 11 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -743,6 +865,8 @@ export default function FundTrendChart({
         )}
 
         {data.length > 0 && <Line ref={chartRef} data={chartData} options={options} plugins={plugins} />}
+
+        <AnimatePresence>{renderTrendTooltip('trend-tooltip-desktop')}</AnimatePresence>
       </div>
 
       <div className="trend-range-bar">
@@ -762,7 +886,7 @@ export default function FundTrendChart({
       </div>
 
       <FundHistoryNetValue code={code} range={range} theme={theme} />
-    </>
+    </div>
   );
 
   return (
@@ -817,11 +941,10 @@ export default function FundTrendChart({
         <AnimatePresence>
           {isExpanded && (
             <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
+              initial={{ height: 0, opacity: 0, overflow: 'hidden' }}
+              animate={{ height: 'auto', opacity: 1, transitionEnd: { overflow: 'visible' } }}
+              exit={{ height: 0, opacity: 0, overflow: 'hidden' }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              style={{ overflow: 'hidden' }}
             >
               {chartBlock}
             </motion.div>
