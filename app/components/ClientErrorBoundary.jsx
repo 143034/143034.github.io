@@ -99,7 +99,11 @@ class ClientErrorBoundaryInner extends React.Component {
           <p className="m-0 text-sm leading-relaxed text-[var(--muted-foreground)]">
             {getErrorMessage(this.state.error)}
           </p>
-          <button type="button" className="button primary h-11 rounded-xl px-4" onClick={this.handleReset}>
+          <button
+            type="button"
+            className="button primary flex h-11 items-center gap-2 rounded-xl px-4"
+            onClick={this.handleReset}
+          >
             <RotateCcwIcon className="h-4 w-4" />
             <span>重新尝试</span>
           </button>
