@@ -3054,7 +3054,7 @@ const MobileFundTable = memo(function MobileFundTable({
                 defaultValue={table.getState().pagination.pageSize}
                 type="number"
                 min={1}
-                className="w-[60px] h-8 text-xs text-center px-2"
+                className="w-[60px] h-8 text-[16PX] text-center px-2"
                 onBlur={(e) => {
                   let val = parseInt(e.target.value, 10);
                   if (isNaN(val) || val < 1) val = 20;
