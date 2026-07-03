@@ -3081,7 +3081,7 @@ html::-webkit-scrollbar-thumb:active,
 
 /* 指数个性化设置侧弹框：加宽以一行展示 5 个指数卡片 */
 .pc-market-setting-drawer.pc-table-setting-drawer {
-  width: 560px;
+  width: 840px;
 }
 
 .pc-table-setting-header {
